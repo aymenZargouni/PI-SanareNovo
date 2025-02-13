@@ -1,0 +1,43 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-10 d-flex justify-content-center"> {# Increased width to col-lg-10 #}
+    <div class="card w-100 shadow-lg" style="min-height: 80vh;"> {# Increased height #}
+      <div class="card-body p-4">
+        <h5 class="card-title fw-semibold mb-4 text-center">Liste des médecins</h5>
+        <a href="{{ path('ajouter_medecin') }}" class="btn btn-primary mb-4">Ajouter Médecin</a>
+        <div class="table-responsive">
+          <table class="table table-bordered text-nowrap mb-0 align-middle text-center" style="width: 100%; font-size: 1.1rem;"> {# Bigger text & bordered table #}
+            <thead class="text-dark fs-4">
+              <tr>
+                <th class="border-bottom-2 py-3"><h6 class="fw-semibold mb-0">Id</h6></th>
+                <th class="border-bottom-2 py-3"><h6 class="fw-semibold mb-0">Nom</h6></th>
+                <th class="border-bottom-2 py-3"><h6 class="fw-semibold mb-0">Spécialité</h6></th>
+                <th class="border-bottom-2 py-3"><h6 class="fw-semibold mb-0">Date Embauche</h6></th>
+                <th class="border-bottom-2 py-3"><h6 class="fw-semibold mb-0">Action</h6></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in medecin %}
+              <tr style="height: 60px;"> {# Increased row height #}
+                <td class="border-bottom-1"><h6 class="fw-semibold mb-0">{{ item.id }}</h6></td>
+                <td class="border-bottom-1"><h6 class="fw-semibold mb-1">{{ item.fullname }}</h6></td>
+                <td class="border-bottom-1"><p class="mb-0 fw-normal">{{ item.specilite }}</p></td>
+                <td class="border-bottom-1">
+                  <span class="badge bg-primary rounded-3 fw-semibold">{{ item.dateEmbauche | date('Y-m-d') }}</span>
+                </td>
+                <td class="border-bottom-1">
+                  <a href="{{ path('edit_medecin', {id: item.id}) }}"><button type="button" class="btn btn-dark m-1">Modifier</button></a>
+                  <a href="{{ path('delete_medecin', {id: item.id}) }}"><button type="button" class="btn btn-danger m-1">Supprimer</button></a>
+                </td>
+              </tr> 
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

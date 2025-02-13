@@ -1,0 +1,58 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier un Médecin{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-8"> {# Increased width #}
+    <div class="card w-100 shadow-lg" style="min-height: 80vh;"> {# Taller form container #}
+      <div class="card-body p-5"> {# More padding for a spacious layout #}
+        <h5 class="card-title fw-semibold mb-4 text-center">Modifier un Médecin</h5>
+        <div class="card">
+          <div class="card-body p-4">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+              <div class="mb-4">
+                {{ form_label(form.fullname, 'Nom complet', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.fullname, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Entrez le nom complet'}}) }}
+                {{ form_errors(form.fullname) }}
+              </div>
+
+              <div class="mb-4">
+                {{ form_label(form.dateEmbauche, 'Date d\'embauche', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.dateEmbauche, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                {{ form_errors(form.dateEmbauche) }}
+              </div>
+
+              <div class="mb-4">
+                {{ form_label(form.specilite, 'Spécialité', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.specilite, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Entrez la spécialité'}}) }}
+                {{ form_errors(form.specilite) }}
+              </div>
+
+              <div class="mb-4">
+                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Entrez l\'email'}}) }}
+                <div id="emailHelp" class="form-text">Nous ne partagerons jamais votre email avec quelqu'un d'autre.</div>
+                {{ form_errors(form.email) }}
+              </div>
+
+              <div class="mb-4">
+                {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.password, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Entrez le mot de passe'}}) }}
+                {{ form_errors(form.password) }}
+              </div>
+
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-4">Enregistrer</button>
+                <a href="{{ path('app_showMedecin') }}" class="btn btn-secondary btn-lg px-4">Annuler</a>
+              </div>
+
+            {{ form_end(form) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

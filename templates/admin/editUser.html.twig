@@ -1,0 +1,44 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier un utilisateur{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-8"> {# Increased width #}
+    <div class="card w-100 shadow-lg" style="min-height: 80vh;"> {# Taller form container #}
+      <div class="card-body p-5"> {# More padding for a spacious layout #}
+        <h5 class="card-title fw-semibold mb-4 text-center">Modifier un utilisateur</h5>
+        <div class="card">
+          <div class="card-body p-4">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+              <div class="mb-4">
+                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Entrez l\'email'}}) }}
+                <div id="emailHelp" class="form-text">Nous ne partagerons jamais votre email avec quelqu'un d'autre.</div>
+                {{ form_errors(form.email) }}
+              </div>
+
+              <div class="mb-4">
+                {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.password, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Entrez le mot de passe'}}) }}
+                {{ form_errors(form.password) }}
+              </div>
+
+            <div class="mb-4">
+                {{ form_label(form.roles, 'Rôle', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.roles, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                {{ form_errors(form.roles) }}
+            </div>
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-4">Enregistrer</button>
+                <a href="{{ path('app_showUsers') }}" class="btn btn-secondary btn-lg px-4">Annuler</a>
+              </div>
+
+            {{ form_end(form) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
