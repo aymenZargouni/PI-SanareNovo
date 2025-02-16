@@ -5,9 +5,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Medecin;
+use App\Form\MedecinType;
+use App\Form\EditUserType;
 use App\Form\MedecinAddType;
 use App\Form\MedecinEditType;
-use App\Form\MedecinType;
 use App\Repository\UserRepository;
 use App\Repository\MedecinRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -153,7 +154,7 @@ final class AdminController extends AbstractController{
     #[Route('/admin/editUser/{id}', name: 'app_editUser')]
     public function modifierUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-    $form = $this->createForm(UserType::class, $user);
+    $form = $this->createForm(EditUserType::class, $user);
 
     $form->handleRequest($request);
 

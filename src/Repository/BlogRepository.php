@@ -40,4 +40,56 @@ class BlogRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-}
+
+    public function findByTitleSorted(bool $ascending = true): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->orderBy('b.title', $ascending ? 'ASC' : 'DESC'); // Utilise ASC ou DESC selon l'argument
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function searchBlogs($title = '', $content = '', $categoryId = null, $startDate = null)
+    {
+        $queryBuilder = $this->createQueryBuilder('b');
+
+        // Filtre sur le titre
+        if ($title) {
+            $queryBuilder->andWhere('b.title LIKE :title')
+                         ->setParameter('title', '%' . $title . '%');
+        }
+
+        // Filtre sur le contenu
+        if ($content) {
+            $queryBuilder->andWhere('b.content LIKE :content')
+                         ->setParameter('content', '%' . $content . '%');
+        }
+
+        // Filtre sur la date de début
+        if ($startDate) {
+            $queryBuilder->andWhere('b.createdAt >= :startDate')
+                         ->setParameter('startDate', $startDate);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+
+
+    public function add(Blog $blog, bool $flush = true): void
+    {
+        if (!$blog->getCreatedAt()) {
+            $blog->setCreatedAt(new \DateTime());
+        }
+
+        $this->getEntityManager()->persist($blog);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+
+
+        
+
+    }

@@ -55,6 +55,10 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_admin'));
         }
 
+        if ($this->authorizationChecker->isGranted('ROLE_PATIENT')) {
+            return new RedirectResponse($this->urlGenerator->generate('app_patient'));
+        }
+
         if ($this->authorizationChecker->isGranted('ROLE_MEDECIN')) {
             return new RedirectResponse($this->urlGenerator->generate('app_medecin'));
         }
@@ -65,6 +69,10 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
         if ($this->authorizationChecker->isGranted('ROLE_RH')) {
             return new RedirectResponse($this->urlGenerator->generate('app_rh'));
+        }
+
+        if ($this->authorizationChecker->isGranted('ROLE_TECHNICIEN')) {
+            return new RedirectResponse($this->urlGenerator->generate('app_technicien'));
         }
       
     }

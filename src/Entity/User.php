@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Assert\NotBlank(message:"Email ne peut pas être vide", groups: ['add'] )]
+    #[Assert\NotBlank(message:"Email ne peut pas être vide")]
     #[Assert\Email(message:"Email n'est pas valide")]
     private ?string $email = null;
 
@@ -32,6 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message:"Password ne peut pas être vide")]
     #[Assert\Length(min:6,minMessage:"Le mot de passe doit contenir au moins 6 caractères.")]
     private ?string $password = null;
 
