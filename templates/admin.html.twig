@@ -96,13 +96,28 @@
               <span class="hide-menu">GESTION DES BLOGS</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-antenna-bars-5"></i>
-                </span>
-                <span class="hide-menu">Blogs</span>
-              </a>
+                <a class="sidebar-link has-arrow" href="javascript:void(0);" aria-expanded="false">
+                    <span>
+                        <i class="ti ti-antenna-bars-5"></i>
+                    </span>
+                    <span class="hide-menu">Blogs</span>
+                </a>
+                <ul class="collapse first-level">
+                    <li class="sidebar-item">
+                        <a href="{{ path('showBlog') }}" class="sidebar-link">
+                            <i class="ti ti-list"></i>
+                            <span class="hide-menu">Liste des Blogs</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{{ path('showCategory') }}" class="sidebar-link">
+                            <i class="ti ti-folder"></i>
+                            <span class="hide-menu">Liste des Catégories</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
+
           </ul>
         </nav>
         <!-- End Sidebar navigation -->

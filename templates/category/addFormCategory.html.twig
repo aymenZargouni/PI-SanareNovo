@@ -1,0 +1,41 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block body %}
+<!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="genric-btn success">
+            <i class="fas fa-plus-circle"></i> Add New Category
+        </h2>
+
+        {% if success is defined and success %}
+            <div class="alert alert-success">Category added successfully!</div>
+        {% endif %}
+
+        {{ form_start(formCategory, { 'attr': { 'class': 'needs-validation', 'novalidate': 'novalidate' } }) }}
+            <div class="mb-3">
+                {{ form_label(formCategory.name, 'Category Name', { 'label_attr': { 'class': 'form-label' } }) }}
+                {{ form_widget(formCategory.name, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter category name' } }) }}
+                {{ form_errors(formCategory.name) }}
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary"> <i class="fas fa-save"></i> Add Category</button>
+            </div>
+        {{ form_end(formCategory) }}
+    </div>
+</div>
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <i class="fas fa-check-circle"></i> {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+{% endblock %}
