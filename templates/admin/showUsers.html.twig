@@ -31,7 +31,7 @@
                 </td>
                 <td class="border-bottom-1">
                   <a href="{{ path('app_editUser', {id: item.id}) }}"><button type="button" class="btn btn-dark m-1">Modifier</button></a>
-                  <a href="{{ path('delete_user', {id: item.id}) }}"><button type="button" class="btn btn-danger m-1">Delete</button></a>
+                  <a href="{{ path('delete_user', {id: item.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{item.email}} ?')"><button type="button" class="btn btn-danger m-1" >Supprimer</button></a>
                 </td>
               </tr> 
               {% endfor %}

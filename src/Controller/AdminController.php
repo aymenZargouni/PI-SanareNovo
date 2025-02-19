@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Medecin;
+use App\Entity\Patient;
 use App\Form\MedecinType;
 use App\Form\EditUserType;
 use App\Form\MedecinAddType;
@@ -188,4 +189,15 @@ final class AdminController extends AbstractController{
 
             return $this->redirectToRoute('app_showUsers');
      } 
+
+     #[Route('/admin/showPatients', name: 'app_showPatients')]
+     public function showPatients(EntityManagerInterface $entityManager): Response
+     {
+         
+         $patients = $entityManager->getRepository(Patient::class)->findAll();
+ 
+         return $this->render('admin/showPatient.html.twig', [
+             'patients' => $patients,
+         ]);
+     }
     }

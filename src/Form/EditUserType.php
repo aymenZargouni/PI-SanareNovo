@@ -18,13 +18,9 @@ class EditUserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('email', EmailType::class, [
-            'constraints' => [
-                new Assert\NotBlank(['message' => "L'email est obligatoire."]),
-                new Assert\Email(['message' => "Veuillez entrer une adresse email valide."]),
-            ],
-        ])
+        ->add('email', EmailType::class)
         ->add('password', PasswordType::class, [
+            'mapped'=>false,
             'constraints' => [
                 new Assert\Length([
                     'min' => 8,

@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PatientType extends AbstractType
 {
@@ -30,9 +31,20 @@ class PatientType extends AbstractType
             ->add('adress')
             ->add('email', EmailType::class, [
                 'mapped' => false,
+                'constraints' => [
+                    new Assert\NotBlank(['message' => "L'email est obligatoire."]),
+                    new Assert\Email(['message' => "Veuillez entrer une adresse email valide."]),
+                ],
             ])
             ->add('password', PasswordType::class, [
-                'mapped' => false // This is part of the User entity
+                'mapped' => false,
+                'constraints' => [
+                    new Assert\NotBlank(['message' => "Password est obligatoire."]),
+                    new Assert\Length([
+                        'min' => 8,
+                        'minMessage' => "Le mot de passe doit contenir au moins 8 caractères.",
+                    ]),
+                ]
             ]);
     }
 
