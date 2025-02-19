@@ -16,7 +16,7 @@ class Patient
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:'Nom complet ne peut pas être vide')]
-    #[Assert\Length(min:20,minMessage:'Nom Complet ne doit pas dépasser 20 caractéres.')]
+    #[Assert\Length(min:5,minMessage:'Nom Complet ne doit pas dépasser 5 caractéres.')]
     private ?string $fullname = null;
 
     #[ORM\Column(length: 255)]
@@ -24,7 +24,7 @@ class Patient
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:'Adress ne peut pas être vide')]
-    #[Assert\Length(min:20,minMessage:'Adress ne doit pas dépasser 20 caractéres.')]
+    #[Assert\Length(min:5,minMessage:'Adress ne doit pas dépasser 20 caractéres.')]
     private ?string $adress = null;
 
     #[ORM\OneToOne(inversedBy: 'patient', cascade: ['persist', 'remove'])]

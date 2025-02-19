@@ -1,0 +1,49 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Liste des Patients{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-lg-10"> {# Increased width for the table #}
+    <div class="card w-100 shadow-lg" style="min-height: 80vh;"> {# Taller container #}
+      <div class="card-body p-5"> {# More padding for a spacious layout #}
+        <h5 class="card-title fw-semibold mb-4 text-center">Liste des Patients</h5>
+
+        {# Patients Table #}
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nom Complet</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">Email</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for patient in patients %}
+                <tr>
+                  <th scope="row">{{ patient.id }}</th>
+                  <td>{{ patient.fullname }}</td>
+                  <td>{{ patient.gender }}</td>
+                  <td>{{ patient.adress }}</td>
+                  <td>{{ patient.user.email }}</td>
+                  <td>
+                    <a href="" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')">Supprimer</a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="6" class="text-center">Aucun patient trouvé.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
