@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout Dossier Médical{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper {
+        margin: 2em auto;
+        max-width: 600px;
+        width: 100%;
+        font: 18px/1.5 sans-serif;
+    }
+    .form-container {
+        background-color: #ffffff;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h2 {
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    label {
+        font-weight: bold;
+        color: #333;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .btn-submit {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+    }
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>
+
+<div class="example-wrapper">
+    <div class="form-container">
+        <h2>Ajouter un dossier médical</h2>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(formadds, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <div class="form-group">
+            {{ form_label(formadds.imc) }}
+            {{ form_widget(formadds.imc, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 22.5'}}) }}
+            {{ form_errors(formadds.imc) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadds.date) }}
+            {{ form_widget(formadds.date, {'attr': {'class': 'form-control', 'type': 'date'}}) }}
+            {{ form_errors(formadds.date) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadds.observations) }}
+            {{ form_widget(formadds.observations, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Ajouter des observations...'}}) }}
+            {{ form_errors(formadds.observations) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadds.ordonnance) }}
+            {{ form_widget(formadds.ordonnance, {'attr': {'class': 'form-control', 'placeholder': 'Détails de l\'ordonnance'}}) }}
+            {{ form_errors(formadds.ordonnance) }}
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" class="btn-submit">Soumettre</button>
+        </div>
+
+        {{ form_end(formadds) }}
+    </div>
+</div>
+{% endblock %}

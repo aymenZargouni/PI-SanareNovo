@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Choisissez une salle pour votre consultation</h2>
+
+    {{ form_start(form) }}
+        {{ form_row(form.num_salle) }}
+        <button type="submit" class="btn btn-primary">Confirmer</button>
+    {{ form_end(form) }}
+{% endblock %}

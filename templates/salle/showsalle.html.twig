@@ -1,0 +1,42 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Home{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Service List</h2>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>SERVICE</th>
+                <th>TYPE</th>
+                <th>ETAT</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in tabservice %}
+            <tr>
+                <td>{{ a.id }}</td>
+                <td>{{ a.getService().id }}</td>
+                <td>{{ a.type }}</td>
+                <td>
+                    {% if a.etat == 0 %}
+                        Libre
+                    {% elseif a.etat == 1 %}
+                        Réservé
+                    {% else %}
+                        Non défini
+                    {% endif %}
+                </td>
+                <td><a href="{{ path('updateFormsalle', { id: a.id }) }}" class="btn btn-primary">Update</a></td>
+                <td><a href="{{ path('deletesalle', { id: a.id }) }}" class="btn btn-danger">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <td><a href="{{ path('addFormsalle') }}" class="btn btn-primary">Ajouter salle </a></td>
+</div>
+{% endblock %}

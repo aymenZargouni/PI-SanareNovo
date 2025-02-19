@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\SalleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
 class Salle
 {
@@ -14,6 +17,13 @@ class Salle
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de chef service  complet est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: "Le nom chef service complet doit contenir au moins 3 caractères.",
+        maxMessage: "Le nom chef service complet ne peut pas dépasser 20 caractères."
+    )]
     private ?string $type = null;
 
     #[ORM\Column]
@@ -62,4 +72,11 @@ class Salle
 
         return $this;
     }
+    // src/Entity/Salle.php
+
+public function __toString(): string
+{
+    return (string) $this->id;  // or use $this->type if you prefer the type name
+}
+
 }
