@@ -64,10 +64,12 @@ class Blog
 
     public function __construct()
     {
+        $this->Category = new ArrayCollection(); // ✅ Initialisation correcte
         $this->comments = new ArrayCollection();
         $this->ratings = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
+
 
     public function getId(): ?int
     {

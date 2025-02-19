@@ -1,0 +1,69 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ blog.title }} - SenareNovo{% endblock %}
+
+{% block body %}
+<div class="bradcam_area breadcam_bg bradcam_overlay">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Blog Details</h3>
+                    <p><a href="{{ path('home') }}">Home /</a> Blog Details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="blog_area single-post-area section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 posts-list">
+                <div class="single-post">
+                    <div class="feature-img">
+                        {% if blog.image %}
+                            <img class="img-fluid" src="{{ asset('uploads/images/' ~ blog.image) }}" alt="Blog Image">
+                        {% endif %}
+                    </div>
+                    <div class="blog_details">
+                        <h2>{{ blog.title }}</h2>
+
+                        <p class="excert">
+                            {{ blog.content }}
+                        </p>
+                    </div>
+                </div>
+                
+                <p>Note moyenne : {{ blog.getAverageRating() ?: 'Pas encore noté' }} / 5 ⭐</p>
+
+                <div class="navigation-top">
+                    <div class="d-sm-flex justify-content-between text-center">
+                        <p class="like-info"><i class="fa fa-heart"></i> 4 personnes aiment cet article</p>
+                        <ul class="social-icons">
+                            <li><a href="#"><i class="fa fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                        </ul>
+                    </div>
+
+                    <div class="navigation-area">
+                        <div class="row">
+                            <div class="col-lg-6 nav-left">
+                                <a href="#"><i class="ti-arrow-left"></i> Article précédent</a>
+                            </div>
+                            <div class="col-lg-6 nav-right text-right">
+                                <a href="#">Article suivant <i class="ti-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <a href="{{ path('showBlog') }}" class="genric-btn primary radius">Retour</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

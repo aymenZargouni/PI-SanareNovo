@@ -1,0 +1,122 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Blogs{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<br><br><div class="bradcam_area breadcam_bg bradcam_overlay">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text text-center">
+                    <br><br><br><h3>Blogs</h3>
+                    <p><a href="{{ path('home') }}">Home</a> / Blogs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="blog_area section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Main Blog Section -->
+            <div class="col-lg-8">
+                <div class="blog_left_sidebar">
+                    {% for b in tabBlog %}
+                    <article class="blog_item mb-4 shadow-sm rounded overflow-hidden">
+                        <div class="card border-0">
+                            <div class="position-relative">
+                                <!-- Blog Image -->
+                                {% if b.image %}
+                                    <img class="card-img-top" src="{{ asset('uploads/images/' ~ b.image) }}" alt="Blog image">
+                                {% else %}
+                                    <img class="card-img-top" src="{{ asset('images/default-image.jpg') }}" alt="Default image">
+                                {% endif %}
+                                
+                                <!-- Date Badge -->
+                                <div class="position-absolute top-0 end-0 p-2 bg-dark text-white rounded">
+                                    <p class="mb-0">{{ b.createdAt|date('d/m/Y') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="{{ path('blog_details', {'id': b.id}) }}" class="text-dark text-decoration-none">{{ b.title }}</a>
+                                </h4>
+                                <p class="card-text text-muted">
+                                    {{ b.content|length > 150 ? b.content|slice(0, 150) ~ '...' : b.content }}
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <a href="{{ path('show_comments', {id: b.id}) }}" class="text-secondary">
+                                            <i class="fa fa-comments"></i> {{ b.comments|length }} Commentaires
+                                        </a>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <a href="{{ path('updateFormBlog', {'id': b.id}) }}" class="btn btn-sm btn-warning me-2">
+                                            <i class="fa fa-edit"></i> Modifier
+                                        </a>
+                                        <a href="{{ path('deleteFormBlog', {'id': b.id}) }}" class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce blog ?');">
+                                            <i class="fa fa-trash"></i> Supprimer
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <a href="{{ path('rate_blog', {'id': b.id}) }}" class="btn btn-success btn-sm">
+                                        <i class="fa fa-star"></i> Noter ce blog
+                                    </a>
+                                    <span class="ms-2 text-warning">
+                                        ⭐ {{ b.getAverageRating() ?: 'Pas encore noté' }} / 5
+                                    </span>
+                                </div>
+
+                                <div class="mt-3">
+                                    <a href="{{ path('add_comment', {'id': b.id}) }}" class="btn btn-outline-dark btn-sm">
+                                        <i class="fa fa-comment"></i> Ajouter un commentaire
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    {% else %}
+                    <p class="text-center text-muted">Aucun blog trouvé.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+                    <!-- Search Form -->
+                    <aside class="single_sidebar_widget search_widget mb-4">
+                        <form action="{{ path('search_blog') }}" method="get" class="input-group">
+                            <input type="text" name="query" placeholder="Rechercher un blog" class="form-control">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </aside>
+
+                    <!-- Add Blog Button -->
+                    <aside class="single_sidebar_widget">
+                        <a href="{{ path('addFormBlog') }}" class="btn btn-secondary w-100">
+                            <i class="fa fa-plus"></i> Ajouter un Blog
+                        </a>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Update Blog{% endblock %}
+
+{% block body %}
+<div class="bradcam_area breadcam_bg bradcam_overlay">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text text-center">
+                    <h3><i class="fas fa-edit"></i> Update Blog</h3>
+                    <p><a href="{{ path('home') }}">Home</a> / Update Blog</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="text-center text-info"><i class="fas fa-pen"></i> Edit Blog Post</h2>
+
+        {{ form_start(formUpdateBlog, { 'attr': { 'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data' } }) }}
+            <div class="mb-3">
+                {{ form_label(formUpdateBlog.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(formUpdateBlog.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter Blog Title'}}) }}
+                {{ form_errors(formUpdateBlog.title) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(formUpdateBlog.content, 'Content', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(formUpdateBlog.content, {'attr': {'class': 'form-control', 'rows': 6, 'placeholder': 'Enter Blog Content'}}) }}
+                {{ form_errors(formUpdateBlog.content) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(formUpdateBlog.imageFile, 'Upload Image', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(formUpdateBlog.imageFile, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(formUpdateBlog.imageFile) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(formUpdateBlog.Category, 'Category', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(formUpdateBlog.Category, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(formUpdateBlog.Category) }}
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+        {{ form_end(formUpdateBlog) }}
+    </div>
+</div>
+{% endblock %}
