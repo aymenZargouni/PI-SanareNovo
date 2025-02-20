@@ -1,0 +1,50 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Modifier un Service{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Modifier un Service</h2>
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            
+            <div class="mb-3">
+                {{ form_label(form.nom, 'Nom du Service', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom du service'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.chef_service, 'Chef du Service', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.chef_service, {'attr': {'class': 'form-control', 'placeholder': 'Nom du chef de service'}}) }}
+                {{ form_errors(form.chef_service) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.nbr_salle, 'Nombre de Salles', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.nbr_salle, {'attr': {'class': 'form-control', 'type': 'number', 'min': 1}}) }}
+                {{ form_errors(form.nbr_salle) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.capacite, 'Capacité', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.capacite, {'attr': {'class': 'form-control', 'type': 'number', 'min': 1}}) }}
+                {{ form_errors(form.capacite) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.etat, 'État du Service', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.etat, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.etat) }}
+            </div>
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Mettre à jour</button>
+            </div>
+            
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

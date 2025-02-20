@@ -1,0 +1,37 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Salles du Service {{ service.nom }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Liste des Salles - Service: {{ service.nom }}</h2>
+    
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>État</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for salle in salles %}
+            <tr>
+                <td>{{ salle.id }}</td>
+                <td>{{ salle.type }}</td>
+                <td>
+                    {% if salle.etat == 0 %} Libre
+                    {% elseif salle.etat == 1 %} Réservé
+                    {% else %} Non défini {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center">Aucune salle trouvée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('showservice') }}" class="btn btn-primary">retour </a>
+</div>
+{% endblock %}

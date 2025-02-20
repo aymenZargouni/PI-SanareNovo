@@ -16,24 +16,24 @@ class Consultation
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: "La date de consultation est obligatoire.")]
-    #[Assert\Type(type: \DateTime::class, message: "Veuillez entrer une date valide.")]
-    private ?\DateTime $date = null;
+    #[Assert\NotBlank(message: "⚠️ La date de consultation est obligatoire.")]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "Veuillez entrer une date valide.")]
+    private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le champ motif est obligatoire.")]
+    #[Assert\NotBlank(message: "⚠️ Le champ motif est obligatoire.")]
     private ?string $motif = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le champ TypeConsultation est obligatoire.")]
+    #[Assert\NotBlank(message: "⚠️ Le champ TypeConsultation est obligatoire.")]
     private ?string $typeconsultation = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le champ Status est obligatoire.")]
+    #[Assert\NotBlank(message: "⚠️ Le champ Status est obligatoire.")]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'consultations')]
-    #[Assert\NotBlank(message: "Le champ DossierMedicale est obligatoire.")]
+    #[Assert\NotBlank(message: "⚠️ Le champ DossierMedicale est obligatoire.")]
     private ?Dossiermedicale $dossiermedicale = null;
 
     #[ORM\ManyToOne(inversedBy: 'consultations')]
@@ -49,7 +49,7 @@ class Consultation
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(?\DateTimeInterface $date): static
     {
         $this->date = $date;
 
@@ -115,6 +115,4 @@ class Consultation
 
         return $this;
     }
-    
-    
 }

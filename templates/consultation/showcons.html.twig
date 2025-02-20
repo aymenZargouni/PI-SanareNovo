@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Consultation{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper {
+        margin: 1em auto;
+        max-width: 90%;
+        font: 18px/1.5 'Roboto', sans-serif;
+    }
+    h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    /* Style du tableau */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        font-size: 16px;
+    }
+    table thead {
+        background: #007bff;
+        color: #fff;
+        text-align: left;
+    }
+    table th, table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+    }
+    table tbody tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    table tbody tr:hover {
+        background: #e2f0ff;
+        transition: 0.3s;
+    }
+    /* Style des badges */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        display: inline-block;
+    }
+    .badge-success {
+        background: #28a745;
+        color: #fff;
+    }
+    .badge-warning {
+        background: #ffc107;
+        color: #fff;
+    }
+    .badge-danger {
+        background: #28a745;
+        color: #fff;
+    }
+    /* Liens boutons */
+    .btn-action {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: inline-block;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .btn-update {
+        background: #ffc107;
+        color: #fff;
+    }
+    .btn-update:hover {
+        background: #e0a800;
+    }
+    .btn-delete {
+        background: #dc3545;
+        color: #fff;
+    }
+    .btn-delete:hover {
+        background: #c82333;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h2>📋 Tableau des Consultations</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Motif</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Service</th>
+                  <th>Salle</th>
+                <th>Dossier Médical</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in showcons %}
+            <tr>
+                <td>{{ i.id }}</td>
+                <td>{{ i.date|date('Y-m-d') }}</td>
+                <td>{{ i.motif }}</td>
+                <td>{{ i.typeconsultation }}</td>
+                <td>
+                    {% if i.status == 'Validée' %}
+                        <span class="badge badge-success">{{ i.status }}</span>
+                    {% elseif i.status == 'En attente' %}
+                        <span class="badge badge-warning">{{ i.status }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ i.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ i.getNomService() }}</td>
+                <td>{{ i.getNumSalle() }}</td>
+
+                <td>
+                    {% if i.dossiermedicale %}
+                        <strong>ID:</strong> {{ i.dossiermedicale.id }} <br>
+                        <strong>IMC:</strong> {{ i.dossiermedicale.imc }} <br>
+                        <strong>Date:</strong> {{ i.dossiermedicale.date|date('Y-m-d') }} <br>
+                        <strong>Observations:</strong> {{ i.dossiermedicale.observations }} <br>
+                        <strong>Ordonnance:</strong> {{ i.dossiermedicale.ordonnance }}
+                    {% else %}
+                        Aucun dossier médical
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_updatecons', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
+                    <a href="{{ path('app_deletecons', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

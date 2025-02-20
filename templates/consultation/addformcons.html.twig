@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout Consultation{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper {
+        margin: 2em auto;
+        max-width: 600px;
+        width: 100%;
+        font: 18px/1.5 sans-serif;
+    }
+    .form-container {
+        background-color: #ffffff;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h2 {
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    label {
+        font-weight: bold;
+        color: #333;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .btn-submit {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+    }
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>
+
+<div class="example-wrapper">
+    <div class="form-container">
+        <h2>Ajouter une consultation</h2>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(formadd, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <div class="form-group">
+            {{ form_label(formadd.date) }}
+            {{ form_widget(formadd.date, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(formadd.date) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadd.motif) }}
+            {{ form_widget(formadd.motif, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(formadd.motif) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadd.typeconsultation) }}
+            {{ form_widget(formadd.typeconsultation, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(formadd.typeconsultation) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadd.status) }}
+            {{ form_widget(formadd.status, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(formadd.status) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formadd.dossiermedicale) }}
+            {{ form_widget(formadd.dossiermedicale, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(formadd.dossiermedicale) }}
+        </div>
+
+        <!-- Placement du champ 'Nom service' avant le bouton Soumettre -->
+        <div class="form-group">
+            {{ form_label(formadd.nom_service) }}
+            {{ form_widget(formadd.nom_service, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(formadd.nom_service) }}
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" class="btn-submit">Soumettre</button>
+        </div>
+
+        {{ form_end(formadd) }}
+    </div>
+</div>
+{% endblock %}

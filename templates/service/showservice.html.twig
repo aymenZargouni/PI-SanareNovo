@@ -1,0 +1,58 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Home{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Service List</h2>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Ajouter Salle</th>
+                <th>Voir Salles</th>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Chef Service</th>
+                <th>Nombre de Salles</th>
+                <th>Capacité</th>
+                <th>État</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in tabservice %}
+            <tr>
+                <td>
+                    <a href="{{ path('addFormsalle2', { id: a.id }) }}" class="btn btn-success">Ajouter Salle</a>
+                </td>
+                <td>
+                    <a href="{{ path('showSalleByService', { id: a.id }) }}" class="btn btn-info">Voir Salles</a>
+                </td>
+                <td>{{ a.id }}</td>
+                <td>{{ a.nom }}</td>
+                <td>{{ a.chefService }}</td>
+                <td>{{ a.nbrSalle }}</td>
+                <td>{{ a.capacite }}</td>
+                <td>
+                    {% if a.etat == 0 %}
+                        Libre
+                    {% elseif a.etat == 1 %}
+                        Réservé
+                    {% else %}
+                        Non défini
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('updateFormservice', { id: a.id }) }}" class="btn btn-primary">Update</a>
+                </td>
+                <td>
+                    <a href="{{ path('deleteservice', { id: a.id }) }}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <td><a href="{{ path('addFormservice') }}" class="btn btn-primary">Ajouter sservice </a></td>
+</div>
+{% endblock %}

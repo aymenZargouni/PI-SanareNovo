@@ -1,0 +1,29 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Ajouter une Salle{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Ajouter une Nouvelle Salle</h2>
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(field) }}
+                </div>
+            {% endfor %}
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+            
+            {{ form_end(form) }}
+        </div>
+    </div>
+    <td><a href="{{ path('showsalle') }}" class="btn btn-primary">list des  salle </a></td>
+</div>
+{% endblock %}
