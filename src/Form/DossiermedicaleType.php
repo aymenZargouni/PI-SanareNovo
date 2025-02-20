@@ -6,6 +6,7 @@ use App\Entity\Dossiermedicale;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class DossiermedicaleType extends AbstractType
 {
@@ -14,7 +15,7 @@ class DossiermedicaleType extends AbstractType
         $builder
             ->add('imc')
             ->add('date', null, [
-                'widget' => 'single_text'
+                'widget' => 'single_text',
             ])
             ->add('observations')
             ->add('ordonnance')

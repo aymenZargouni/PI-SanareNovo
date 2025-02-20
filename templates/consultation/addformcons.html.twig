@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajout Consultation{% endblock %}
+{% block title %}
+    {% if isUpdate %}
+        Mise à jour de la consultation
+    {% else %}
+        Ajouter une consultation
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 <style>
@@ -65,7 +71,13 @@
 
 <div class="example-wrapper">
     <div class="form-container">
-        <h2>Ajouter une consultation</h2>
+        <h2>
+                {% if isUpdate %}
+                    Mise à jour de la consultation
+                {% else %}
+                    Ajouter une consultation
+                {% endif %}
+            </h2>
 
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger">
@@ -100,10 +112,12 @@
         </div>
 
         <div class="form-group">
-            {{ form_label(formadd.status) }}
-            {{ form_widget(formadd.status, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(formadd.status) }}
-        </div>
+    {% if formadd.status is defined %}
+        {{ form_label(formadd.status) }}
+        {{ form_widget(formadd.status, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formadd.status) }}
+    {% endif %}
+</div>
 
         <div class="form-group">
             {{ form_label(formadd.dossiermedicale) }}
@@ -111,7 +125,7 @@
             {{ form_errors(formadd.dossiermedicale) }}
         </div>
 
-        <!-- Placement du champ 'Nom service' avant le bouton Soumettre -->
+        
         <div class="form-group">
             {{ form_label(formadd.nom_service) }}
             {{ form_widget(formadd.nom_service, {'attr': {'class': 'form-control'}}) }}

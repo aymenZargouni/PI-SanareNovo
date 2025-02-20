@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajout Dossier Médical{% endblock %}
+{% block title %}
+    {% if isUpdate %}
+        Mise à jour DossierMedicale
+    {% else %}
+        Ajouter un DossierMedicale
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 <style>
@@ -66,7 +72,13 @@
 
 <div class="example-wrapper">
     <div class="form-container">
-        <h2>Ajouter un dossier médical</h2>
+        <h2>
+                {% if isUpdate %}
+                    Mise à jour DossierMedicale
+                {% else %}
+                    Ajouter un dossiermedicale
+                {% endif %}
+                </h2>
 
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger">

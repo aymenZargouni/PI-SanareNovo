@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: DossiermedicaleRepository::class)]
+#[Assert\Callback('validateDate')]
 class Dossiermedicale
 {
     #[ORM\Id]
@@ -19,6 +21,7 @@ class Dossiermedicale
 
     #[ORM\Column]
     #[Assert\NotBlank(message: "⚠️ L'IMC est obligatoire.")]
+    #[Assert\Type(type: 'numeric', message: "⚠️ L'IMC doit être un nombre valide.")]
     private ?float $imc = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -66,7 +69,7 @@ class Dossiermedicale
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(?\DateTimeInterface $date): static
     {
         $this->date = $date;
 
@@ -125,5 +128,21 @@ class Dossiermedicale
         }
 
         return $this;
+    }
+    public function validateDate(ExecutionContextInterface $context): void
+    {
+        if (!$this->date instanceof \DateTimeInterface) {
+            return; // Évite les erreurs si la date est null ou invalide
+        }
+    
+        $today = new \DateTimeImmutable(); // Utilisation de DateTimeImmutable
+        
+        $tomorrow = $today->modify('+365 day'); // Définir demain
+    
+        if ($this->date < $today || $this->date > $tomorrow) {
+            $context->buildViolation("⚠️ Vous ne pouvez sélectionner que la date d'aujourd'hui ou de demain.")
+                ->atPath('date')
+                ->addViolation();
+        }
     }
 }
