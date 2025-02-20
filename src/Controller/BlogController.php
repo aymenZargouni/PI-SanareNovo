@@ -158,7 +158,25 @@ final class BlogController extends AbstractController{
         ]);
     }
 
-    #[Route('/admin/blog/{id}/rate', name: 'rate_blog')]
+    #[Route("/searchBlog", name:"search_blog")]
+ 
+    public function searchBlogPatient(Request $request, BlogRepository $blogRepository): Response
+    {
+        $query = $request->query->get('query', '');
+        
+        // Recherche des blogs par titre
+        $tabBlog = $blogRepository->createQueryBuilder('b')
+            ->where('b.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('blog/showBlogPatient.html.twig', [
+            'blogs' => $tabBlog,
+        ]);
+    }
+
+    #[Route('/blog/{id}/rate', name: 'rate_blog')]
     public function rateBlog(Request $request, Blog $blog, EntityManagerInterface $entityManager)
     {
         $rating = new Rating();

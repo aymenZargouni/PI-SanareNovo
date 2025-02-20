@@ -32,16 +32,11 @@
                                         <img class="card-img-top" src="{{ asset('images/default-image.jpg') }}" alt="Default image">
                                     {% endif %}
 
-                                    <div class="position-absolute top-0 end-0 p-2 bg-dark text-white rounded">
-                                        <p class="mb-0">{{ b.createdAt|date('d/m/Y') }}</p>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
                                     <h4 class="card-title">
-                                        <a href="{{ path('blog_details', {'id': b.id}) }}" class="text-dark text-decoration-none">
                                             {{ b.title }}
-                                        </a>
                                     </h4>
                                     <p class="card-text text-muted">
                                         {{ b.content|length > 150 ? b.content|slice(0, 150) ~ '...' : b.content }}
