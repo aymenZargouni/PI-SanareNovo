@@ -1,0 +1,110 @@
+{% extends 'technicien.html.twig' %}
+
+{% block title %}Détails de l'équipement{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Détails de l'équipement</h2>
+        
+        <div class="card shadow-lg p-4 mb-4">
+            <h3 class="text-primary">Informations sur l'équipement</h3>
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ equipment.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Modèle</th>
+                        <td>{{ equipment.model }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>
+                            {% if equipment.status == 'reparé' %}
+                                <span class="badge bg-success">Reparé</span>
+                            {% elseif equipment.status == 'maintenance' %}
+                                <span class="badge bg-warning text-dark">En maintenance</span>
+                            {% elseif equipment.status == 'panne' %}
+                                <span class="badge bg-danger">Panne</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inconnu</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date d'achat</th>
+                        <td>{{ equipment.dateAchat|date('d/m/Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Prix</th>
+                        <td>{{ equipment.prix|number_format(2, '.', ' ') }} €</td>
+                    </tr>
+                    <tr>
+                        <th>Date de réparation</th>
+                        <td>{{ equipment.dateReparation ? equipment.dateReparation|date('d/m/Y') : 'Non réparé' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Rapport</th>
+                        <td>{{ equipment.rapport ?? 'Aucun rapport disponible' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card shadow-lg p-4 mb-4">
+            <h3 class="text-primary">Réclamation</h3>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Réclamation</th>
+                        <td>
+                            {% if equipment.claims|length > 0 %}
+                                <ul>
+                                    {% for claim in equipment.claims %}
+                                        <li>{{ claim.reclamation ? claim.reclamation : 'Aucune réclamation enregistrée.' }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                Aucune réclamation enregistrée.
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card shadow-lg p-4 mb-4">
+            <h3 class="text-primary">Mettre à jour l'équipement</h3>
+            <form method="post" action="{{ path('technician_update_equipment', {'id': equipment.id}) }}">
+                <div class="mb-3">
+                    <label for="status" class="form-label">Statut :</label>
+                    <select name="status" id="status" class="form-control">
+                        <option value="reparé" {% if equipment.status == 'reparé' %}selected{% endif %}>Reparé</option>
+                        <option value="panne" {% if equipment.status == 'panne' %}selected{% endif %}>En panne</option>
+                        <option value="maintenance" {% if equipment.status == 'maintenance' %}selected{% endif %}>En maintenance</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="dateReparation" class="form-label">Date de réparation :</label>
+                    <input type="date" id="dateReparation" name="dateReparation" class="form-control" value="{{ equipment.dateReparation ? equipment.dateReparation|date('Y-m-d') : '' }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="rapport" class="form-label">Rapport :</label>
+                    <textarea id="rapport" name="rapport" class="form-control" rows="4">{{ equipment.rapport ?? '' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 mt-3">Enregistrer</button>
+            </form>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('technician_equipments') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Retourner
+            </a>
+        </div>
+
+    </div>
+{% endblock %}

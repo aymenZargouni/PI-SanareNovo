@@ -15,7 +15,13 @@ class Claim
     #[ORM\Column(type: 'string')]
     #[Assert\NotBlank (message:"reclamation is required")]
     private $reclamation;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt;
 
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable(); 
+    }
     #[ORM\ManyToOne(targetEntity: Equipment::class, inversedBy: 'claim')]
     #[ORM\JoinColumn(nullable: false)]
     private $equipment;
@@ -45,5 +51,9 @@ class Claim
     {
         $this->equipment = $equipment;
         return $this;
+    }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

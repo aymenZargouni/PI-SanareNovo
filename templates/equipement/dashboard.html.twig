@@ -1,0 +1,54 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Tableau de bord du Coordinateur{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 text-primary">👨‍🔧 Tableau de bord du Coordinateur</h2>
+
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h3 class="mb-0">Vue d'ensemble des équipements</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="text-center text-dark font-weight-bold mb-5">Nombre total d'équipements : <span class="text-primary">{{ totalEquipments }}</span></h4>
+
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="card border-success mb-4">
+                            <div class="card-body">
+                                <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                <h5 class="card-title text-success">En bon état</h5>
+                                <p class="card-text">{{ totalGoodCondition }} équipements</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-warning mb-4">
+                            <div class="card-body">
+                                <i class="fas fa-wrench fa-3x text-warning mb-3"></i>
+                                <h5 class="card-title text-warning">En maintenance</h5>
+                                <p class="card-text">{{ totalInMaintenance }} équipements</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-danger mb-4">
+                            <div class="card-body">
+                                <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+                                <h5 class="card-title text-danger">Hors service</h5>
+                                <p class="card-text">{{ totalOutOfService }} équipements</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+
+
+
+    </div>
+{% endblock %}
