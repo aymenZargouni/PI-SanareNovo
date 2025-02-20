@@ -111,7 +111,7 @@ class CandidatureController extends AbstractController
     
             $this->addFlash('success', 'Le statut de la candidature a été mis à jour.');
     
-            // **Envoyer un e-mail si la candidature est acceptée**
+            // *Envoyer un e-mail si la candidature est acceptée*
             if ($statut === 'accepte') {
                 $email = (new Email())
                     ->from('noreply@votre-site.com')

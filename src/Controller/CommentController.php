@@ -23,7 +23,7 @@ final class CommentController extends AbstractController
     }
 
     // Ajouter un commentaire
-    #[Route('/admin/add_comment/{id}', name: 'add_comment')]
+    #[Route('/add_comment/{id}', name: 'add_comment')]
     public function addComment(Blog $blog, Request $request, EntityManagerInterface $entityManager): Response
     {
         $comment = new Comment();
@@ -46,7 +46,7 @@ final class CommentController extends AbstractController
     }
 
     // Afficher les commentaires d'un blog
-    #[Route('/admin/show_comments/{id}', name: 'show_comments')]
+    #[Route('/show_comments/{id}', name: 'show_comments')]
     public function showComments(Blog $blog): Response
     {
         return $this->render('comment/showComment.html.twig', [

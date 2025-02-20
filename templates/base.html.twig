@@ -110,7 +110,7 @@
                         <div class="col-xl-3 col-lg-2">
                             <div class="logo">
                                 <a href="{{ path('home') }}">
-                                    <img src="{{ asset('admin/images/logos/logo-sanarenovo.png') }}" alt="" style="width: 225px;"> 
+                                    <img src="{{ asset('img/logo-sanarenovo.png') }}" alt="Logo" style="width: 250px;">
                                 </a>
                             </div>
                         </div>
@@ -121,12 +121,7 @@
                                     <ul id="navigation">
                                         <li><a class="active" href="{{ path('home') }}">Home</a></li>
                                         <li><a href="{{ path('department') }}">Department</a></li>
-                                        <li><a href="#">Blog <i class="ti-angle-down"></i></a>
-                                            <ul class="submenu">
-                                                <li><a href="{{ path('blog') }}">Blog</a></li>
-                                                <li><a href="{{ path('single_blog') }}">Single Blog</a></li>
-                                            </ul>
-                                        </li>
+                                        <li><a href="{{ path('showBlogPatient') }}">Blog <i class="ti-angle-down"></i></a></li>
                                         <li><a href="#">Pages <i class="ti-angle-down"></i></a>
                                             <ul class="submenu">
                                                 <li><a href="{{ path('elements') }}">Elements</a></li>
@@ -139,14 +134,14 @@
                                 </nav>
                             </div>
                         </div>
-<div class="col-xl-3 col-lg-3 d-none d-lg-block">
-    <div class="Appointment d-flex justify-content-end align-items-center gap-3">
-        <div class="book_btn">
-            <a class="popup-with-form btn btn-primary px-3" href="{{ path('app_login') }}">Se Connecter</a>
-        </div>
-        <a class="genric-btn info-border circle px-3 text-nowrap" href="{{ path('app_register') }}">Créer Compte Patient</a>
-    </div>
-</div>
+            <div class="col-xl-2 col-lg-2 d-none d-lg-block">
+                <div class="Appointment d-flex gap-5 align-items-center">
+                    <div class="book_btn">
+                        <a class="popup-with-form btn btn-primary" href="{{ path('app_login') }}">Se Connecter</a>
+                    </div>
+                        <a class="genric-btn default-border circle" href="{{ path('app_register')  }}">Créer Compte Patient</a>
+                </div>
+            </div>
 
 
                         <div class="col-12">
@@ -173,7 +168,7 @@
                         <div class="footer_widget">
                             <div class="footer_logo">
                                 <a href="#">
-                                <img src="{{ asset('admin/images/logos/logo-sanarenovo.png') }}" alt="" style="width: 250px;"> 
+                                    <img src="{{ asset('img/logo-sanarenovo.png') }}" alt="Logo" style="width: 250px;">
                                 </a>
                             </div>
                             <p>Firmament morning sixth subdue darkness creeping gathered divide.</p>
