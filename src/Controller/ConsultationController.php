@@ -25,7 +25,7 @@ final class ConsultationController extends AbstractController{
     }
 
     #[Route('/showcons', name: 'app_showcons')]
-    public function showcons(ConsultationRepository $a,Request $req): Response //AuthorRepository  est dans $A a partir use App\Repository\AuthorRepository; on peut acceder apartir IDD
+    public function showcons(ConsultationRepository $a,Request $req): Response 
     {
         $cons=$a->findAll();
         return $this->render('consultation/showcons.html.twig', [
@@ -39,73 +39,81 @@ final class ConsultationController extends AbstractController{
     {
         $em = $m->getManager();
         $consultation = new Consultation();
-        $form = $this->createForm(ConsultationType::class, $consultation);
+        $form = $this->createForm(ConsultationType::class, $consultation,[
+            'is_update' => false,
+            
+        ]);
+        
         $form->handleRequest($req);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer le service lié à la consultation
+            
             $service = $consultation->getNomService();
     
-            // Vérifier si le service existe
+            
             if (!$service) {
                 $this->addFlash('error', 'Le service associé à la consultation est introuvable.');
                 return $this->redirectToRoute('app_addformcons');
             }
     
-            // Compter le nombre de consultations pour ce service
+            
             $totalConsultations = $consultationRepo->count(['nom_service' => $service]);
     
-            // Vérifier si la capacité du service est atteinte
+           
             if ($totalConsultations >= $service->getCapacite()) {
-                // Mettre à jour l'état du service à 'false' (service complet)
+                
                 $service->setEtat(1);
-                $em->persist($service); // Persister le service mis à jour
-                $em->flush(); // IMPORTANT : appliquer le changement dans la DB
-    
-                // Afficher un message d'erreur et rediriger
+                $em->persist($service); 
+                $em->flush(); 
                 $this->addFlash('error', 'La capacité du service est atteinte, vous ne pouvez plus ajouter de consultations.');
-                return $this->redirectToRoute('app_addformcons'); // Rester sur la même page en cas d'erreur
+                return $this->redirectToRoute('app_addformcons'); 
             }
-    
-            // Enregistrer la consultation
+            $consultation->setStatus('En attente');
+
+            
             $em->persist($consultation);
     
-            // Vérifier si la capacité du service est maintenant atteinte (si besoin)
+            
             if ($consultationRepo->count(['nom_service' => $service]) >= $service->getCapacite()) {
                 $service->setEtat(1);
                 $em->persist($service);
             }
     
-            $em->flush(); // Effectuer un seul flush pour toutes les modifications
+            $em->flush(); 
     
-            // Redirection après l'ajout
+            
             $this->addFlash('success', 'Consultation ajoutée avec succès.');
-            return $this->redirectToRoute('app_showcons'); // Rediriger vers la page des consultations
+            return $this->redirectToRoute('app_showcons'); 
         }
     
         return $this->render('consultation/addformcons.html.twig', [
             'formadd' => $form->createView(),
+            'isUpdate' => false,
         ]);
     }
     
     
 
 
-    #[Route('/updaterepas/{id}', name: 'app_updatecons')]
+    #[Route('/updatecons/{id}', name: 'app_updatecons')]
     public function updateformcons($id,ManagerRegistry $m ,Request $req,ConsultationRepository $repo): Response
     {
         $em=$m->getManager();
         $authors= $repo->find($id);
-        $form=$this->createForm(ConsultationType::class,$authors) ; // getmanager recuperer les donner et les donner existe dans authors
+        $form=$this->createForm(ConsultationType::class,$authors,[
+            'is_update' => true,
+         
+        ]) ; 
         $form->handleRequest($req);
-        if($form->isSubmitted() && $form->isValid() ){ // si il a cliquer sur button et (envoyer) et form et ramplit
+        if($form->isSubmitted() && $form->isValid() ){ 
         $em->persist($authors); 
-        $em->flush();//execute
+        $em->flush();
         return $this->redirectToRoute('app_showcons');
         }
 
         return $this->render('consultation/addformcons.html.twig', [
             'formadd' => $form,
+            'isUpdate' => true,
         ]);
     }
 

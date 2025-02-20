@@ -1,68 +1,82 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard consultation{% endblock %}
+{% block title %}Dashboard Dossier Médical{% endblock %}
 
 {% block body %}
 <style>
     .example-wrapper {
         margin: 1em auto;
-        max-width: 800px;
-        width: 95%;
-        font: 18px/1.5 sans-serif;
+        max-width: 90%;
+        font: 18px/1.5 'Roboto', sans-serif;
     }
-    .example-wrapper code {
-        background: #F5F5F5;
-        padding: 2px 6px;
+    h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 24px;
     }
-    /* Style du tableau avec thème bleu */
     table {
         width: 100%;
         border-collapse: collapse;
-        margin: 20px 0;
-        font-size: 1em;
-        font-family: sans-serif;
-        min-width: 400px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        font-size: 16px;
     }
-    table thead tr {
-        background-color: #007bff;
-        color: #ffffff;
+    table thead {
+        background: #007bff;
+        color: #fff;
         text-align: left;
     }
     table th, table td {
         padding: 12px 15px;
         border: 1px solid #ddd;
     }
-    table tbody tr {
-        border-bottom: 1px solid #dddddd;
+    table tbody tr:nth-child(even) {
+        background: #f8f9fa;
     }
-    table tbody tr:nth-of-type(even) {
-        background-color: #f3f3f3;
+    table tbody tr:hover {
+        background: #e2f0ff;
+        transition: 0.3s;
     }
-    table tbody tr:last-of-type {
-        border-bottom: 2px solid #007bff;
-    }
-    a {
+    .btn-action {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: inline-block;
         text-decoration: none;
-        color: #007bff;
         font-weight: bold;
+        transition: 0.3s;
     }
-    a:hover {
-        color: #0056b3;
+    .btn-update {
+        background: #ffc107;
+        color: #fff;
+    }
+    .btn-update:hover {
+        background: #e0a800;
+    }
+    .btn-delete {
+        background: #dc3545;
+        color: #fff;
+    }
+    .btn-delete:hover {
+        background: #c82333;
     }
 </style>
 
 <div class="example-wrapper">
+    <h2>📋 Tableau des Dossiers Médicaux</h2>
+    
     <table>
         <thead>
             <tr>
-                <th>id</th>
+                <th>ID</th>
                 <th>IMC</th>
-                <th>date</th>
-                <th>observations</th>
-                <th>Symptoms</th>
-                <th>Update</th>
-                <th>Supprimer</th>
+                <th>Date</th>
+                <th>Observations</th>
+                <th>Ordonnance</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -73,8 +87,10 @@
                 <td>{{ i.date|date('Y-m-d') }}</td>
                 <td>{{ i.observations }}</td>
                 <td>{{ i.ordonnance }}</td>
-                <td><a href="{{ path('app_updatedm', { 'id': i.id }) }}">Update</a></td>
-                <td><a href="{{ path('app_deletedm', { 'id': i.id }) }}">Delete</a></td>
+                <td>
+                    <a href="{{ path('app_updatedm', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
+                    <a href="{{ path('app_deletedm', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

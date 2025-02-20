@@ -16,13 +16,13 @@ final class DossiermedicaleController extends AbstractController
     #[Route('/dossiermedicale', name: 'app_dossiermedicale')]
     public function index(): Response
     {
-        return $this->render('dossiermedicale/base.html.twig', [
+        return $this->render('base.html.twig', [
             'controller_name' => 'DossiermedicaleController',
         ]);
     }
 
     #[Route('/showdm', name: 'app_showdm')]
-    public function showdm(DossiermedicaleRepository $a,Request $req): Response //AuthorRepository  est dans $A a partir use App\Repository\AuthorRepository; on peut acceder apartir IDD
+    public function showdm(DossiermedicaleRepository $a,Request $req): Response 
     {
         $cons=$a->findAll();
         return $this->render('dossiermedicale/showdm.html.twig', [
@@ -36,16 +36,17 @@ final class DossiermedicaleController extends AbstractController
     {
         $em=$m->getManager();
         $authors=new Dossiermedicale();
-        $forms=$this->createForm(DossiermedicaleType::class,$authors) ; // getmanager recuperer les donner et les donner existe dans authors
+        $forms=$this->createForm(DossiermedicaleType::class,$authors) ; 
         $forms->handleRequest($req);
-        if($forms->isSubmitted() && $forms->isValid() ){ // si il a cliquer sur button et (envoyer) et form et ramplit
+        if($forms->isSubmitted() && $forms->isValid() ){ 
         $em->persist($authors); 
-        $em->flush();//execute
+        $em->flush();
         return $this->redirectToRoute('app_showdm');
         }
         
         return $this->render('dossiermedicale/addformdm.html.twig', [
             'formadds' => $forms,
+            'isUpdate' => false,
         ]);
         
     }
@@ -55,9 +56,9 @@ final class DossiermedicaleController extends AbstractController
     {
         $em=$m->getManager();
         $authors= $repo->find($id);
-        $forms=$this->createForm(DossiermedicaleType::class,$authors) ; // getmanager recuperer les donner et les donner existe dans authors
+        $forms=$this->createForm(DossiermedicaleType::class,$authors) ; 
         $forms->handleRequest($req);
-        if($forms->isSubmitted() && $forms->isValid() ){ // si il a cliquer sur button et (envoyer) et form et ramplit
+        if($forms->isSubmitted() && $forms->isValid() ){ 
         $em->persist(object: $authors); 
         $em->flush();//execute
         return $this->redirectToRoute('app_showdm');
@@ -65,6 +66,7 @@ final class DossiermedicaleController extends AbstractController
 
         return $this->render('dossiermedicale/addformdm.html.twig', [
             'formadds' => $forms,
+            'isUpdate' => true,
         ]);
     }
 
@@ -73,7 +75,7 @@ final class DossiermedicaleController extends AbstractController
     {
         $em=$m->getManager();
         $cons= $repo->find($id);
-            $em->remove($cons);
+            $em->remove(object: $cons);
             $em->flush();
             return $this->redirectToRoute('app_showdm');
     }

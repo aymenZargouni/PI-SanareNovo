@@ -91,6 +91,11 @@
 <div class="example-wrapper">
     <h2>📋 Tableau des Consultations</h2>
     
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     <table>
         <thead>
             <tr>
@@ -100,7 +105,6 @@
                 <th>Type</th>
                 <th>Status</th>
                 <th>Service</th>
-                  <th>Salle</th>
                 <th>Dossier Médical</th>
                 <th>Actions</th>
             </tr>
@@ -122,8 +126,6 @@
                     {% endif %}
                 </td>
                 <td>{{ i.getNomService() }}</td>
-                <td>{{ i.getNumSalle() }}</td>
-
                 <td>
                     {% if i.dossiermedicale %}
                         <strong>ID:</strong> {{ i.dossiermedicale.id }} <br>
