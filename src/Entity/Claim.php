@@ -1,5 +1,6 @@
 <?php
 namespace App\Entity;
+
 use App\Repository\ClaimRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,8 +14,9 @@ class Claim
     private $id;
 
     #[ORM\Column(type: 'string')]
-    #[Assert\NotBlank (message:"reclamation is required")]
+    #[Assert\NotBlank(message:"Reclamation is required")]
     private $reclamation;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt;
 
@@ -22,7 +24,8 @@ class Claim
     {
         $this->createdAt = new \DateTimeImmutable(); 
     }
-    #[ORM\ManyToOne(targetEntity: Equipment::class, inversedBy: 'claim')]
+
+    #[ORM\ManyToOne(targetEntity: Equipment::class, inversedBy: 'claims')]
     #[ORM\JoinColumn(nullable: false)]
     private $equipment;
 
@@ -52,6 +55,7 @@ class Claim
         $this->equipment = $equipment;
         return $this;
     }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
