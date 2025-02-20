@@ -1,0 +1,35 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Modifier la Réclamation{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">✏️ Modifier la Réclamation</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3>Modifier la réclamation #{{ claim.id }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {{ form_start(form) }}
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.reclamation, 'Description de la Réclamation') }}
+                                {{ form_widget(form.reclamation, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-lg">Sauvegarder</button>
+                            </div>
+
+                            {{ form_end(form) }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
