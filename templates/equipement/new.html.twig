@@ -1,0 +1,77 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Ajouter un équipement médical{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">🏥 Ajoutez un nouvel équipement pour assurer un meilleur suivi du matériel médical</h2>
+
+        <div class="card shadow-lg p-4 mt-4">
+            <h4 class="text-center text-success">➕ Ajouter un équipement</h4>
+            <hr>
+
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="mb-3">
+                    {{ form_label(form.name, '🩺 Nom de l\'équipement', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Défibrillateur, Scanner IRM...'}}) }}
+                    
+                    {% if form.name.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.name.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.model, '🔢 Modèle', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                    {{ form_widget(form.model, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Philips HeartStart...'}}) }}
+                    
+                    {% if form.model.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.model.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.dateAchat, '📅 Date d\'achat', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                    {{ form_widget(form.dateAchat, {'attr': {'class': 'form-control'}}) }}
+                    
+                    {% if form.dateAchat.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.dateAchat.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.prix, '💰 Prix', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 5000 TND'}}) }}
+                    
+                    {% if form.prix.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.prix.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-4">✅ Ajouter l'équipement</button>
+                    <a href="{{ path('showequipment') }}" class="btn btn-secondary btn-lg px-4 ml-3">❌ Annuler</a>
+                </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

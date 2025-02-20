@@ -1,0 +1,91 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Gestion des équipements cliniques{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">🏥 Suivez l'état des équipements médicaux</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>🩺 Nom</th>
+                        <th>🔢 Modèle</th>
+                        <th>📌 Statut</th>
+                        <th>📅 Date d'achat</th>
+                        <th>💰 Prix</th>
+                        <th>✏️ Modifier</th>
+                        <th>🗑️ Supprimer</th>
+                        <th>⚠️ Réclamation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipment in tabequipments %}
+                        <tr>
+                            <td>{{ equipment.name }}</td>
+                            <td>{{ equipment.model }}</td>
+                            <td class="text-center">
+                                {% if equipment.status == 'reparé' %}
+                                    <i class="fas fa-check-circle text-success" title="Réparé"></i>
+                                {% elseif equipment.status == 'maintenance' %}
+                                    <i class="fas fa-tools text-warning" title="Maintenance"></i>
+                                {% elseif equipment.status == 'panne' %}
+                                    <i class="fas fa-exclamation-triangle text-danger" title="En panne"></i>
+                                {% else %}
+                                    <i class="fas fa-question-circle text-secondary" title="Statut inconnu"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{ equipment.dateAchat|date('d/m/Y') }}</td>
+                            <td>{{ equipment.prix|number_format(2, '.', ' ') }} €</td>
+                            <td class="text-center">
+                                <a href="{{ path('app_updateformequipment', {'id': equipment.id}) }}" class="btn btn-primary btn-sm">✏️ Modifier</a>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ path('app_deleteequipment', {'id': equipment.id}) }}')">
+                                    🗑️ Supprimer
+                                </button>
+                            </td>
+                            <td class="text-center">
+                                {% if equipment.status == 'panne' %}
+                                    <span class="text-danger font-weight-bold">❌ En panne</span>
+                                {% elseif equipment.status == 'maintenance' %}
+                                    <span class="text-warning font-weight-bold">🛠️ En maintenance</span>
+                                {% else %}
+                                    <a href="{{ path('equipment_claim_submit', {'id': equipment.id}) }}" class="btn btn-warning btn-sm">⚠️ Réclamer une panne</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">Aucun équipement trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# Inclusion de SweetAlert #}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {# Script de confirmation #}
+    <script>
+        function confirmDelete(url) {
+            Swal.fire({
+                title: 'Êtes-vous sûr(e) ?',
+                text: "Cette action est irréversible !",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        }
+    </script>
+{% endblock %}

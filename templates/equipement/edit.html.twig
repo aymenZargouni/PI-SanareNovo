@@ -1,0 +1,48 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Modifier l'équipement{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h2 class="text-primary fw-bold">✏️ Modifier l'équipement</h2>
+            <p class="text-muted">Mettez à jour les informations de l'équipement.</p>
+        </div>
+
+        <div class="card shadow-lg border-0 p-4">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                <div class="mb-3">
+                    {{ form_label(form.name, '🔧 Nom de l\'équipement', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'équipement'}}) }}
+                    <div class="text-danger"> ⚠️ {{ form_errors(form.name) }}</div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.model, '📌 Modèle', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.model, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Dell Latitude 5420'}}) }}
+                    <div class="text-danger"> ⚠️ {{ form_errors(form.model) }}</div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.dateAchat, '📅 Date d\'achat', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.dateAchat, {'attr': {'class': 'form-control'}}) }}
+                    <div class="text-danger"> ⚠️ {{ form_errors(form.dateAchat) }}</div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.prix, '💰 Prix', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 1200.00'}}) }}
+                    <div class="text-danger"> ⚠️ {{ form_errors(form.prix) }}</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold">
+                    <i class="fas fa-save"></i> Enregistrer les modifications
+                </button>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
