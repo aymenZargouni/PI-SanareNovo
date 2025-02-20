@@ -1,0 +1,39 @@
+{% extends 'rh.html.twig' %}
+
+{% block title %}Liste des Offres{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">📋 Liste des Offres</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>🏷 Titre</th>
+                        <th>📝 Description</th>
+                        <th>🛠 Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offre in offres %}
+                        <tr>
+                            <td>{{ offre.id }}</td>
+                            <td>{{ offre.titre }}</td>
+                            <td>{{ offre.description }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('offre_edit', {'id': offre.id}) }}" class="btn btn-warning btn-sm">✏ Modifier</a>
+                                <a href="{{ path('offre_delete', {'id': offre.id}) }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?')">🗑 Supprimer</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Aucune offre disponible</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

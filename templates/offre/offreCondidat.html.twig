@@ -1,0 +1,29 @@
+{# templates/offre/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Offres d'emploi{% endblock %}
+
+{% block body %}
+    <h1>Liste des Offres</h1>
+    
+    <div class="row">
+        {% for offre in offres %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ offre.titre }}</h5>
+                        <p class="card-text">{{ offre.description }}</p>
+                        <p class="card-text"><small class="text-muted">Publié le {{ offre.datePublication|date('d/m/Y') }}</small></p>
+                        <p class="card-text"><small class="text-muted">Expire le {{ offre.dateExpiration|date('d/m/Y') }}</small></p>
+                        <a href="{{ path('candidature_postuler', {'id': offre.id}) }}" class="btn btn-primary">Postuler</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p>Aucune offre disponible actuellement.</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

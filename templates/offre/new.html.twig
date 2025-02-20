@@ -1,0 +1,39 @@
+{% extends 'rh.html.twig' %}
+
+{% block title %}Créer une Nouvelle Offre{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">Créer une Nouvelle Offre</h2>
+
+    {{ form_start(form) }}
+    
+    <div class="mb-3">
+        {{ form_label(form.titre, 'Titre de l\'offre') }}
+        {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.titre) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, 'Description') }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.datePublication, 'Date de Publication') }}
+        {{ form_widget(form.datePublication, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.datePublication) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.dateExpiration, 'Date d\'Expiration') }}
+        {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.dateExpiration) }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Créer</button>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

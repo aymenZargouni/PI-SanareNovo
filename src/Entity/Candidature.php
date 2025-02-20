@@ -26,11 +26,18 @@ class Candidature
     #[ORM\Column(length: 255)]
     private ?string $cv = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $lettreMotivation = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCandidature = null;
 
-    #[ORM\ManyToOne(inversedBy: 'candidatures')]
+    #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: 'candidatures')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Offre $offre = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $statut = 'En attente';
 
     public function getId(): ?int
     {
@@ -49,8 +56,7 @@ class Candidature
         return $this;
     }
 
-
-    public function getprenom(): ?string
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
@@ -86,6 +92,18 @@ class Candidature
         return $this;
     }
 
+    public function getLettreMotivation(): ?string
+    {
+        return $this->lettreMotivation;
+    }
+
+    public function setLettreMotivation(?string $lettreMotivation): static
+    {
+        $this->lettreMotivation = $lettreMotivation;
+
+        return $this;
+    }
+
     public function getDateCandidature(): ?\DateTimeInterface
     {
         return $this->dateCandidature;
@@ -106,6 +124,18 @@ class Candidature
     public function setOffre(?Offre $offre): static
     {
         $this->offre = $offre;
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
 
         return $this;
     }
