@@ -14,32 +14,29 @@ class Equipment
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-    #[Assert\NotBlank (message:"name is required")]
+
+    #[Assert\NotBlank(message:"Name is required")]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:"model is required")]
+    #[Assert\NotBlank(message:"Model is required")]
     private ?string $model = null;
 
     #[ORM\Column(length: 50)]
     private ?string $status = 'reparé'; // Valeur par défaut
 
     #[ORM\Column(type: "date", nullable: true)]
-    #[Assert\NotBlank(message: "La dateis required")]
+    #[Assert\NotBlank(message: "La date est requise")]
     private ?\DateTimeInterface $dateAchat = null;
-    
 
     #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
-    #[Assert\NotBlank(message: "Le prix is required")]
-    #[Assert\Positive(message: "price must be positive")]
-        private ?float $prix = null;
+    #[Assert\NotBlank(message: "Le prix est requis")]
+    #[Assert\Positive(message: "Le prix doit être positif")]
+    private ?float $prix = null;
 
     #[ORM\Column(type: "date", nullable: true)]
-    private ?\DateTimeInterface $dateReparation = null; // Peut être NULL
-
-
-  
+    private ?\DateTimeInterface $dateReparation = null;
 
     // Getters & Setters
 
@@ -58,8 +55,7 @@ class Equipment
         $this->name = $name;
         return $this;
     }
-    
-  
+
     public function getModel(): ?string
     {
         return $this->model;
@@ -92,7 +88,6 @@ class Equipment
         $this->dateAchat = $dateAchat;
         return $this;
     }
-    
 
     public function getPrix(): ?float
     {
@@ -116,17 +111,13 @@ class Equipment
         return $this;
     }
 
-   
-
-    
-
     #[ORM\OneToMany(mappedBy: 'equipment', targetEntity: Historique::class)]
     private $historiques;
 
     public function __construct()
     {
         $this->historiques = new ArrayCollection();
-        $this->claims = new ArrayCollection();
+        $this->claims = new ArrayCollection(); // Initialisation de la collection claims
     }
 
     public function getHistoriques(): Collection
@@ -144,27 +135,26 @@ class Equipment
     }
 
     #[ORM\OneToMany(targetEntity: Claim::class, mappedBy: 'equipment', cascade: ['persist', 'remove'])]
-    private Collection $claims;  
- 
+    private Collection $claims;  // Collection typée
+
     public function getClaims(): Collection
     {
         return $this->claims;
     }
-    
+
     public function addClaim(Claim $claim): self
     {
         if (!$this->claims->contains($claim)) {
             $this->claims[] = $claim;
-            $claim->setEquipment($this);  
+            $claim->setEquipment($this);
         }
-    
+
         return $this;
     }
-    
+
     public function removeClaim(Claim $claim): self
     {
         $this->claims->removeElement($claim);
         return $this;
     }
-    
 }

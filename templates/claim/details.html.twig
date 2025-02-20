@@ -1,0 +1,24 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Détails de la Réclamation{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Détails de la Réclamation</h1>
+        <div class="card">
+            <div class="card-header">
+                <h5>ID de la Réclamation: {{ claim.id }}</h5>
+            </div>
+            <div class="card-body">
+                <h6>Réclamation:</h6>
+                <p>{{ claim.reclamation }}</p>
+                <h6>Créée le:</h6>
+                <p>{{ claim.createdAt|date('Y-m-d H:i') }}</p>
+                <h6>Équipement concerné:</h6>
+                <p>{{ claim.equipment.name }}</p>
+                <a href="{{ path('claim_list') }}" class="btn btn-primary">Retour à la liste</a>
+                <a href="{{ path('claim_edit', {'id': claim.id}) }}" class="btn btn-warning">Modifier</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
