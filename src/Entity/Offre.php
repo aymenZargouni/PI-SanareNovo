@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OffreRepository::class)]
 class Offre
@@ -17,15 +18,25 @@ class Offre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Titre est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: "Titre doit contenir au moins 3 caractères.",
+        maxMessage: "Titre complet ne peut pas dépasser 20 caractères."
+    )]
     private ?string $titre = null;
 
+    #[Assert\NotBlank(message: "Description est obligatoire.")]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[Assert\NotBlank(message: "Date Publication est obligatoire.")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datePublication = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "Date Expiration est obligatoire.")]
     private ?\DateTimeInterface $dateExpiration = null;
 
     /**

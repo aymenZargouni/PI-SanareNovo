@@ -91,11 +91,16 @@
 <div class="example-wrapper">
     <h2>📋 Tableau des Consultations</h2>
     
+    <div style="text-align: right; margin-bottom: 15px;">
+        <a href="{{ path('app_addformcons') }}" class="btn btn-primary">➕ Ajouter Consultation</a>
+    </div>
+
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
         </div>
     {% endfor %}
+
     <table>
         <thead>
             <tr>
@@ -146,4 +151,5 @@
         </tbody>
     </table>
 </div>
+
 {% endblock %}

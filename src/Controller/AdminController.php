@@ -48,7 +48,7 @@ final class AdminController extends AbstractController{
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // Create the User entity
+            
             $user = new User();
             $user->setEmail($form->get('email')->getData());
             $user->setPassword($passwordHasher->hashPassword($user, $form->get('password')->getData()));
@@ -60,7 +60,6 @@ final class AdminController extends AbstractController{
             $entityManager->persist($medecin);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Medecin ajouté avec succès!');
             return $this->redirectToRoute('app_showMedecin');
         }
         return $this->render('admin/ajouterMedecin.html.twig', [
@@ -72,29 +71,28 @@ final class AdminController extends AbstractController{
     #[Route('/admin/editMedecin/{id}', name: 'edit_medecin')]
     public function editMedecin(Request $request, Medecin $medecin, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        // Create the form
+        
         $user = $medecin->getUser();
 
-        // Create the form with the existing data
+        
         $form = $this->createForm(MedecinEditType::class, $medecin, [
-            'user_email' => $user->getEmail(), // Pass the user's email to the form
+            'user_email' => $user->getEmail(),
         ]);
     
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // Update the User's email
+            
             $user->setEmail($form->get('email')->getData());
     
-            // Update the User's password if provided
+            
             $newPassword = $form->get('password')->getData();
             if ($newPassword) {
                 $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
             }
     
-            // Save changes to the database
+            
             $entityManager->flush();
     
-            $this->addFlash('success', 'Medecin modifié avec succès!');
             return $this->redirectToRoute('app_showMedecin');
         }
 
@@ -112,7 +110,6 @@ final class AdminController extends AbstractController{
             $entityManager->remove($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Medecin supprimé avec succès!');
             return $this->redirectToRoute('app_showMedecin');
      } 
 
@@ -200,4 +197,16 @@ final class AdminController extends AbstractController{
              'patients' => $patients,
          ]);
      }
+
+     #[Route('/admin/deletePatient/{id}', name: 'delete_patient')]
+     public function deletePatient(Request $request, Patient $patient, EntityManagerInterface $entityManager): Response
+     {
+         
+        $user = $patient->getUser();
+        $entityManager->remove($patient);
+        $entityManager->remove($user);
+        $entityManager->flush(); 
+            
+        return $this->redirectToRoute('app_showUsers');
+      } 
     }
