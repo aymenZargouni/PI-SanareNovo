@@ -1,0 +1,35 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-body p-4">
+                <h5 class="card-title fw-semibold mb-4 text-center">Ajouter un Technicien</h5>
+
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.email) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.password) }}
+                    {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.password) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

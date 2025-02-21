@@ -7,11 +7,14 @@ use App\Form\UserType;
 use App\Entity\Medecin;
 use App\Entity\Patient;
 use App\Form\MedecinType;
+use App\Entity\Technicien;
 use App\Form\EditUserType;
 use App\Form\MedecinAddType;
 use App\Form\MedecinEditType;
+use App\Form\TechnicienAddType;
 use App\Repository\UserRepository;
 use App\Repository\MedecinRepository;
+use App\Repository\TechnicienRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -209,4 +212,53 @@ final class AdminController extends AbstractController{
             
         return $this->redirectToRoute('app_showUsers');
       } 
+
+      #[Route('/admin/techniciens', name: 'show_techniciens')]
+    public function showTechniciens(TechnicienRepository $technicienRepository): Response
+    {   
+        return $this->render('admin/showTechniciens.html.twig', [
+        'techniciens' => $technicienRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/admin/ajouter-technicien', name: 'ajouter_technicien')]
+    public function ajouterTechnicien(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        $technicien = new Technicien();
+        $form = $this->createForm(TechnicienAddType::class, $technicien);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Create a new User entity for the technician
+            $user = new User();
+            $user->setEmail($form->get('email')->getData());
+            $user->setRoles(['ROLE_TECHNICIEN']);
+            
+            // Hash password
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $form->get('password')->getData()
+            );
+            $user->setPassword($hashedPassword);
+
+            // Associate user with technicien
+            $technicien->setUser($user);
+
+            // Persist & save
+            $entityManager->persist($user);
+            $entityManager->persist($technicien);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Technicien ajouté avec succès.');
+
+            return $this->redirectToRoute('show_techniciens');
+        }
+
+        return $this->render('admin/ajouterTechnicien.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
     }
