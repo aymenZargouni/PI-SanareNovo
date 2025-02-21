@@ -15,6 +15,7 @@
 
                 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
+                <!-- Champ Détail de la Réclamation -->
                 <div class="mb-4">
                     <label for="{{ form.reclamation.vars.id }}" class="font-weight-bold">
                         📝 Détail de la Réclamation :
@@ -24,6 +25,22 @@
                     {% if form.reclamation.vars.errors|length > 0 %}
                         <div class="invalid-feedback d-block mt-2">
                             {% for error in form.reclamation.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Champ Sélection du Technicien -->
+                <div class="mb-4">
+                    <label for="{{ form.technicien.vars.id }}" class="font-weight-bold">
+                        👨‍🔧 Sélectionner un Technicien :
+                    </label>
+                    {{ form_widget(form.technicien, {'attr': {'class': 'form-control'}}) }}
+
+                    {% if form.technicien.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block mt-2">
+                            {% for error in form.technicien.vars.errors %}
                                 <p class="text-danger">⚠️ {{ error.message }}</p>
                             {% endfor %}
                         </div>

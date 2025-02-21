@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Claim;
 use App\Entity\Equipment;
 use App\Entity\Historique;
+use App\Entity\Technicien;
+use App\Entity\User;
 use App\Form\ClaimFormType;
 use App\Form\EquipmentEditType;
 use App\Form\EquipmentType;
@@ -13,6 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Routing\Annotation\Route;
 class EquipementController extends AbstractController
 {
@@ -92,23 +95,30 @@ class EquipementController extends AbstractController
         return $this->redirectToRoute('showequipment'); // Redirection vers la liste des équipements
     }
     
-    #[Route('/equipment/{id}/claim', name: 'equipment_claim_submit')]
+    #[Route('/equipment/{id}/claim', name: 'equipment_claim_submit')] 
     public function claim(Equipment $equipment, Request $request, ManagerRegistry $managerRegistry): Response
     {
         $claim = new Claim();
         $claim->setEquipment($equipment); // Associe l'équipement à la réclamation
     
         $form = $this->createForm(ClaimFormType::class, $claim);
-    
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer le technicien depuis le formulaire
+            $technicien = $claim->getTechnicien();
+    
+            if ($technicien) {
+                $claim->setTechnicien($technicien); // Associe le technicien à la réclamation
+            }
+    
             // Mettre à jour le statut de l'équipement en panne
             $equipment->setStatus('panne');
             
             // Enregistrer la réclamation
-            $managerRegistry->getManager()->persist($claim);
-            $managerRegistry->getManager()->flush();
+            $entityManager = $managerRegistry->getManager();
+            $entityManager->persist($claim);
+            $entityManager->flush();
     
             // Afficher un message de succès
             $this->addFlash('success', 'La réclamation a bien été enregistrée.');
@@ -122,30 +132,43 @@ class EquipementController extends AbstractController
         ]);
     }
     
-
 //partie Technician 
-#[Route('/technician/equipments', name: 'technician_equipments')] // Route pour afficher les equipements en panne ou maintenance 
-public function technicianEquipments(ManagerRegistry $managerRegistry): Response
+#[Route('/technician/equipments', name: 'technician_equipments')]
+public function technicianEquipments(Security $security, ManagerRegistry $managerRegistry): Response
 {
+    $user = $security->getUser();
     
-    $equipmentRepository = $managerRegistry->getRepository(Equipment::class);
-
-    $claimRepository = $managerRegistry->getRepository(Claim::class);
-
-    $equipments = $equipmentRepository->findBy(['status' => ['panne', 'maintenance']]);
-
-    foreach ($equipments as $equipment) {
-        $claims = $claimRepository->findBy(['equipment' => $equipment]);
-
-        foreach ($claims as $claim) {
-            $equipment->addClaim($claim); 
+    // Vérifier si l'utilisateur est un technicien
+    if ($user instanceof User) {
+        $technicianRepository = $managerRegistry->getRepository(Technicien::class);
+        $technician = $technicianRepository->findOneBy(['user' => $user]);
+        
+        if ($technician) {
+            // Si l'utilisateur est un technicien, récupérer les réclamations associées à ce technicien
+            $claimRepository = $managerRegistry->getRepository(Claim::class);
+            
+            // Récupérer les réclamations de ce technicien
+            $claims = $claimRepository->findBy(['technicien' => $technician]);
+            
+            $equipments = [];
+            foreach ($claims as $claim) {
+                // Pour chaque réclamation, on vérifie l'équipement associé
+                $equipment = $claim->getEquipment();
+                if ($equipment && in_array($equipment->getStatus(), ['panne', 'maintenance'])) {
+                    $equipments[] = $equipment;
+                }
+            }
+            
+            return $this->render('equipement/equipmentsTech.html.twig', [
+                'equipments' => $equipments,
+            ]);
         }
     }
-
-    return $this->render('equipement/equipmentsTech.html.twig', [
-        'equipments' => $equipments,
-    ]);
+    
+    // Si l'utilisateur n'est pas un technicien ou n'a pas de réclamations, rediriger ou afficher un message d'erreur
+    return $this->redirectToRoute('showequipment');
 }
+
 
 
     #[Route('/technician/equipment/{id}', name: 'technician_equipment_details')]  // Route pour afficher tout les détails des equipement 
