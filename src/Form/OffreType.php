@@ -16,9 +16,11 @@ class OffreType extends AbstractType
             ->add('description')
             ->add('datePublication', null, [
                 'widget' => 'single_text',
+                'data'=>new \DateTime(),
             ])
             ->add('dateExpiration', null, [
                 'widget' => 'single_text',
+                'data'=>new \DateTime(),
             ])
         ;
     }

@@ -31,7 +31,7 @@
                   <td>{{ patient.adress }}</td>
                   <td>{{ patient.user.email }}</td>
                   <td>
-                    <a href="" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')">Supprimer</a>
+                    <a href="{{path('delete_patient',{id:patient.id})}}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')">Supprimer</a>
                   </td>
                 </tr>
               {% else %}

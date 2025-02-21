@@ -6,7 +6,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">Créer une Nouvelle Offre</h2>
 
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     
     <div class="mb-3">
         {{ form_label(form.titre, 'Titre de l\'offre') }}
