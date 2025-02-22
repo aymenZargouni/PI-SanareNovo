@@ -88,8 +88,8 @@
     }
 </style>
 
-<div class="example-wrapper">
-    <h2>📅 Tableau des Rendez-vous</h2>
+<div class="example-wrapper"> 
+    <h2>📅 Mes Rendez-vous</h2>
     
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
@@ -104,7 +104,6 @@
                 <th>Date</th>
                 <th>Motif</th>
                 <th>Statut</th>
-                <th>Patient</th>
                 <th>Médecin</th>
             </tr>
         </thead>
@@ -123,12 +122,16 @@
                         <span class="badge badge-danger">{{ rdv.statut }}</span>
                     {% endif %}
                 </td>
-                <td>{{ rdv.patient.fullname }}</td>
                 <td>{{ rdv.medecin.fullname }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Aucun rendez-vous trouvé.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
 
 {% endblock %}
