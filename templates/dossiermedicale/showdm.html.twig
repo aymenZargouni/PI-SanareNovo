@@ -77,6 +77,7 @@
                 <th>Observations</th>
                 <th>Ordonnance</th>
                 <th>consultations</th>
+                <th>Patient</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -101,6 +102,12 @@
                     <span style="color: gray;">Aucune consultation</span>
                 {% endif %}
             </td>
+            <td>
+                    {% if i.patient %}
+                        {{ i.patient.fullname }} 
+                    {% else %}
+                        Aucun patient
+                    {% endif %}
                 <td>
                     <a href="{{ path('app_updatedm', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
                     <a href="{{ path('app_deletedm', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>

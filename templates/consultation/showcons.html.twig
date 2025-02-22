@@ -110,6 +110,7 @@
                 <th>Type</th>
                 <th>Status</th>
                 <th>Service</th>
+                <th>Patient</th> 
                 <th>Dossier Médical</th>
                 <th>Actions</th>
             </tr>
@@ -131,6 +132,14 @@
                     {% endif %}
                 </td>
                 <td>{{ i.getNomService() }}</td>
+                <td>
+                    <!-- Affichage du nom complet du patient -->
+                    {% if i.patient %}
+                        <strong>{{ i.patient.fullname }}</strong>
+                    {% else %}
+                        Aucun patient
+                    {% endif %}
+                </td>
                 <td>
                     {% if i.dossiermedicale %}
                         <strong>ID:</strong> {{ i.dossiermedicale.id }} <br>

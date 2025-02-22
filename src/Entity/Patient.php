@@ -39,9 +39,21 @@ class Patient
     #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'patient')]
     private Collection $rendezVouses;
 
+    #[ORM\OneToOne(inversedBy: 'patient', cascade: ['persist', 'remove'])]
+    private ?Dossiermedicale $dossiermedical = null;
+
+    /**
+     * @var Collection<int, Consultation>
+     */
+    #[ORM\OneToMany(targetEntity: Consultation::class, mappedBy: 'patient')]
+    private Collection $consultation;
+
+    
+
     public function __construct()
     {
         $this->rendezVouses = new ArrayCollection();
+        $this->consultation = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,4 +138,48 @@ class Patient
 
         return $this;
     }
+
+    public function getDossiermedical(): ?Dossiermedicale
+    {
+        return $this->dossiermedical;
+    }
+
+    public function setDossiermedical(?Dossiermedicale $dossiermedical): static
+    {
+        $this->dossiermedical = $dossiermedical;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Consultation>
+     */
+    public function getConsultation(): Collection
+    {
+        return $this->consultation;
+    }
+
+    public function addConsultation(Consultation $consultation): static
+    {
+        if (!$this->consultation->contains($consultation)) {
+            $this->consultation->add($consultation);
+            $consultation->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConsultation(Consultation $consultation): static
+    {
+        if ($this->consultation->removeElement($consultation)) {
+            // set the owning side to null (unless already changed)
+            if ($consultation->getPatient() === $this) {
+                $consultation->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
 }

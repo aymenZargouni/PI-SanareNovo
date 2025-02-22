@@ -94,6 +94,14 @@
 
         {{ form_start(formadds, {'attr': {'novalidate': 'novalidate'}}) }}
 
+         <div class="form-group">
+            {{ form_label(formadds.patient) }}
+            <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #f8f9fa;">
+                {{ form_widget(formadds.patient) }} <!-- Rendu du champ Patient -->
+            </div>
+            {{ form_errors(formadds.patient) }}
+        </div>
+
         <div class="form-group">
             {{ form_label(formadds.imc) }}
             {{ form_widget(formadds.imc, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 22.5'}}) }}

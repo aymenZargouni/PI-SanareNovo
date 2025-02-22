@@ -44,6 +44,9 @@ class Consultation
     #[Assert\NotBlank(message: "⚠️ Le champ Service est obligatoire.",)]
     private ?Service $nom_service = null;
 
+    #[ORM\ManyToOne(inversedBy: 'consultation')]
+    private ?Patient $patient = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,5 +140,17 @@ class Consultation
             ->addViolation();
     }
 }
+
+    public function getPatient(): ?Patient
+    {
+        return $this->patient;
+    }
+
+    public function setPatient(?Patient $patient): static
+    {
+        $this->patient = $patient;
+
+        return $this;
+    }
 
 }
