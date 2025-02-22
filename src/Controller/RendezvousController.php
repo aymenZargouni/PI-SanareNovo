@@ -58,26 +58,31 @@ final class RendezvousController extends AbstractController
         
     }
 
-    #[Route('/updaterv/{id}', name: 'app_updaterv')]
-    public function updateformdm($id,ManagerRegistry $m ,Request $req,RendezVousRepository $repo): Response
-    {
-        $em=$m->getManager();
-        $authors= $repo->find($id);
-        $forms=$this->createForm(RendezvousType::class,$authors,[
-            'is_update' => true,
-        ]) ; 
-        $forms->handleRequest($req);
-        if($forms->isSubmitted() && $forms->isValid() ){ 
-        $em->persist(object: $authors); 
-        $em->flush();
-        return $this->redirectToRoute('app_showrv');
-        }
+    #[Route('/updatestatus/{id}/{status}', name: 'app_update_rdv_status')]
+public function updateStatus($id, $status, ManagerRegistry $m, RendezVousRepository $repo): Response
+{
+    $em = $m->getManager();
+    $rdv = $repo->find($id);
 
-        return $this->render('rendezvous/addformrv.html.twig', [
-            'formaddrv' => $forms,
-            'isUpdate' => true,
-        ]);
+    if (!$rdv) {
+        $this->addFlash('danger', 'Rendez-vous non trouvé.');
+        return $this->redirectToRoute('app_showrv');
     }
+
+    $validStatuses = ['En attente', 'Terminé', 'Annulé', 'Confirmé'];
+    if (!in_array($status, $validStatuses)) {
+        $this->addFlash('danger', 'Statut invalide.');
+        return $this->redirectToRoute('app_showrv');
+    }
+
+    $rdv->setStatut($status);
+    $em->persist($rdv);
+    $em->flush();
+
+    $this->addFlash('success', 'Statut mis à jour avec succès.');
+    return $this->redirectToRoute('app_showrv');
+}
+
 
     #[Route('/deleterv/{id}', name: 'app_deleterv')]
     public function deleteformdm($id,ManagerRegistry $m ,Request $req,RendezVousRepository $repo): Response

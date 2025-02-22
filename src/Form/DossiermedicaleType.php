@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Dossiermedicale;
+use App\Entity\Consultation;
+use App\Form\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType as TypeEntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,6 +22,15 @@ class DossiermedicaleType extends AbstractType
             ])
             ->add('observations')
             ->add('ordonnance')
+            ->add('consultations', TypeEntityType::class, [
+                'class' => Consultation::class,
+                'choice_label' => function (Consultation $consultation) {
+                    return $consultation->getId() . ' - ' . $consultation->getMotif();
+                },
+                'multiple' => true,  
+                'expanded' => true,  
+                'by_reference' => false, 
+            ])
         ;
     }
 

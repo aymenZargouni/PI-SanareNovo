@@ -106,6 +106,9 @@
                 <th>Statut</th>
                 <th>Patient</th>
                 <th>Médecin</th>
+                {% if is_granted('ROLE_MEDECIN') %}
+                    <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -125,6 +128,14 @@
                 </td>
                 <td>{{ rdv.patient.fullname }}</td>
                 <td>{{ rdv.medecin.fullname }}</td>
+                {% if is_granted('ROLE_MEDECIN') %}
+                <td>
+                    <a href="{{ path('app_update_rdv_status', { id: rdv.id, status: 'Confirmé' }) }}" class="btn-action btn-success">Confirmé</a>
+                    <a href="{{ path('app_update_rdv_status', { id: rdv.id, status: 'En attente' }) }}" class="btn-action btn-warning">En attente</a>
+                    <a href="{{ path('app_update_rdv_status', { id: rdv.id, status: 'Annulé' }) }}" class="btn-action btn-danger">Annulé</a>
+                    <a href="{{ path('app_update_rdv_status', { id: rdv.id, status: 'Terminé' }) }}" class="btn-action btn-primary">Terminé</a>
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>

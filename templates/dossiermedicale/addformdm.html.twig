@@ -118,6 +118,14 @@
             {{ form_errors(formadds.ordonnance) }}
         </div>
 
+        <div class="form-group">
+            {{ form_label(formadds.consultations) }}
+        <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #f8f9fa;">
+            {{ form_widget(formadds.consultations) }}
+        </div>
+        {{ form_errors(formadds.consultations) }}
+         </div>
+
         <div style="text-align: center; margin-top: 20px;">
             <button type="submit" class="btn-submit">Soumettre</button>
         </div>
