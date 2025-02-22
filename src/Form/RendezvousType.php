@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RendezVousType extends AbstractType
+class RendezvousType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -24,8 +24,13 @@ class RendezVousType extends AbstractType
             ])
             ->add('motif', TextType::class, [
                 'label' => '📝 Motif du rendez-vous'
+            ])
+            ->add('medecin', EntityType::class, [
+                'class' => Medecin::class,
+                'choice_label' => 'fullname', // Show full name in dropdown
+                'label' => '👨‍⚕️ Médecin',
+                'placeholder' => 'Sélectionner un médecin'
             ]);
-
             if ($options['is_update']) {
                 $builder->add('statut', ChoiceType::class, [
                 'choices' => [
@@ -37,17 +42,6 @@ class RendezVousType extends AbstractType
                 'label' => '🔖 Statut'
             ]); 
         }
-        $builder
-            ->add('patient', EntityType::class, [
-                'class' => Patient::class,
-                'choice_label' => 'fullname', // Supposons que Patient ait un champ nom
-                'label' => '🧑‍⚕️ Fullname Patient'
-            ])
-            ->add('medecin', EntityType::class, [
-                'class' => Medecin::class,
-                'choice_label' => 'fullname', // Supposons que Medecin ait un champ nom
-                'label' => '👨‍⚕️ Médecin'
-            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
