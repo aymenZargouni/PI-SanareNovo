@@ -16,6 +16,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 class EquipementController extends AbstractController
 {
@@ -289,4 +292,34 @@ public function technicianEquipments(Security $security, ManagerRegistry $manage
 
         
 
+
+
+        #[Route('/coordinator/download-report/{id}', name: 'download_report')]
+    public function downloadReport(Historique $historique): Response
+    {
+        // Configuration de DomPDF
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+
+        // Récupération des informations de l'historique
+        $html = $this->renderView('rapport/rapport.html.twig', [
+            'historique' => $historique,
+        ]);
+
+        // Charger le HTML dans DomPDF
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        // Réponse pour télécharger le fichier PDF
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="rapport_'.$historique->getId().'.pdf"',
+            ]
+        );
+    }
 }

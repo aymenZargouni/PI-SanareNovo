@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport de Réparation</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { text-align: center; }
+        .content { margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Rapport de Réparation</h1>
+    <div class="content">
+        <p><strong>Équipement :</strong> {{ historique.equipment.name }}</p>
+        <p><strong>Date de réparation :</strong> {{ historique.dateReparation|date('d/m/Y') }}</p>
+        <p><strong>Rapport :</strong></p>
+        <p>{{ historique.rapportDetaille }}</p>
+    </div>
+</body>
+</html>

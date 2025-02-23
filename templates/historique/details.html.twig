@@ -57,7 +57,16 @@
                                 <th class="text-secondary">📄 Rapport(s)</th>
                                 <td>
                                     {% for item in equipment.historiques %}
-                                        <span class="text-muted">{{ item.rapportDetaille ?? 'Aucun rapport disponible' }}</span><br>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="text-muted me-3">
+                                                {{ item.rapportDetaille ?? 'Aucun rapport disponible' }}
+                                            </span>
+                                            {% if item.rapportDetaille is not empty %}
+                                                <a href="{{ path('download_report', {id: item.id}) }}" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-download"></i> Télécharger
+                                                </a>
+                                            {% endif %}
+                                        </div>
                                     {% endfor %}
                                 </td>
                             </tr>
