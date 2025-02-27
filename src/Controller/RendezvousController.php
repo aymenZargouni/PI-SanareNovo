@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\RendezVous;
+use App\Entity\Patient;
 use App\Form\RendezvousType;
 use App\Repository\RendezVousRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -35,12 +36,14 @@ final class RendezvousController extends AbstractController
     public function addformrv(ManagerRegistry $m ,Request $req): Response
     {
         $em=$m->getManager();
+        $user = $this->getUser();
         $authors=new RendezVous();
         
         $authors->setStatut('En attente');
-
+        $patient = $em->getRepository(Patient::class)->findOneBy(['user' => $user]);
         $forms=$this->createForm(RendezvousType::class,$authors,[
             'is_update' => false,
+            'patient' => $patient,
             
         ]) ; 
         $forms->handleRequest($req);

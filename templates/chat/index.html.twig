@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat en direct{% endblock %}
+
+{% block body %}
+<style>
+    /* Bulle de chat */
+    #chat-bubble {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: #007bff;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Fenêtre de chat */
+    #chat-container {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 300px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* En-tête du chat */
+    #chat-header {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Zone des messages */
+    #chat-box {
+        height: 200px;
+        padding: 10px;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    /* Input et bouton */
+    #message {
+        width: calc(100% - 70px);
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 5px;
+    }
+
+    #send-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+</style>
+
+<!-- Bulle de chat flottante -->
+<div id="chat-bubble" onclick="toggleChat()">
+    💬
+</div>
+
+<!-- Fenêtre de chat -->
+<div id="chat-container">
+    <div id="chat-header">
+        <span>💬 Chat</span>
+        <button onclick="toggleChat()">❌</button>
+    </div>
+    <div id="chat-box"></div>
+    <input type="text" id="message" placeholder="Tapez votre message...">
+    <button id="send-button">Envoyer</button>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/7.0.3/pusher.min.js"></script>
+<script src="{{ asset('admin/js/chat.js') }}"></script>
+<script>
+    function toggleChat() {
+        const chatContainer = document.getElementById("chat-container");
+        chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
+    }
+</script>
+{% endblock %}

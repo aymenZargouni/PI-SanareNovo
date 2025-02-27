@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RendezvousType extends AbstractType
 {
+    
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -41,7 +42,9 @@ class RendezvousType extends AbstractType
             ->add('patient', EntityType::class, [
                 'class' => Patient::class,
                 'choice_label' => 'fullname', // Supposons que Patient ait un champ nom
-                'label' => '🧑‍⚕️ Fullname Patient'
+                'label' => '🧑‍⚕️ Fullname Patient',
+                'data' => $options['patient'],
+                'attr' => ['readonly' => true]
             ])
             ->add('medecin', EntityType::class, [
                 'class' => Medecin::class,
@@ -55,6 +58,7 @@ class RendezvousType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RendezVous::class,
             'is_update' => false,
+            'patient' => null,
         ]);
     }
 }

@@ -32,7 +32,7 @@ class DossiermedicaleType extends AbstractType
             ->add('consultations', TypeEntityType::class, [
                 'class' => Consultation::class,
                 'choice_label' => function (Consultation $consultation) {
-                    return $consultation->getId() . ' - ' . $consultation->getMotif();
+                    return $consultation->getId() . ' - ' . $consultation->getPatient()->getFullname();
                 },
                 'multiple' => true,  
                 'expanded' => true,  

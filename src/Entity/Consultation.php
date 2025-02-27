@@ -45,6 +45,7 @@ class Consultation
     private ?Service $nom_service = null;
 
     #[ORM\ManyToOne(inversedBy: 'consultation')]
+    #[Assert\NotBlank(message: "⚠️ Le champ Fullname Patient est obligatoire.")]
     private ?Patient $patient = null;
 
     public function getId(): ?int
