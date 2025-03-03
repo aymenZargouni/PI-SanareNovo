@@ -4,13 +4,15 @@ const pusher = new Pusher("a7bbf59b1b9e2ecf52ce", {
     encrypted: true
 });
 
-// Pour cet exemple, on suppose que l'utilisateur connecté est le médecin (ID = 4)
-// Les patients devront s'abonner au canal du médecin
-const doctorId = 4;
-const userId = doctorId; // Si médecin, userId = 4
+// Récupérer les données de l'utilisateur et de la consultation
+const userRole = document.body.getAttribute('data-user-role'); // Rôle de l'utilisateur
+const userId = document.body.getAttribute('data-user-id'); // ID de l'utilisateur
+const consultationId = document.body.getAttribute('data-consultation-id'); // ID du patient (consultation)
 
-// Utilisation d'un canal de diffusion dédié pour le médecin
-const channelName = `chat_doctor_${doctorId}`;
+// Définir le canal en fonction du rôle
+let channelName = `chat_consultation_${userId}`
+let receiverId=consultationId; // ID du patient pour le récepteur du message
+// S'abonner au canal
 const channel = pusher.subscribe(channelName);
 
 // Sélection des éléments HTML
@@ -19,17 +21,16 @@ const messageInput = document.getElementById("message");
 const sendButton = document.getElementById("send-button");
 
 // Fonction pour ajouter un message dans l'interface
-function appendMessage(sender, message) {
+function appendMessage(sender, message, isMe) {
     const messageElement = document.createElement("p");
-    let senderName = "";
-    
-    if (sender === userId) {
-        senderName = "Moi (Médecin)";
-    } else {
-        senderName = `Patient ${sender}`;
-    }
-    
-    messageElement.innerHTML = `<strong>${senderName}:</strong> ${message}`;
+    const senderName = isMe 
+    ? "Moi" 
+    : (userRole === 'ROLE_MEDECIN' 
+        ? `Patient ${sender}` 
+        : `Médecin ${sender}`
+      );
+
+messageElement.innerHTML = `<strong>${senderName}:</strong> ${message}`;
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
@@ -37,7 +38,7 @@ function appendMessage(sender, message) {
 // Écoute des nouveaux messages via Pusher
 channel.bind("new_message", function (data) {
     console.log("Message reçu via Pusher :", data);
-    appendMessage(data.sender, data.message);
+    appendMessage(data.sender, data.message, false);
 });
 
 // Fonction pour envoyer un message
@@ -45,19 +46,23 @@ async function sendMessage() {
     const message = messageInput.value.trim();
     if (message === "") return;
 
-    console.log("Envoi du message à l'API :", { message, sender: userId });
+    console.log("Envoi du message à l'API :", { message, sender: userId, receiver: receiverId, role: userRole });
     try {
         const response = await fetch("/send-message", {
             method: "POST",
+            message, 
+            sender: userId, 
+            receiver: receiverId, 
+            role: userRole,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message, sender: userId })
+            body: JSON.stringify({ message, sender: userId, receiver: receiverId, role: userRole })
         });
 
         const result = await response.json();
         console.log("Réponse du serveur :", result);
 
         if (result.success) {
-            appendMessage(userId, message); // Correction ici : envoi du bon ID
+            appendMessage(userId, message, true); // Afficher le message envoyé
             messageInput.value = "";
         } else {
             console.error("Erreur lors de l'envoi :", result.error);
@@ -74,4 +79,4 @@ messageInput.addEventListener("keypress", function (event) {
         event.preventDefault();
         sendMessage();
     }
-});
+}); 

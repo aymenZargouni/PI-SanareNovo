@@ -79,7 +79,7 @@
 </div>
 
 <!-- Fenêtre de chat -->
-<div id="chat-container">
+<div id="chat-container" style="display: none;">
     <div id="chat-header">
         <span>💬 Chat</span>
         <button onclick="toggleChat()">❌</button>
@@ -88,6 +88,13 @@
     <input type="text" id="message" placeholder="Tapez votre message...">
     <button id="send-button">Envoyer</button>
 </div>
+
+<!-- Passer les données utilisateur à JavaScript -->
+<script>
+    document.body.setAttribute('data-user-role', '{{ userRole }}');
+    document.body.setAttribute('data-user-id', '{{ userId }}');
+    document.body.setAttribute('data-consultation-id', '{{ consultationId }}');
+</script>
 
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/7.0.3/pusher.min.js"></script>

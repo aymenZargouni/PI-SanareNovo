@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Consultation;
 use App\Entity\Service;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\ServiceRepository;
 use App\Form\ConsultationType;
 use App\Form\DossiermedicaleType;
@@ -25,13 +26,25 @@ final class ConsultationController extends AbstractController{
     }
 
     #[Route('/showcons', name: 'app_showcons')]
-    public function showcons(ConsultationRepository $a,Request $req): Response 
-    {
-        $cons=$a->findAll();
-        return $this->render('consultation/showcons.html.twig', [
-            'showcons' => $cons,
-        ]);
+public function showcons(ConsultationRepository $a, Request $req): Response 
+{
+    $searchTerm = $req->query->get('search', '');
+
+    if ($searchTerm) {
+        $cons = $a->createQueryBuilder('c')
+            ->where('c.motif LIKE :search OR c.typeconsultation LIKE :search OR c.status LIKE :search')
+            ->setParameter('search', '%' . $searchTerm . '%')
+            ->getQuery()
+            ->getResult();
+    } else {
+        $cons = $a->findAll();
     }
+
+    return $this->render('consultation/showcons.html.twig', [
+        'showcons' => $cons,
+        'search' => $searchTerm,
+    ]);
+}
         
 
     #[Route('/addformcons', name: 'app_addformcons')]
@@ -126,6 +139,59 @@ final class ConsultationController extends AbstractController{
             $em->flush();
             return $this->redirectToRoute('app_showcons');
     }
+    
+#[Route('/search-consultations', name: 'app_search_consultations', methods: ['GET'])]
+public function searchConsultations(Request $request, ConsultationRepository $consultationRepo): JsonResponse
+{
+    $date = $request->query->get('date');
+    $motif = $request->query->get('motif');
+    $fullname = $request->query->get('fullname'); // Recherche par nom complet du patient
+    $type = $request->query->get('typeconsultation');
+    $status = $request->query->get('status');
+
+    $queryBuilder = $consultationRepo->createQueryBuilder('c')
+        ->leftJoin('c.patient', 'p'); // Jointure pour récupérer les patients associés aux consultations
+
+    if (!empty($date)) {
+        $queryBuilder->andWhere('c.date = :date')
+                     ->setParameter('date', new \DateTime($date));
+    }
+
+    if (!empty($motif)) {
+        $queryBuilder->andWhere('c.motif LIKE :motif')
+                     ->setParameter('motif', '%' . $motif . '%');
+    }
+
+    if (!empty($fullname)) {
+        $queryBuilder->andWhere('p.fullname LIKE :fullname')
+                     ->setParameter('fullname', '%' . $fullname . '%');
+    }
+
+    if (!empty($status)) {
+        $queryBuilder->andWhere('c.status = :status')
+                     ->setParameter('status', $status);
+    }
+    if (!empty($type)) {
+        $queryBuilder->andWhere('c.typeconsultation = :type')
+                     ->setParameter('type', $type);
+    }
+
+    $consultations = $queryBuilder->getQuery()->getResult();
+    
+    return $this->json([
+        'consultations' => array_map(fn($c) => [
+            'id' => $c->getId(),
+            'date' => $c->getDate()->format('Y-m-d'),
+            'motif' => $c->getMotif(),
+            'type' => $c->getTypeconsultation(),
+            'status' => $c->getStatus(),
+            'service' => $c->getNomService()->getNom(),
+            'patient' => $c->getPatient() ? $c->getPatient()->getFullname() : 'Aucun',
+        ], $consultations)
+    ]);
+    
+}
+
 
 
 

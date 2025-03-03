@@ -6,29 +6,57 @@
 <style>
     .example-wrapper {
         margin: 1em auto;
-        max-width: 90%;
+        max-width: 95%;
         font: 18px/1.5 'Roboto', sans-serif;
     }
     h2 {
         text-align: center;
         color: #007bff;
         margin-bottom: 20px;
-        font-size: 24px;
+        font-size: 26px;
     }
-    /* Style du tableau */
+
+    /* Search Container */
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .search-container input, .search-container select, .search-container button {
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+    .search-container input:focus, .search-container select:focus, .search-container button:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+    .search-container button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+    .search-container button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Table Styles */
     table {
         width: 100%;
         border-collapse: collapse;
         background: #ffffff;
         border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         font-size: 16px;
     }
     table thead {
         background: #007bff;
         color: #fff;
         text-align: left;
+        font-weight: bold;
     }
     table th, table td {
         padding: 12px 15px;
@@ -41,10 +69,11 @@
         background: #e2f0ff;
         transition: 0.3s;
     }
-    /* Style des badges */
+
+    /* Badge Styles */
     .badge {
         padding: 5px 10px;
-        border-radius: 5px;
+        border-radius: 15px;
         font-size: 14px;
         font-weight: bold;
         text-align: center;
@@ -59,18 +88,18 @@
         color: #fff;
     }
     .badge-danger {
-        background: #28a745;
+        background: #dc3545;
         color: #fff;
     }
-    /* Liens boutons */
+
+    /* Button Styles */
     .btn-action {
-        padding: 5px 10px;
-        border-radius: 5px;
+        padding: 8px 15px;
+        border-radius: 8px;
         font-size: 14px;
-        display: inline-block;
-        text-decoration: none;
         font-weight: bold;
-        transition: 0.3s;
+        text-decoration: none;
+        transition: 0.3s ease;
     }
     .btn-update {
         background: #ffc107;
@@ -86,21 +115,40 @@
     .btn-delete:hover {
         background: #c82333;
     }
+    .btn-chat {
+        background: #17a2b8;
+        color: #fff;
+    }
+    .btn-chat:hover {
+        background: #138496;
+    }
+
+    /* Add Consultation Button */
+    .add-consultation-btn {
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-align: center;
+        display: inline-block;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .add-consultation-btn:hover {
+        background-color: #0056b3;
+    }
 </style>
 
 <div class="example-wrapper">
     <h2>📋 Tableau des Consultations</h2>
-    
+
+    <!-- Add Consultation Button -->
     <div style="text-align: right; margin-bottom: 15px;">
-        <a href="{{ path('app_addformcons') }}" class="btn btn-primary">➕ Ajouter Consultation</a>
+        <a href="{{ path('app_addformcons') }}" class="add-consultation-btn">➕ Ajouter Consultation</a>
     </div>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
-
+    <!-- Consultation Table -->
     <table>
         <thead>
             <tr>
@@ -110,7 +158,7 @@
                 <th>Type</th>
                 <th>Status</th>
                 <th>Service</th>
-                <th>Patient</th> 
+                <th>Patient</th>
                 <th>Dossier Médical</th>
                 <th>Actions</th>
             </tr>
@@ -131,15 +179,8 @@
                         <span class="badge badge-danger">{{ i.status }}</span>
                     {% endif %}
                 </td>
-                <td>{{ i.getNomService() }}</td>
-                <td>
-                    <!-- Affichage du nom complet du patient -->
-                    {% if i.patient %}
-                        <strong>{{ i.patient.fullname }}</strong>
-                    {% else %}
-                        Aucun patient
-                    {% endif %}
-                </td>
+                <td>{{ i.nomService.nom }}</td>
+                <td>{% if i.patient %} {{ i.patient.fullname }} {% else %} Aucun {% endif %}</td>
                 <td>
                     {% if i.dossiermedicale %}
                         <strong>ID:</strong> {{ i.dossiermedicale.id }} <br>
@@ -154,11 +195,12 @@
                 <td>
                     <a href="{{ path('app_updatecons', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
                     <a href="{{ path('app_deletecons', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>
+                    <a href="{{ path('chat_interface', {'consultationId': i.patient.id}) }}">Ouvrir le chat</a>
+
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
-
 {% endblock %}

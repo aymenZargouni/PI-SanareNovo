@@ -1,5 +1,4 @@
 Array
 (
-    [message] => est ce que il ya une consultations
-    [sender] => 4
+    
 )

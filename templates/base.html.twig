@@ -134,6 +134,7 @@
                         <li><a href="{{ path('app_showrv') }}">Liste des Rendez-vous</a></li>
                         {% if is_granted('ROLE_PATIENT') %}
                             <li><a href="{{ path('app_addformrv') }}">Prendre un Rendez-vous</a></li>
+                            <li><a href="{{ path('chat_interface2', {'patientId': app.user.id}) }}">Chat avec le médecin</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -143,6 +144,7 @@
                         <ul class="submenu">
                             <li><a href="{{ path('app_addformdm') }}">Ajouter un Dossier Médical</a></li>
                             <li><a href="{{ path('app_showdm') }}">Liste des Dossiers Médicaux</a></li>
+                            
                         </ul>
                     </li>
                 {% endif %}
