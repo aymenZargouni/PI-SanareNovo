@@ -10,7 +10,7 @@ const userId = document.body.getAttribute('data-user-id'); // ID de l'utilisateu
 const consultationId = document.body.getAttribute('data-consultation-id'); // ID du patient (consultation)
 
 // Définir le canal en fonction du rôle
-let channelName = `chat_consultation_${userId}`
+let channelName = `chat_consultation_${consultationId}`;
 let receiverId=consultationId; // ID du patient pour le récepteur du message
 // S'abonner au canal
 const channel = pusher.subscribe(channelName);
@@ -23,14 +23,18 @@ const sendButton = document.getElementById("send-button");
 // Fonction pour ajouter un message dans l'interface
 function appendMessage(sender, message, isMe) {
     const messageElement = document.createElement("p");
-    const senderName = isMe 
-    ? "Moi" 
-    : (userRole === 'ROLE_MEDECIN' 
-        ? `Patient ${sender}` 
-        : `Médecin ${sender}`
-      );
 
-messageElement.innerHTML = `<strong>${senderName}:</strong> ${message}`;
+    // Vérifier si le message existe déjà pour éviter les doublons
+    if (document.querySelector(`[data-message="${message}"]`)) {
+        return; // Ne pas afficher le même message deux fois
+    }
+
+    const senderName = isMe 
+        ? "Moi" 
+        : (userRole === 'ROLE_MEDECIN' ? `Patient ${sender}` : `Médecin ${sender}`);
+
+    messageElement.innerHTML = `<strong>${senderName}:</strong> ${message}`;
+    messageElement.setAttribute("data-message", message); // Ajouter un attribut unique
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
