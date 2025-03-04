@@ -6,6 +6,7 @@
 parameters:
     recaptcha_site_key: '%env(RECAPTCHA_SITE_KEY)%'
     photo_dir: "%kernel.project_dir%/public/uploads/images"
+    cv_directory: '%kernel.project_dir%/public/uploads/cv'
 services:
     App\Controller\SecurityController:
         arguments:
