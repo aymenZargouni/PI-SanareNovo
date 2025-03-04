@@ -31,7 +31,7 @@ function appendMessage(sender, message, isMe) {
 
     const senderName = isMe 
         ? "Moi" 
-        : (userRole === 'ROLE_MEDECIN' ? `Patient ${sender}` : `Médecin ${sender}`);
+        : (userRole === 'ROLE_MEDECIN' ? `Médecin ${sender}` : `Patient ${sender}`);
 
     messageElement.innerHTML = `<strong>${senderName}:</strong> ${message}`;
     messageElement.setAttribute("data-message", message); // Ajouter un attribut unique
