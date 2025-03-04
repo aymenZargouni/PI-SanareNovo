@@ -1,6 +1,5 @@
 {% extends 'admin.html.twig' %}
 
-<<<<<<< HEAD
 {% block title %}Service List{% endblock %}
 
 {% block body %}
@@ -27,45 +26,16 @@
                 <th data-translate>État</th>
                 <th data-translate>Update</th>
                 <th data-translate>Delete</th>
-=======
-{% block title %}SenareNovo - Home{% endblock %}
-
-{% block body %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Service List</h2>
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Ajouter Salle</th>
-                <th>Voir Salles</th>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Chef Service</th>
-                <th>Nombre de Salles</th>
-                <th>Capacité</th>
-                <th>État</th>
-                <th>Update</th>
-                <th>Delete</th>
->>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
             </tr>
         </thead>
         <tbody>
             {% for a in tabservice %}
-<<<<<<< HEAD
             <tr class="service-row">
                 <td>
                     <a href="{{ path('addFormsalle2', { id: a.id }) }}" class="btn btn-success" data-translate>Ajouter Salle</a>
                 </td>
                 <td>
                     <a href="{{ path('showSalleByService', { id: a.id }) }}" class="btn btn-info" data-translate>Voir Salles</a>
-=======
-            <tr>
-                <td>
-                    <a href="{{ path('addFormsalle2', { id: a.id }) }}" class="btn btn-success">Ajouter Salle</a>
-                </td>
-                <td>
-                    <a href="{{ path('showSalleByService', { id: a.id }) }}" class="btn btn-info">Voir Salles</a>
->>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
                 </td>
                 <td>{{ a.id }}</td>
                 <td>{{ a.nom }}</td>
@@ -74,7 +44,6 @@
                 <td>{{ a.capacite }}</td>
                 <td>
                     {% if a.etat == 0 %}
-<<<<<<< HEAD
                         <span data-translate>Libre</span>
                     {% elseif a.etat == 1 %}
                         <span data-translate>Réservé</span>
@@ -87,26 +56,11 @@
                 </td>
                 <td>
                     <a href="{{ path('deleteservice', { id: a.id }) }}" class="btn btn-danger" data-translate>Delete</a>
-=======
-                        Libre
-                    {% elseif a.etat == 1 %}
-                        Réservé
-                    {% else %}
-                        Non défini
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('updateFormservice', { id: a.id }) }}" class="btn btn-primary">Update</a>
-                </td>
-                <td>
-                    <a href="{{ path('deleteservice', { id: a.id }) }}" class="btn btn-danger">Delete</a>
->>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-<<<<<<< HEAD
 
     <!-- Boutons d'ajout et navigation -->
     <a href="{{ path('addFormservice') }}" class="btn btn-primary" data-translate>Ajouter Service</a>
@@ -129,8 +83,4 @@ document.getElementById('search-query').addEventListener('input', function() {
 });
 </script>
 
-=======
-    <td><a href="{{ path('addFormservice') }}" class="btn btn-primary">Ajouter sservice </a></td>
-</div>
->>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
 {% endblock %}
