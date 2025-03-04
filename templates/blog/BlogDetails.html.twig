@@ -1,4 +1,4 @@
-{% extends 'admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}{{ blog.title }} - SenareNovo{% endblock %}
 
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="mt-5">
-                    <a href="{{ path('showBlog') }}" class="genric-btn primary radius">Retour</a>
+                    <a href="{{ path('showBlogPatient') }}" class="genric-btn primary radius">Retour</a>
                 </div>
             </div>
         </div>

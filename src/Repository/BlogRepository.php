@@ -44,35 +44,23 @@ class BlogRepository extends ServiceEntityRepository
     public function findByTitleSorted(bool $ascending = true): array
     {
         $qb = $this->createQueryBuilder('b')
-            ->orderBy('b.title', $ascending ? 'ASC' : 'DESC'); // Utilise ASC ou DESC selon l'argument
+            ->orderBy('b.title', $ascending ? 'ASC' : 'DESC'); 
 
         return $qb->getQuery()->getResult();
     }
 
-    public function searchBlogs($title = '', $content = '', $categoryId = null, $startDate = null)
+
+    public function searchByTitleAjax(string $query): array
     {
-        $queryBuilder = $this->createQueryBuilder('b');
-
-        // Filtre sur le titre
-        if ($title) {
-            $queryBuilder->andWhere('b.title LIKE :title')
-                         ->setParameter('title', '%' . $title . '%');
-        }
-
-        // Filtre sur le contenu
-        if ($content) {
-            $queryBuilder->andWhere('b.content LIKE :content')
-                         ->setParameter('content', '%' . $content . '%');
-        }
-
-        // Filtre sur la date de début
-        if ($startDate) {
-            $queryBuilder->andWhere('b.createdAt >= :startDate')
-                         ->setParameter('startDate', $startDate);
-        }
-
-        return $queryBuilder->getQuery()->getResult();
+        return $this->createQueryBuilder('b')
+            ->where('LOWER(b.title) LIKE LOWER(:query)')
+            ->setParameter('query', '%' . strtolower($query) . '%')
+            ->getQuery()
+            ->getResult();
     }
+    
+    
+
 
 
 
@@ -88,7 +76,46 @@ class BlogRepository extends ServiceEntityRepository
         }
     }
 
+    // src/Repository/BlogRepository.php
 
+    public function findAllSortedByRating(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.ratings', 'r')
+            ->addSelect('AVG(r.score) as avgRating') // Sélectionner la moyenne des notes
+            ->groupBy('b.id')
+            ->orderBy('avgRating', 'DESC')
+            ->indexBy('b', 'b.id') // ✅ Indexation par ID pour simplifier l'accès aux objets Blog
+            ->getQuery()
+            ->getResult();
+    }
+    
+    
+    
+
+    // Récupérer les blogs avec le plus de catégories
+    public function findBlogsWithMostCategories($limit = 5)
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.Category', 'c') // Assure-toi que la relation existe
+            ->groupBy('b.id')
+            ->orderBy('COUNT(c.id)', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Récupérer les blogs avec le plus de commentaires
+    public function findBlogsWithMostComments($limit = 5)
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.comments', 'c') // Assure-toi que la relation existe
+            ->groupBy('b.id')
+            ->orderBy('COUNT(c.id)', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 
         
 
