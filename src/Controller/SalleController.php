@@ -6,11 +6,20 @@ use App\Entity\Salle;
 use App\Entity\Service;
 use App\Form\SalleType;
 use App\Repository\SalleRepository;
+use Endroid\QrCode\ErrorCorrectionLevel;
 use Doctrine\Persistence\ManagerRegistry;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 
 final class SalleController extends AbstractController{
     #[Route('/salle', name: 'app_salle')]
@@ -90,17 +99,17 @@ public function deleteFormBlog($id, ManagerRegistry $m, SalleRepository $BlogRep
 {
     $em = $m->getManager();
 
-    // Récupérer l'entité Salle avec l'ID donné
+    
     $Blog = $BlogRep->find($id);
 
     // Vérifier si l'entité a été trouvée
     if (!$Blog) {
-        // Si l'entité n'est pas trouvée, rediriger avec un message d'erreur ou afficher un message
+        
         $this->addFlash('error', 'Salle not found');
-        return $this->redirectToRoute('showsalle'); // Redirection vers la liste des salles
+        return $this->redirectToRoute('showsalle'); 
     }
 
-    // Si l'entité est trouvée, la supprimer
+   
     $em->remove($Blog);
     $em->flush();
 
@@ -153,7 +162,59 @@ public function showSalleByService(SalleRepository $salleRep, Service $service):
         'salles' => $salles,
     ]);
 }
+#[Route('/api/salle/{id}/qrcode', name: 'api_salle_qrcode', methods: ['GET'])]
+public function generateQrCode(int $id, ManagerRegistry $entityManager, UrlGeneratorInterface $urlGenerator): Response
+{
+    // Récupérer la salle depuis la base de données
+    $salle = $entityManager->getRepository(Salle::class)->find($id);
 
+    if (!$salle) {
+        return new Response('Salle non trouvée', 404);
+    }
 
+    $qrContent = sprintf(
+        "=== Salle n°%d ===\n\nType: %s\nService: %s\n",
+        $salle->getId(),
+        $salle->getType() ?? 'Non spécifié',
+        $salle->getService()?->getNom() ?? 'Aucun service',
+        
+    );
 
+    // Générer le QR Code
+    $qrCode = Builder::create()
+    ->writer(new PngWriter())
+    ->data($qrContent)
+    ->encoding(new Encoding('UTF-8'))
+    ->errorCorrectionLevel(ErrorCorrectionLevel::High) // Corrected constant
+    ->size(300)
+    ->margin(10)
+    ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+    ->labelText("Salle n°{$salle->getId()}")
+    ->labelAlignment(LabelAlignment::Center)
+    ->build();
+
+  
+    return new Response($qrCode->getString(), 200, ['Content-Type' => 'image/png']);
 }
+public function searchSalle(Request $request, SalleRepository $a)
+{
+   
+    $query = $request->get('query');
+
+    
+    if ($query) {
+       
+        $salles = $a->searchById($query);
+    } else {
+        $salles = [];
+    }
+
+   
+    return new JsonResponse($salles);
+}
+    
+}
+
+
+
+
