@@ -5,6 +5,7 @@
 {% block body %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Service List</h2>
+<<<<<<< HEAD
 
     <!-- Champ de recherche -->
     <div class="mb-3">
@@ -19,14 +20,28 @@
                 <th>TYPE</th>
                 <th>ETAT</th>
                 <th>QR Code</th>
+=======
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>SERVICE</th>
+                <th>TYPE</th>
+                <th>ETAT</th>
+>>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
                 <th>Update</th>
                 <th>Delete</th>
             </tr>
         </thead>
         <tbody>
             {% for a in tabservice %}
+<<<<<<< HEAD
             <tr class="service-row">
                 <td>{{ a.id }}</td>  <!-- ID de la salle -->
+=======
+            <tr>
+                <td>{{ a.id }}</td>
+>>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
                 <td>{{ a.getService().id }}</td>
                 <td>{{ a.type }}</td>
                 <td>
@@ -38,6 +53,7 @@
                         Non défini
                     {% endif %}
                 </td>
+<<<<<<< HEAD
                 <td>
                     <!-- Bouton pour afficher le QR Code -->
                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrModal{{ a.id }}">
@@ -62,6 +78,8 @@
                         </div>
                     </div>
                 </td>
+=======
+>>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
                 <td><a href="{{ path('updateFormsalle', { id: a.id }) }}" class="btn btn-primary">Update</a></td>
                 <td><a href="{{ path('deletesalle', { id: a.id }) }}" class="btn btn-danger">Delete</a></td>
             </tr>
@@ -70,6 +88,7 @@
     </table>
     <td><a href="{{ path('addFormsalle') }}" class="btn btn-primary">Ajouter salle </a></td>
 </div>
+<<<<<<< HEAD
 
 <script>
     document.getElementById('search-query').addEventListener('input', function() {
@@ -91,4 +110,6 @@
     });
 </script>
 
+=======
+>>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
 {% endblock %}

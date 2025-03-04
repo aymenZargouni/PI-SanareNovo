@@ -3,6 +3,7 @@
 {% block title %}Créer Compte Patient{% endblock %}
 
 {% block body %}
+
 <style>
     .register-container {
         display: flex;
@@ -30,6 +31,12 @@
         font-size: 18px;
     }
 
+    .register-form .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
     .register-form button {
         height: 50px;
         font-size: 18px;
@@ -37,27 +44,47 @@
 </style>
 
 <div class="register-container">
-    <form method="post" class="register-form">
+    <div class="register-form">
         <h1 class="h3 mb-4 font-weight-bold">Créer Compte Patient</h1>
 
-        {{ form_start(form) }}
-            <label for="fullname" class="fw-bold">Full Name</label>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'form'}}) }}
+
+        <div class="mb-3">
+            {{ form_label(form.fullname, 'Full Name', {'label_attr': {'class': 'fw-bold'}}) }}
             {{ form_widget(form.fullname, { 'attr': {'class': 'form-control', 'placeholder': 'Enter full name'} }) }}
+            <div class="error-message">{{ form_errors(form.fullname) }}</div>
+        </div>
 
-            <label for="gender" class="fw-bold mt-3">Gender</label>
+        <div class="mb-3">
+            {{ form_label(form.gender, 'Gender', {'label_attr': {'class': 'fw-bold'}}) }}
             {{ form_widget(form.gender, { 'attr': {'class': 'form-control'} }) }}
+            <div class="error-message">{{ form_errors(form.gender) }}</div>
+        </div>
 
-            <label for="adress" class="fw-bold mt-3">Address</label>
+        <div class="mb-3">
+            {{ form_label(form.adress, 'Address', {'label_attr': {'class': 'fw-bold'}}) }}
             {{ form_widget(form.adress, { 'attr': {'class': 'form-control', 'placeholder': 'Enter address'} }) }}
+            <div class="error-message">{{ form_errors(form.adress) }}</div>
+        </div>
 
-            <label for="email" class="fw-bold mt-3">Email</label>
+        <div class="mb-3">
+            {{ form_label(form.email, 'Email', {'label_attr': {'class': 'fw-bold'}}) }}
             {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'placeholder': 'Enter email'} }) }}
+            <div class="error-message">{{ form_errors(form.email) }}</div>
+        </div>
 
-            <label for="password" class="fw-bold mt-3">Password</label>
+        <div class="mb-3">
+            {{ form_label(form.password, 'Password', {'label_attr': {'class': 'fw-bold'}}) }}
             {{ form_widget(form.password, { 'attr': {'class': 'form-control', 'placeholder': 'Enter password'} }) }}
+            <div class="error-message">{{ form_errors(form.password) }}</div>
+        </div>
 
-            <button type="submit" class="btn btn-lg btn-primary w-100 mt-4">Register</button>
+<div class="mb-3">
+    {{ form_row(form.captcha) }}
+</div>
+        <button type="submit" class="btn btn-lg btn-primary w-100 mt-4">Register</button>
+
         {{ form_end(form) }}
-    </form>
+    </div>
 </div>
 {% endblock %}

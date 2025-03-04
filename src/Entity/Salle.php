@@ -76,4 +76,11 @@ class Salle
 
         return $this;
     }
+    // src/Entity/Salle.php
+
+public function __toString(): string
+{
+    return (string) $this->id;  // or use $this->type if you prefer the type name
+}
+
 }

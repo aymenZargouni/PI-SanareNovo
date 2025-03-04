@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Dossier Médical{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper {
+        margin: 1em auto;
+        max-width: 90%;
+        font: 18px/1.5 'Roboto', sans-serif;
+    }
+    h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        font-size: 16px;
+    }
+    table thead {
+        background: #007bff;
+        color: #fff;
+        text-align: left;
+    }
+    table th, table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+    }
+    table tbody tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    table tbody tr:hover {
+        background: #e2f0ff;
+        transition: 0.3s;
+    }
+    .btn-action {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: inline-block;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .btn-update {
+        background: #ffc107;
+        color: #fff;
+    }
+    .btn-update:hover {
+        background: #e0a800;
+    }
+    .btn-delete {
+        background: #dc3545;
+        color: #fff;
+    }
+    .btn-delete:hover {
+        background: #c82333;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h2>📋 Tableau des Dossiers Médicaux</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>IMC</th>
+                <th>Date</th>
+                <th>Observations</th>
+                <th>Ordonnance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in showdm %}
+            <tr>
+                <td>{{ i.id }}</td>
+                <td>{{ i.imc }}</td>
+                <td>{{ i.date|date('Y-m-d') }}</td>
+                <td>{{ i.observations }}</td>
+                <td>{{ i.ordonnance }}</td>
+                <td>
+                    <a href="{{ path('app_updatedm', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
+                    <a href="{{ path('app_deletedm', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

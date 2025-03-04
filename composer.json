@@ -11,7 +11,12 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+<<<<<<< HEAD
         "endroid/qr-code": "*",
+=======
+        "karser/karser-recaptcha3-bundle": "^0.2.0",
+        "knplabs/knp-paginator-bundle": "^6.6",
+>>>>>>> 76cd849eb886fb88c0dc2f63d25d196cdcb96271
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.0",
         "stichoza/google-translate-php": "^5.2",
@@ -24,6 +29,7 @@
         "symfony/flex": "^2",
         "symfony/form": "6.4.*",
         "symfony/framework-bundle": "6.4.*",
+        "symfony/google-mailer": "6.4.*",
         "symfony/http-client": "6.4.*",
         "symfony/intl": "6.4.*",
         "symfony/mailer": "6.4.*",

@@ -1,0 +1,56 @@
+{% extends 'technicien.html.twig' %}
+
+{% block title %}Tableau de bord du Coordinateur{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <!-- Titre principal -->
+        <h2 class="text-center mb-4 text-primary">👨‍🔧 Tableau de bord du Coordinateur</h2>
+
+        <!-- Carte principale contenant les équipements -->
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h3 class="mb-0">Vue d'ensemble des équipements</h3>
+            </div>
+            <div class="card-body text-center">
+                <h4 class="text-dark font-weight-bold mb-4">
+                    Nombre total d'équipements : <span class="text-primary">{{ totalEquipments }}</span>
+                </h4>
+
+                <!-- Disposition des cartes -->
+                <div class="row justify-content-center">
+                    <!-- Équipements en maintenance -->
+                    <div class="col-md-4">
+                        <div class="card border-warning text-center shadow-sm">
+                            <div class="card-body">
+                                <i class="fas fa-tools fa-3x text-warning mb-3"></i>
+                                <h5 class="card-title text-warning">En maintenance</h5>
+                                <p class="card-text font-weight-bold">{{ totalInMaintenance }} équipements</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Équipements hors service -->
+                    <div class="col-md-4">
+                        <div class="card border-danger text-center shadow-sm">
+                            <div class="card-body">
+                                <i class="fas fa-ban fa-3x text-danger mb-3"></i>
+                                <h5 class="card-title text-danger">Hors service</h5>
+                                <p class="card-text font-weight-bold">{{ totalOutOfService }} équipements</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Séparateur visuel -->
+        <hr class="my-5">
+
+        <!-- Section supplémentaire pour les réclamations, interventions, etc. -->
+        <div class="text-center">
+<a href="{{ path('technician_calendar') }}" class="btn btn-primary">Voir le calendrier</a>
+        </div>
+        
+    </div>
+{% endblock %}

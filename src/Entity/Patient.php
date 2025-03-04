@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PatientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -16,7 +18,7 @@ class Patient
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:'Nom complet ne peut pas être vide')]
-    #[Assert\Length(min:20,minMessage:'Nom Complet ne doit pas dépasser 20 caractéres.')]
+    #[Assert\Length(min:5,minMessage:'Nom Complet ne doit pas dépasser 5 caractéres.')]
     private ?string $fullname = null;
 
     #[ORM\Column(length: 255)]
@@ -24,12 +26,23 @@ class Patient
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:'Adress ne peut pas être vide')]
-    #[Assert\Length(min:20,minMessage:'Adress ne doit pas dépasser 20 caractéres.')]
+    #[Assert\Length(min:5,minMessage:'Adress ne doit pas dépasser 20 caractéres.')]
     private ?string $adress = null;
 
     #[ORM\OneToOne(inversedBy: 'patient', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, RendezVous>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'patient')]
+    private Collection $rendezVouses;
+
+    public function __construct()
+    {
+        $this->rendezVouses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -80,6 +93,36 @@ class Patient
     public function setUser(user $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RendezVous>
+     */
+    public function getRendezVouses(): Collection
+    {
+        return $this->rendezVouses;
+    }
+
+    public function addRendezVouse(RendezVous $rendezVouse): static
+    {
+        if (!$this->rendezVouses->contains($rendezVouse)) {
+            $this->rendezVouses->add($rendezVouse);
+            $rendezVouse->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVouse(RendezVous $rendezVouse): static
+    {
+        if ($this->rendezVouses->removeElement($rendezVouse)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVouse->getPatient() === $this) {
+                $rendezVouse->setPatient(null);
+            }
+        }
 
         return $this;
     }

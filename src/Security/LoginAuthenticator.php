@@ -60,19 +60,19 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_MEDECIN')) {
-            return new RedirectResponse($this->urlGenerator->generate('app_medecin'));
+            return new RedirectResponse($this->urlGenerator->generate('app_showcons'));
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_COORDINATEUR')) {
-            return new RedirectResponse($this->urlGenerator->generate('app_coordinateur'));
+            return new RedirectResponse($this->urlGenerator->generate('showequipment'));
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_RH')) {
-            return new RedirectResponse($this->urlGenerator->generate('app_rh'));
+            return new RedirectResponse($this->urlGenerator->generate('candidature_liste'));
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_TECHNICIEN')) {
-            return new RedirectResponse($this->urlGenerator->generate('app_technicien'));
+            return new RedirectResponse($this->urlGenerator->generate('technician_equipments'));
         }
       
     }

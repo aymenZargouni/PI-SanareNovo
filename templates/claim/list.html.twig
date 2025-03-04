@@ -1,0 +1,69 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Liste des Réclamations{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">📋 Liste des Réclamations</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>🔑 ID</th>
+                        <th>📄 Réclamation</th>
+                        <th>🧑‍🔧 Technicien</th>
+                        <th>📅 Date de création</th>
+                        <th>✏️ Modifier</th>
+                        <th>🗑️ Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in claimsData %}
+                        <tr>
+                            <td>{{ item.claim.id }}</td>
+                            <td>{{ item.claim.reclamation }}</td>
+                            <td>{{ item.technicianName }}</td>
+                            <td>{{ item.claim.createdAt|date('d/m/Y H:i') }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('claim_edit', {'id': item.claim.id}) }}" class="btn btn-primary btn-sm">✏️ Modifier</a>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ path('claim_delete', {'id': item.claim.id}) }}')">
+                                    🗑️ Supprimer
+                                </button>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Aucune réclamation trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# Inclusion de SweetAlert pour confirmation de suppression #}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {# Script de confirmation #}
+    <script>
+        function confirmDelete(url) {
+            Swal.fire({
+                title: 'Êtes-vous sûr(e) ?',
+                text: "Cette action est irréversible !",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        }
+    </script>
+{% endblock %}

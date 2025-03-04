@@ -1,0 +1,61 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Réclamation pour l'équipement{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-danger text-white text-center py-3">
+                <h2 class="mb-0">🛠️ Réclamation pour l'équipement</h2>
+            </div>
+
+            <div class="card-body p-4">
+                <h4 class="text-center text-primary font-weight-bold mb-4">{{ equipment.name }}</h4>
+                <hr class="my-4">
+
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                <!-- Champ Détail de la Réclamation -->
+                <div class="mb-4">
+                    <label for="{{ form.reclamation.vars.id }}" class="font-weight-bold">
+                        📝 Détail de la Réclamation :
+                    </label>
+                    {{ form_widget(form.reclamation, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez décrire votre réclamation...'}}) }}
+                    
+                    {% if form.reclamation.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block mt-2">
+                            {% for error in form.reclamation.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Champ Sélection du Technicien -->
+                <div class="mb-4">
+                    <label for="{{ form.technicien.vars.id }}" class="font-weight-bold">
+                        👨‍🔧 Sélectionner un Technicien :
+                    </label>
+                    {{ form_widget(form.technicien, {'attr': {'class': 'form-control'}}) }}
+
+                    {% if form.technicien.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block mt-2">
+                            {% for error in form.technicien.vars.errors %}
+                                <p class="text-danger">⚠️ {{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-danger btn-lg px-4">📩 Envoyer</button>
+                    <a href="{{ path('showequipment') }}" class="btn btn-secondary btn-lg px-4 ml-3">❌ Annuler</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'coordinateur.html.twig' %}
+
+{% block title %}Historique des équipements{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h2 class="text-primary fw-bold">📜 Historique des équipements</h2>
+            <p class="text-muted">Consultez les informations détaillées sur l’historique des équipements.</p>
+        </div>
+
+        {% for message in app.session.flashbag().get('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="card shadow-lg border-0">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th>Nom</th>
+                                <th>Modèle</th>
+                                <th>Statut</th>
+                                <th>Date d'achat</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for equipment in equipments %}
+                                <tr class="shadow-sm">
+                                    <td class="fw-semibold">{{ equipment.name }}</td>
+                                    <td>{{ equipment.model }}</td>
+                                    <td>
+                                        {% if equipment.status == 'reparé' %}
+                                            <span class="badge bg-success"><i class="fas fa-check-circle"></i> Réparé</span>
+                                        {% elseif equipment.status == 'maintenance' %}
+                                            <span class="badge bg-warning text-dark"><i class="fas fa-tools"></i> En maintenance</span>
+                                        {% elseif equipment.status == 'panne' %}
+                                            <span class="badge bg-danger"><i class="fas fa-exclamation-triangle"></i> En panne</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary"><i class="fas fa-question-circle"></i> Inconnu</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ equipment.dateAchat|date('d/m/Y') }}</td>
+                                    <td><strong>{{ equipment.prix|number_format(2, '.', ' ') }} €</strong></td>
+                                    <td>
+                                        <a href="{{ path('equipment_details', {'id': equipment.id}) }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye"></i> Voir détails
+                                        </a>
+                                        
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="fas fa-box-open fa-2x"></i>
+                                        <p class="mt-2">Aucun équipement trouvé</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Noter le blog - {{ blog.title }} {% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <br><br><br><br><br>    
+    <h2 class="mb-4 text-center">Noter le blog : <span class="text-primary">{{ blog.title }}</span></h2>
+
+    <div class="rating-form card p-4 shadow-lg rounded border border-primary">
+        {{ form_start(form) }}
+            <div class="form-group text-center">
+                <label for="{{ form.score.vars.id }}" class="h5">Votre note (1 à 5) :</label>
+                {{ form_widget(form.score, {'attr': {'class': 'form-control w-50 mx-auto text-center', 'min': 1, 'max': 5}}) }}
+                {{ form_errors(form.score) }} 
+            </div>
+            <div class="form-group text-center mt-3">
+                <button type="submit" class="genric-btn success circle arrow">Envoyer la note</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+
+    <br>
+    <div class="text-center">
+        <a href="{{ path('blog_details', {'id': blog.id}) }}" class="genric-btn danger circle">Retour</a>
+    </div>
+</div>
+<br>
+{% endblock %}

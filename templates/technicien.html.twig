@@ -8,6 +8,11 @@
         <link rel="stylesheet" href="{{asset('admin/css/styles.min.css')}}" />
         <link rel="shortcut icon" type="image/png" href="{{asset('admin//images/logos/favicon.png')}}" />
         <link rel="stylesheet" href="admin/css/icons/tabler-icons.css" />
+        <link href="https://cdn.jsdelivr.net/npm/tabler-icons@1.36.0/font/tabler-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
         {% block stylesheets %}
         {% endblock %}
 
@@ -33,16 +38,34 @@
           <ul id="sidebarnav">
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">Gestion des equipements</span>
+              <span class="hide-menu">Home</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./index.html" aria-expanded="false">
+ <a class="sidebar-link" href="{{ path('tech_dashboard') }}" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
-                <span class="hide-menu">Equipements</span>
+                <span class="hide-menu">Dashboard</span>
               </a>
             </li>
+            
+
+
+                <li class="nav-small-cap">
+  <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+  <span class="hide-menu">Gestion des Equipements technician</span>
+</li>
+<li class="sidebar-item">
+  <a class="sidebar-link" href="{{ path('technician_equipments') }}" aria-expanded="false">
+    <span>
+      <i class="ti ti-device-desktop"></i>
+    </span>
+    <span class="hide-menu">Equipements</span>
+  </a>
+</li>
+
+           
+         
           </ul>
         </nav>
         <!-- End Sidebar navigation -->

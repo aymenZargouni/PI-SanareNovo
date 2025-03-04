@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\HistoriqueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HistoriqueRepository::class)]
 class Historique
@@ -19,9 +20,11 @@ class Historique
     private $equipment;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date est requise")]
     private ?\DateTimeInterface $dateReparation = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank (message:"rapport is required")]
     private ?string $rapportDetaille = null;
 
     public function getId(): ?int

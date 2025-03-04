@@ -1,0 +1,59 @@
+{% extends 'rh.html.twig' %}
+
+{% block title %}Liste des candidatures{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">📋 Liste des candidatures</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Date de candidature</th>
+                        <th>Statut</th>
+                        <th>Offre</th>
+                        <th>CV</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for candidature in candidatures %}
+                        <tr>
+                            <td>{{ candidature.nom }}</td>
+                            <td>{{ candidature.prenom }}</td>
+                            <td>{{ candidature.email }}</td>
+                            <td>{{ candidature.dateCandidature|date('d/m/Y H:i') }}</td>
+                            <td>{{ candidature.statut }}</td>
+                            <td>{{ candidature.offre.titre }}</td>
+                            <td class="text-center">
+                                {% if candidature.cv %}
+                                    <a href="{{ asset('uploads/cv/' ~ candidature.cv) }}" class="btn btn-info btn-sm" target="_blank" download> Télécharger le CV</a>
+                                {% else %}
+                                    <span class="text-muted">Aucun CV</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('candidature_changer_statut', {id: candidature.id, statut: 'en_attente'}) }}" class="btn btn-warning btn-sm">Mettre en attente</a>
+                                <a href="{{ path('candidature_changer_statut', {id: candidature.id, statut: 'accepte'}) }}" class="btn btn-success btn-sm">Accepter</a>
+                                <a href="{{ path('candidature_changer_statut', {id: candidature.id, statut: 'rejete'}) }}" class="btn btn-danger btn-sm">Rejeter</a>
+
+                                <!-- Bouton supprimer -->
+                                <form method="POST" action="{{ path('candidature_delete', {id: candidature.id}) }}" style="display:inline-block;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">Aucune candidature reçue.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
