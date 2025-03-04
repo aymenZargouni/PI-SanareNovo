@@ -60,6 +60,10 @@ class Salle
 
         return $this;
     }
+    public function isOccupee(): bool
+{
+    return $this->etat == 1;
+}
 
     public function getService(): ?Service
     {
