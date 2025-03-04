@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class TechnicienAddType extends AbstractType
 {
@@ -36,8 +37,10 @@ class TechnicienAddType extends AbstractType
                         'minMessage' => "Le mot de passe doit contenir au moins {{ limit }} caractères.",
                     ]),
                 ],
+            ])
+            ->add('phoneNumber', TextType::class, [
+                'required' => true,
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

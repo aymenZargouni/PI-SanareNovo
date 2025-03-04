@@ -5,14 +5,16 @@ namespace App\Form;
 use App\Entity\user;
 use App\Entity\Patient;
 use Symfony\Component\Form\AbstractType;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Validator\Constraints as Assert;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 
 class PatientType extends AbstractType
 {
@@ -45,7 +47,11 @@ class PatientType extends AbstractType
                         'minMessage' => "Le mot de passe doit contenir au moins 8 caractères.",
                     ]),
                 ]
-            ]);
+                ])
+                ->add('captcha', Recaptcha3Type::class, [
+                    'constraints' => new Recaptcha3(),
+                    'action_name' => 'patientRegister',
+                ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

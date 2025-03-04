@@ -26,6 +26,12 @@
                     {{ form_errors(form.password) }}
                 </div>
 
+                <div class="mb-3">
+                    {{ form_label(form.phoneNumber) }}
+                    {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.phoneNumber) }}
+                </div>
+
                 <button type="submit" class="btn btn-primary w-100">Ajouter</button>
                 {{ form_end(form) }}
             </div>
