@@ -5,25 +5,49 @@
 {% block title %}Offres d'emploi{% endblock %}
 
 {% block body %}
-    <h1>Liste des Offres</h1>
-    
-    <div class="row">
-        {% for offre in offres %}
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ offre.titre }}</h5>
-                        <p class="card-text">{{ offre.description }}</p>
-                        <p class="card-text"><small class="text-muted">Publié le {{ offre.datePublication|date('d/m/Y') }}</small></p>
-                        <p class="card-text"><small class="text-muted">Expire le {{ offre.dateExpiration|date('d/m/Y') }}</small></p>
-                        <a href="{{ path('candidature_postuler', {'id': offre.id}) }}" class="btn btn-primary">Postuler</a>
+    <div class="container mt-5">
+        <h1 class="text-center text-primary">Liste des Offres</h1>
+
+        <div class="row mt-4">
+            {% for offre in offres %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-lg">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h5 class="mb-0">{{ offre.titre }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted">
+                                {{ offre.description|length > 100 ? offre.description|slice(0, 100) ~ '...' : offre.description }}
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-calendar-event"></i> Publié le : <strong>{{ offre.datePublication|date('d/m/Y') }}</strong>
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-hourglass-bottom"></i> Expire le : <strong>{{ offre.dateExpiration|date('d/m/Y') }}</strong>
+                            </p>
+
+                            {% if offre.datePublication.getTimestamp() > (date().getTimestamp() - 604800) %}
+                                <span class="badge bg-success">🆕 Nouveau</span>
+                            {% endif %}
+
+                            {% if offre.dateExpiration.getTimestamp() < (date().getTimestamp() + 604800) %}
+                                <span class="badge bg-warning">⚠️ Expire bientôt</span>
+                            {% endif %}
+
+                            <div class="d-grid mt-3">
+                                <a href="{{ path('candidature_postuler', {'id': offre.id}) }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-send"></i> Postuler
+                                </a>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <p>Aucune offre disponible actuellement.</p>
-            </div>
-        {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p class="text-muted fs-4">Aucune offre disponible actuellement.</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

@@ -21,7 +21,7 @@ final class ServiceController extends AbstractController{
         ]);
     }
 
-    #[Route('showservice', name: 'showservice')]
+    #[Route('/showservice', name: 'showservice')]
     public function showservice (ServiceRepository $serRep): Response
     {
         $Blog = $serRep->findAll();
