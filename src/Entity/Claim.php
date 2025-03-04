@@ -29,6 +29,9 @@ class Claim
     #[ORM\JoinColumn(nullable: false)]
     private $equipment;
 
+    #[ORM\ManyToOne(inversedBy: 'claims')]
+    private ?Technicien $technicien = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,5 +62,17 @@ class Claim
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getTechnicien(): ?Technicien
+    {
+        return $this->technicien;
+    }
+
+    public function setTechnicien(?Technicien $technicien): static
+    {
+        $this->technicien = $technicien;
+
+        return $this;
     }
 }

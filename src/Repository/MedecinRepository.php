@@ -16,6 +16,15 @@ class MedecinRepository extends ServiceEntityRepository
         parent::__construct($registry, Medecin::class);
     }
 
+    public function findByMedecin(Medecin $medecin): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.medecin = :medecin')
+            ->setParameter('medecin', $medecin)
+            ->orderBy('r.dateR', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Medecin[] Returns an array of Medecin objects
 //     */

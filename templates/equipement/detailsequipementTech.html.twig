@@ -35,6 +35,7 @@
                     <tr>
                         <th>Date d'achat</th>
                         <td>{{ equipment.dateAchat|date('d/m/Y') }}</td>
+                
                     </tr>
                     <tr>
                         <th>Prix</th>
@@ -89,6 +90,7 @@
                 <div class="mb-3">
                     <label for="dateReparation" class="form-label">Date de réparation :</label>
                     <input type="date" id="dateReparation" name="dateReparation" class="form-control" value="{{ equipment.dateReparation ? equipment.dateReparation|date('Y-m-d') : '' }}">
+              
                 </div>
 
                 <div class="mb-3">
