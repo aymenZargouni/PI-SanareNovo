@@ -20,21 +20,18 @@
 <section class="blog_area section-padding">
     <div class="container">
         <div class="row">
-            <!-- Main Blog Section -->
             <div class="col-lg-8">
                 <div class="blog_left_sidebar">
                     {% for b in tabBlog %}
                     <article class="blog_item mb-4 shadow-sm rounded overflow-hidden">
                         <div class="card border-0">
                             <div class="position-relative">
-                                <!-- Blog Image -->
                                 {% if b.image %}
                                     <img class="card-img-top" src="{{ asset('uploads/images/' ~ b.image) }}" alt="Blog image">
                                 {% else %}
                                     <img class="card-img-top" src="{{ asset('images/default-image.jpg') }}" alt="Default image">
                                 {% endif %}
                                 
-                                <!-- Date Badge -->
                                 <div class="position-absolute top-0 end-0 p-2 bg-dark text-white rounded">
                                     <p class="mb-0">{{ b.createdAt|date('d/m/Y') }}</p>
                                 </div>
@@ -97,10 +94,8 @@
                     {% endfor %}
                 {% endfor %}
 
-            <!-- Sidebar -->
             <div class="col-lg-4">
                 <div class="blog_right_sidebar">
-                    <!-- Search Form -->
                     <aside class="single_sidebar_widget search_widget mb-4">
                         <form action="{{ path('search_blog') }}" method="get" class="input-group">
                             <input type="text" name="query" placeholder="Rechercher un blog" class="form-control">
@@ -108,7 +103,6 @@
                         </form>
                     </aside>
 
-                    <!-- Add Blog Button -->
                     <aside class="single_sidebar_widget">
                         <a href="{{ path('addFormBlog') }}" class="btn btn-secondary w-100">
                             <i class="fa fa-plus"></i> Ajouter un Blog

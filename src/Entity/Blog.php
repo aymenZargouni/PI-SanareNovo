@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 #[Vich\Uploadable]
@@ -19,29 +20,33 @@ class Blog
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['blogs'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Title cannot be empty.")]
-    #[Assert\Length(min: 5, max: 255, minMessage: "Title must be at least 5 characters long.")]
+    #[Groups(['blogs'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Content cannot be empty.")]
-    #[Assert\Length(min: 10, minMessage: "Content must be at least 10 characters long.")]
+    #[Groups(['blogs'])]
     private ?string $content = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\File(
         maxSize: "2M",
         mimeTypes: ["image/jpeg", "image/png"],
-        mimeTypesMessage: "Please upload a valid image (JPEG or PNG)." )]
+        mimeTypesMessage: "Please upload a valid image (JPEG or PNG)." 
+    )]
+
+    #[Groups(['blogs'])]
     private ?string $image = null;
 
     #[Vich\UploadableField(mapping: "blog_images", fileNameProperty: "image")]
+    #[Groups(['blogs'])]
     private ?File $imageFile = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['blogs'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**

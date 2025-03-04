@@ -1,4 +1,4 @@
-{% extends 'admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Commentaires - {{ blog.title }}{% endblock %}
 
@@ -14,19 +14,27 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted mb-1">{{ comment.createdAt|date('d/m/Y H:i') }}</p>
+                        <p class="text-muted mb-1">
+                            {% if comment.user %}
+                                <strong>{{ comment.user.email }}</strong> - {{ comment.createdAt|date('d/m/Y H:i') }}
+                            {% else %}
+                                <strong>Utilisateur inconnu</strong> - {{ comment.createdAt|date('d/m/Y H:i') }}
+                            {% endif %}
+                        </p>
+
                         <p class="comment mb-3">{{ comment.content }}</p>
                     </div>
                     <div>
+                        {% if app.user and app.user == comment.user %}
+                            <a href="{{ path('update_comment', {id: comment.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{{ path('delete_comment', {id: comment.id}) }}" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">Supprimer</a>
+                        {% endif %}
                     </div>
                 </div>
-
-
             </div>
         </div>
-        {% else %}
-        <p class="text-center text-muted">Aucun commentaire pour le moment.</p>
-        {% endfor %}
+    {% endfor %}
+
     </div>
 
     <div class="mt-4 text-center">

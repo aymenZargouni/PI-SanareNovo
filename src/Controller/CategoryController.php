@@ -24,6 +24,8 @@ final class CategoryController extends AbstractController{
     #[Route('/admin/showCategory', name: 'showCategory')]
     public function showCategory(CategoryRepository $categoryRepository): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $categories = $categoryRepository->findAll();
         return $this->render('category/showCategory.html.twig', [
             'categories' => $categories,
@@ -33,6 +35,8 @@ final class CategoryController extends AbstractController{
     #[Route('/admin/addFormCategory', name: 'addFormCategory')]
     public function addCategory(ManagerRegistry $registry, Request $request): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $registry->getManager();
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
@@ -53,6 +57,8 @@ final class CategoryController extends AbstractController{
     #[Route('/admin/updateFormCategory/{id}', name: 'updateFormCategory')]
     public function updateCategory(ManagerRegistry $registry, Request $request, $id, CategoryRepository $categoryRepository): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $registry->getManager();
         $category = $categoryRepository->find($id);
         if (!$category) {
@@ -77,6 +83,8 @@ final class CategoryController extends AbstractController{
     #[Route('/admin/deleteCategory/{id}', name: 'deleteCategory')]
     public function deleteCategory($id, ManagerRegistry $registry, CategoryRepository $categoryRepository): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $registry->getManager();
         $category = $categoryRepository->find($id);
         

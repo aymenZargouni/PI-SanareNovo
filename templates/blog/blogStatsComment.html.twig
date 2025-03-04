@@ -1,0 +1,46 @@
+{% extends 'admin.html.twig' %}
+{% block title %}Statistiques des Commentaires{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📊 Blogs avec le plus de commentaires</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0">💬 Nombre de Commentaires par Blog</h4>
+        </div>
+        <div class="card-body">
+            <canvas id="blogsCommentsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Inclure Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const commentsCtx = document.getElementById('blogsCommentsChart').getContext('2d');
+        new Chart(commentsCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ blogsWithMostComments|map(b => b.title)|json_encode()|raw }},
+                datasets: [{
+                    label: 'Nombre de Commentaires',
+                    data: {{ blogsWithMostComments|map(b => b.comments_count)|json_encode()|raw }},
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
