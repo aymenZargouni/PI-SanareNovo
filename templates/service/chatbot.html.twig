@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat - Clinique{% endblock %}
+
+{% block body %}
+    <div class="chat-container">
+        <h2 class="chat-title">Chat de la Clinique 🏥</h2>
+        <div id="chat-box"></div>
+
+        <div class="chat-input">
+            <select id="question-select">
+                <option value="">-- Sélectionnez une question --</option>
+                {% for q in questions %}
+                    <option value="{{ q.response }}">{{ q.question }}</option>
+                {% endfor %}
+            </select>
+            <button id="send-btn">Envoyer</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('send-btn').addEventListener('click', function () {
+            let select = document.getElementById('question-select');
+            if (select.value) {
+                let chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML += `<div class="chat-message user"><strong>Vous :</strong> ${select.options[select.selectedIndex].text}</div>`;
+                chatBox.innerHTML += `<div class="chat-message bot"><strong>Clinique :</strong> ${select.value}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll auto vers le bas
+                select.value = ""; // Réinitialiser la sélection
+            }
+        });
+    </script>
+
+    <style>
+        .chat-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .chat-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #chat-box {
+            min-height: 150px;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .chat-message {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: left;
+        }
+        .chat-message.user {
+            background: #d1e7ff;
+            text-align: right;
+        }
+        .chat-message.bot {
+            background: #d4f5d3;
+            text-align: left;
+        }
+        .chat-input {
+            display: flex;
+            gap: 5px;
+        }
+        #question-select {
+            flex-grow: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #send-btn {
+            padding: 8px 15px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #send-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+{% endblock %}

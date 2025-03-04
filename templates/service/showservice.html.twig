@@ -1,0 +1,86 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Service List{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" data-translate>Service List</h2>
+
+   
+    <!-- Formulaire de recherche -->
+    <div class="mb-3">
+        <input type="text" id="search-query" class="form-control" placeholder="Rechercher par Nom" data-translate />
+    </div>
+
+    <!-- Tableau des services -->
+    <table class="table table-bordered table-striped" id="service-table">
+        <thead class="thead-dark">
+            <tr>
+                <th data-translate>Ajouter Salle</th>
+                <th data-translate>Voir Salles</th>
+                <th>ID</th>
+                <th data-translate>Nom</th>
+                <th data-translate>Chef Service</th>
+                <th data-translate>Nombre de Salles</th>
+                <th data-translate>Capacité</th>
+                <th data-translate>État</th>
+                <th data-translate>Update</th>
+                <th data-translate>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in tabservice %}
+            <tr class="service-row">
+                <td>
+                    <a href="{{ path('addFormsalle2', { id: a.id }) }}" class="btn btn-success" data-translate>Ajouter Salle</a>
+                </td>
+                <td>
+                    <a href="{{ path('showSalleByService', { id: a.id }) }}" class="btn btn-info" data-translate>Voir Salles</a>
+                </td>
+                <td>{{ a.id }}</td>
+                <td>{{ a.nom }}</td>
+                <td>{{ a.chefService }}</td>
+                <td>{{ a.nbrSalle }}</td>
+                <td>{{ a.capacite }}</td>
+                <td>
+                    {% if a.etat == 0 %}
+                        <span data-translate>Libre</span>
+                    {% elseif a.etat == 1 %}
+                        <span data-translate>Réservé</span>
+                    {% else %}
+                        <span data-translate>Non défini</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('updateFormservice', { id: a.id }) }}" class="btn btn-primary" data-translate>Update</a>
+                </td>
+                <td>
+                    <a href="{{ path('deleteservice', { id: a.id }) }}" class="btn btn-danger" data-translate>Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Boutons d'ajout et navigation -->
+    <a href="{{ path('addFormservice') }}" class="btn btn-primary" data-translate>Ajouter Service</a>
+    <a href="{{ path('app_dashboard') }}" class="btn btn-primary" data-translate>Statistique</a>
+    <a href="{{ path('chat_page') }}" class="btn btn-primary" data-translate>Avez-vous des questions ?</a>
+</div>
+
+
+
+<!-- Script pour la recherche dynamique -->
+<script>
+document.getElementById('search-query').addEventListener('input', function() {
+    var query = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#service-table .service-row');
+
+    rows.forEach(function(row) {
+        var serviceName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+        row.style.display = serviceName.includes(query) ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

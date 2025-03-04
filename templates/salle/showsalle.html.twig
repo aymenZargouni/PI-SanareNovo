@@ -1,0 +1,94 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}SenareNovo - Home{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Service List</h2>
+
+    <!-- Champ de recherche -->
+    <div class="mb-3">
+        <input type="text" id="search-query" class="form-control" placeholder="Rechercher par ID de la salle...">
+    </div>
+
+    <table class="table table-bordered table-striped" id="service-table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID Salle</th>
+                <th>SERVICE</th>
+                <th>TYPE</th>
+                <th>ETAT</th>
+                <th>QR Code</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in tabservice %}
+            <tr class="service-row">
+                <td>{{ a.id }}</td>  <!-- ID de la salle -->
+                <td>{{ a.getService().id }}</td>
+                <td>{{ a.type }}</td>
+                <td>
+                    {% if a.etat == 0 %}
+                        Libre
+                    {% elseif a.etat == 1 %}
+                        Réservé
+                    {% else %}
+                        Non défini
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Bouton pour afficher le QR Code -->
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrModal{{ a.id }}">
+                        Afficher QR Code
+                    </button>
+
+                    <!-- Modale QR Code -->
+                    <div class="modal fade" id="qrModal{{ a.id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ a.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="qrModalLabel{{ a.id }}">QR Code de la salle {{ a.id }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="{{ path('api_salle_qrcode', { id: a.id }) }}" alt="QR Code Salle {{ a.id }}" class="img-fluid">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td><a href="{{ path('updateFormsalle', { id: a.id }) }}" class="btn btn-primary">Update</a></td>
+                <td><a href="{{ path('deletesalle', { id: a.id }) }}" class="btn btn-danger">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <td><a href="{{ path('addFormsalle') }}" class="btn btn-primary">Ajouter salle </a></td>
+</div>
+
+<script>
+    document.getElementById('search-query').addEventListener('input', function() {
+        var query = this.value.toLowerCase(); // Récupérer le texte de la recherche
+
+        
+        var rows = document.querySelectorAll('#service-table .service-row');
+
+        rows.forEach(function(row) {
+            var salleId = row.querySelector('td:nth-child(1)').textContent.toLowerCase(); // ID de la salle (1ère colonne)
+
+            
+            if (salleId.includes(query)) {
+                row.style.display = ''; // Afficher la ligne
+            } else {
+                row.style.display = 'none'; // Cacher la ligne
+            }
+        });
+    });
+</script>
+
+{% endblock %}

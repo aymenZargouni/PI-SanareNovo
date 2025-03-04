@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 class Service
 {
@@ -16,13 +18,28 @@ class Service
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom complet est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: "Le nom complet doit contenir au moins 3 caractères.",
+        maxMessage: "Le nom complet ne peut pas dépasser 20 caractères."
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de chef service  complet est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: "Le nom chef service complet doit contenir au moins 3 caractères.",
+        maxMessage: "Le nom chef service complet ne peut pas dépasser 20 caractères."
+    )]
+    
     private ?string $chef_service = null;
 
     #[ORM\Column]
-    private ?int $nbr_salle = null;
+    private ?int $nbr_salle =0 ;
 
     #[ORM\Column]
     private ?int $capacite = null;
@@ -39,7 +56,7 @@ class Service
     /**
      * @var Collection<int, Salle>
      */
-    #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: 'service')]
+    #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: 'service', orphanRemoval:true)]
     private Collection $salles;
 
     public function __construct()
