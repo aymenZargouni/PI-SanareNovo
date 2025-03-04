@@ -343,37 +343,34 @@ public function technicianEquipments(Security $security, ManagerRegistry $manage
             ]);
         }
         
-
-        
-
-//telechargement rapport 
-
         #[Route('/coordinator/download-report/{id}', name: 'download_report')]
-    public function downloadReport(Historique $historique): Response
-    {
-        // Configuration de DomPDF
-        $options = new Options();
-        $options->set('defaultFont', 'Arial');
-        $dompdf = new Dompdf($options);
+public function downloadReport(Historique $historique): Response
+{
+    // Configuration de DomPDF
+    $options = new Options();
+    $options->set('defaultFont', 'Arial');
+    $dompdf = new Dompdf($options);
 
-        // Récupération des informations de l'historique
-        $html = $this->renderView('rapport/rapport.html.twig', [
-            'historique' => $historique,
-        ]);
+    // Récupération des informations de l'historique
+    $html = $this->renderView('rapport/rapport.html.twig', [
+        'historique' => $historique,
+    ]);
 
-        // Charger le HTML dans DomPDF
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
+    // Charger le HTML dans DomPDF
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
 
-        // Réponse pour télécharger le fichier PDF
-        return new Response(
-            $dompdf->output(),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="rapport_'.$historique->getId().'.pdf"',
-            ]
-        );
-    }
+    // Réponse pour télécharger le fichier PDF
+    return new Response(
+        $dompdf->output(),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="rapport_'.$historique->getId().'.pdf"',
+        ]
+    );
 }
+
+
+    }

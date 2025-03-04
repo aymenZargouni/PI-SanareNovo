@@ -9,7 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 final class ClaimController extends AbstractController
 {
     // Route pour afficher toutes les réclamations
@@ -111,5 +113,8 @@ public function delete(int $id, ManagerRegistry $managerRegistry): Response
     $this->addFlash('success', 'Réclamation supprimée avec succès');
     return $this->redirectToRoute('claim_list'); // Rediriger vers la liste des réclamations
 }
+
+
+
 
 }
