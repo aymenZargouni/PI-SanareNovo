@@ -3,32 +3,47 @@
 {% block title %}Modifier l'Offre{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Modifier l'Offre</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4 text-primary">Modifier l'Offre</h1>
 
-        {{ form_start(form) }}
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Détails de l'offre</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+
             <div class="mb-3">
-                {{ form_label(form.titre, 'Titre de l\'offre') }}
+                {{ form_label(form.titre, 'Titre de l\'offre', {'label_attr': {'class': 'form-label'}}) }}
                 {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.titre) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(form.description, 'Description') }}
-                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                {{ form_errors(form.description) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(form.datePublication, 'Date de publication') }}
+                {{ form_label(form.datePublication, 'Date de publication', {'label_attr': {'class': 'form-label'}}) }}
                 {{ form_widget(form.datePublication, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.datePublication) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(form.dateExpiration, 'Date d\'expiration') }}
+                {{ form_label(form.dateExpiration, 'Date d\'expiration', {'label_attr': {'class': 'form-label'}}) }}
                 {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateExpiration) }}
             </div>
 
-            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-            <a href="{{ path('listOffre') }}" class="btn btn-secondary">Annuler</a>
-        {{ form_end(form) }}
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+                <a href="{{ path('listOffre') }}" class="btn btn-secondary">Annuler</a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
     </div>
+</div>
 {% endblock %}
