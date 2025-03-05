@@ -15,6 +15,15 @@ class ServiceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Service::class);
     }
+    public function searchById($query)
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.id LIKE :query')  // Filtre sur l'ID de la salle
+            ->setParameter('query', '%' . $query . '%')  // Recherche partielle
+            ->getQuery()
+            ->getResult();
+    }
+
 
     //    /**
     //     * @return Service[] Returns an array of Service objects

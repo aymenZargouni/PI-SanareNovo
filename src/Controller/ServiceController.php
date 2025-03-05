@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Form\ServiceType;
 use App\Repository\ServiceRepository;
+use App\Repository\SalleRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class ServiceController extends AbstractController{
     #[Route('/service', name: 'app_service')]
@@ -21,14 +21,24 @@ final class ServiceController extends AbstractController{
         ]);
     }
 
-    #[Route('/showservice', name: 'showservice')]
-    public function showservice (ServiceRepository $serRep): Response
+    #[Route('showservice', name: 'showservice')]
+    public function showservice (ServiceRepository $serRep,Request $req): Response
     {
-        $Blog = $serRep->findAll();
-        return $this->render('service/showservice.html.twig', [
-            'tabservice' => $Blog,
-        ]);
-    }  
+         // Get the search term from the request (if any)
+    $searchTerm = $req->query->get('search', '');
+
+    // If a search term is provided, filter the services by name
+    if ($searchTerm) {
+        $services = $serRep->findByName($searchTerm);
+    } else {
+        // Otherwise, fetch all services
+        $services = $serRep->findAll();
+    }
+
+    return $this->render('service/showservice.html.twig', [
+        'tabservice' => $services,
+        'searchTerm' => $searchTerm,  // Pass the search term to the template
+    ]);}
 
     #[Route('/addFormservice', name: 'addFormservice')]
     public function addFromservice( ManagerRegistry $m, Request $req): Response
@@ -79,5 +89,46 @@ final class ServiceController extends AbstractController{
         $em->flush();
         return $this->redirectToRoute('showservice'); // redige vers la liste des auteurs aprés l'ajout  
 
+    }
+
+    #[Route('/dashboard', name: 'app_dashboard')]
+    public function dashbord (ServiceRepository $serviceRepository, SalleRepository $salleRepository): Response
+    {
+        $services = $serviceRepository->findAll();
+
+        $stats = [];
+        foreach ($services as $service) {
+            $salles = $service->getSalles(); // Supposant qu'il y a une relation OneToMany
+            $totalSalles = count($salles);
+            $sallesOccupees = count(array_filter($salles->toArray(), fn($salle) => $salle->isOccupee()));
+
+
+            $stats[] = [
+                'service' => $service->getNom(),
+                'total_salles' => $totalSalles,
+                'salles_occupees' => $sallesOccupees,
+                'pourcentage_occupees' => $totalSalles > 0 ? round(($sallesOccupees / $totalSalles) * 100, 2) : 0
+            ];
+        }
+
+        return $this->render('service/dashbord.html.twig', [
+            'stats' => $stats
+        ]);
+    }
+    public function searchSalle(Request $request, ServiceRepository $a)
+    {
+        // Récupérer la chaîne de recherche envoyée par Ajax
+        $query = $request->get('query');
+    
+        // Rechercher les salles par ID en fonction de la requête
+        if ($query) {
+            // Utiliser la méthode personnalisée dans le repository pour filtrer les salles
+            $salles = $a->searchById($query);
+        } else {
+            $salles = [];
+        }
+    
+        // Retourner les résultats sous forme de JSON
+        return new JsonResponse($salles);
     }
 }

@@ -11,6 +11,7 @@
         {% block stylesheets %}
         {% endblock %}
 
+ 
 
     </head>
     <body>
@@ -28,6 +29,10 @@
             <i class="ti ti-x fs-8"></i>
           </div>
         </div>
+    
+
+
+
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
           <ul id="sidebarnav">
@@ -121,6 +126,20 @@
                         <a href="{{ path('showCategory') }}" class="sidebar-link">
                             <i class="ti ti-folder"></i>
                             <span class="hide-menu">Liste des Catégories</span>
+                        </a>
+                    </li>
+
+                      <li class="sidebar-item">
+                        <a href="{{ path('blog_stats_category') }}" class="sidebar-link">
+                            <i class="ti ti-folder"></i>
+                            <span class="hide-menu">Statistique de Blog - Category</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a href="{{ path('blog_stats_comments') }}" class="sidebar-link">
+                            <i class="ti ti-folder"></i>
+                            <span class="hide-menu">Statistique de Blog - Comments</span>
                         </a>
                     </li>
                 </ul>

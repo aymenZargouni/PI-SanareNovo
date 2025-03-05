@@ -1,0 +1,37 @@
+{% extends 'admin.html.twig' %}
+{% block title %}Statistiques des Catégories{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📊 Blogs avec le plus de catégories</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📝 Répartition des Blogs par Catégories</h4>
+        </div>
+        <div class="card-body">
+            <canvas id="blogsCategoriesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Inclure Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoriesCtx = document.getElementById('blogsCategoriesChart').getContext('2d');
+        new Chart(categoriesCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ blogsWithMostCategories|map(b => b.title)|json_encode()|raw }},
+                datasets: [{
+                    label: 'Nombre de Catégories',
+                    data: {{ blogsWithMostCategories|map(b => b.Category|length)|json_encode()|raw }},
+                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4caf50', '#f39c12'],
+                    hoverOffset: 4
+                }]
+            }
+        });
+    });
+</script>
+{% endblock %}

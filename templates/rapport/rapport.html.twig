@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rapport de Réparation</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <link rel="stylesheet" href="{{ asset('admin/css/styles.min.css') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('admin/images/logos/favicon.png') }}" />
+    <link rel="stylesheet" href="{{ asset('admin/css/icons/tabler-icons.css') }}" />
+    {% block stylesheets %}
+    {% endblock %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            background-color: #2850B9;
+            color: white;
+            padding: 40px 0;
+            position: relative;
+            border-bottom: 5px solid #1A3D8F;
+        }
+
+        header .logo {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            width: 120px;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .content {
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            max-width: 900px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .content p {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        .content p strong {
+            color: #2850B9;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 50px;
+            border-top: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .footer a {
+            color: #2850B9;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Utilisation du chemin relatif de l'image dans public/img -->
+        <a href="#" class="logo-img">
+            <img src="{{ asset('admin/images/logos/logo-sanarenovo.png') }}" alt="Logo Sanarenovo" class="logo" />
+        </a>
+        <h1>Rapport de Réparation</h1>
+    </header>
+
+    <div class="content">
+        <div class="details">
+            <p><strong>Équipement :</strong> {{ historique.equipment.name }}</p>
+            <p><strong>Date de réparation :</strong> {{ historique.dateReparation|date('d/m/Y') }}</p>
+        </div>
+
+        <div class="repair-info">
+            <p><strong>Rapport :</strong></p>
+            <p>{{ historique.rapportDetaille }}</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Pour plus d'informations, veuillez <a href="mailto:support@sanarenovo.com">contacter le support</a>.</p>
+    </footer>
+</body>
+
+{% block javascripts %}
+    <script src="{{ asset('admin/libs/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('admin/js/sidebarmenu.js') }}"></script>
+    <script src="{{ asset('admin/js/app.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/simplebar/dist/simplebar.js') }}"></script>
+    <script src="{{ asset('admin/js/dashboard.js') }}"></script>
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
+{% endblock %}
+
+</html>

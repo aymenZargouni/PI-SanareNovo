@@ -18,7 +18,6 @@ class Category
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "name cannot be empty.")]
-    #[Assert\Length(min: 3, minMessage: "Name must be at least 3 characters long.")]
     private ?string $name = null;
 
 
