@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commentaires - {{ blog.title }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <br><br><h2 class="mb-4 text-center">Commentaires pour : <span class="text-primary">{{ blog.title }}</span></h2>
+
+    <div class="comments-area">
+        <h4 class="text-primary">{{ comments|length }} Commentaires</h4>
+
+        {% for comment in comments %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">
+                            {% if comment.user %}
+                                <strong>{{ comment.user.email }}</strong> - {{ comment.createdAt|date('d/m/Y H:i') }}
+                            {% else %}
+                                <strong>Utilisateur inconnu</strong> - {{ comment.createdAt|date('d/m/Y H:i') }}
+                            {% endif %}
+                        </p>
+
+                        <p class="comment mb-3">{{ comment.content }}</p>
+                    </div>
+                    <div>
+                        {% if app.user and app.user == comment.user %}
+                            <a href="{{ path('update_comment', {id: comment.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{{ path('delete_comment', {id: comment.id}) }}" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">Supprimer</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('add_comment', {id: blog.id}) }}" class="btn btn-info"><i class="fa fa-plus"></i> Ajouter un commentaire</a>
+        <a href="{{ path('blog_details', {id: blog.id}) }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour au blog</a>
+    </div>
+</div>
+<br>
+{% endblock %}

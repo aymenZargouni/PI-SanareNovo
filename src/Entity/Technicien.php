@@ -31,6 +31,9 @@ class Technicien
     #[ORM\OneToMany(targetEntity: Claim::class, mappedBy: 'technicien')]
     private Collection $claims;
 
+    #[ORM\Column(length: 15)]
+    private ?string $phoneNumber = null;
+
     public function __construct()
     {
         $this->claims = new ArrayCollection();
@@ -105,6 +108,18 @@ class Technicien
                 $claim->setTechnicien(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }

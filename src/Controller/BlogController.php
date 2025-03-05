@@ -15,7 +15,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Twig\Environment;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Knp\Component\Pager\PaginatorInterface;
 final class BlogController extends AbstractController{
     
     #[Route('/blog', name: 'blog')]
@@ -26,29 +33,64 @@ final class BlogController extends AbstractController{
         ]);
     }
 
-    #[Route('/admin/showBlog', name: 'showBlog')]
-    public function showBlogs(BlogRepository $BlogRep): Response
+    #[Route('/chat', name: 'blog')]
+    public function chat(): Response
     {
-        $Blog = $BlogRep->findByTitleSorted();
-        return $this->render('blog/showBlog.html.twig', [
-            'tabBlog' => $Blog,
-        ]);
-    }  
+        #$this->denyAccessUnlessGranted('ROLE_USER');
 
-    #[Route('/showBlogPatient', name: 'showBlogPatient')]
-    public function showBlogPatient(BlogRepository $blogRepository): Response
-    {
-        $blogs = $blogRepository->findAll();
-
-        return $this->render('blog/showBlogPatient.html.twig', [
-            'blogs' => $blogs,
+        return $this->render('blog/chat.html.twig', [
+            'controller_name' => 'BlogController',
         ]);
     }
 
+    
+    #[Route('/admin/showBlog', name: 'showBlog')]
+    public function showBlogs(BlogRepository $blogRepository): Response
+    {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $blogs = $blogRepository->findByTitleSorted();
+        
+        return $this->render('blog/showBlog.html.twig', [
+            'tabBlog' => $blogs
+        ]);
+    }
+    
+
+    /*#[Route('/showBlogPatient', name: 'showBlogPatient')]
+    public function showBlogPatient(BlogRepository $blogRepository): Response
+    {
+        $blogs = $blogRepository->findAllSortedByRating();
+        
+        return $this->render('blog/showBlogPatient.html.twig', [
+            'blogs' => array_map(fn($result) => $result[0], $blogs), // 🔥 On ne prend que l'objet Blog
+        ]);
+    }*/
+
+
+    #[Route('/showBlogPatient', name: 'showBlogPatient')]
+    public function showBlogPatient(BlogRepository $blogRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $query = $blogRepository->createQueryBuilder('b')
+            ->orderBy('b.createdAt', 'DESC') // Trie par rating (ajuste si besoin)
+            ->getQuery();
+
+        $pagination = $paginator->paginate(
+            $query, // La requête
+            $request->query->getInt('page', 1), // Page actuelle, par défaut 1
+            3 // Nombre d'articles par page
+        );
+
+        return $this->render('blog/showBlogPatient.html.twig', [
+            'pagination' => $pagination,
+        ]);
+    }
 
     #[Route('/admin/addFormBlog', name: 'addFormBlog')]
     public function addFromBlog(ManagerRegistry $m, Request $req): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $m->getManager();
         $Blog = new Blog();
         $form = $this->createForm(BlogType::class, $Blog);
@@ -69,6 +111,8 @@ final class BlogController extends AbstractController{
     #[Route('/admin/updateFormBlog/{id}', name: 'updateFormBlog')]
     public function updateFormBlog(ManagerRegistry $m, Request $req, $id, BlogRepository $BlogRep): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $m->getManager();
         $Blog = $BlogRep->find($id);
     
@@ -80,18 +124,18 @@ final class BlogController extends AbstractController{
         $form->handleRequest($req);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            $Blog->setUpdatedAt(new \DateTimeImmutable());
+    
             $em->persist($Blog);
             $em->flush();
-            
-            // ✅ Ajout du message flash pour informer l'utilisateur
+    
             $this->addFlash('success', 'Le blog a été modifié avec succès !');
-            
-            // ✅ Redirection vers la liste des blogs
             return $this->redirectToRoute('showBlog');
         }
     
         return $this->render('blog/updateFormBlog.html.twig', [
             'formUpdateBlog' => $form->createView(),
+            'blog' => $Blog,
         ]);
     }
     
@@ -99,6 +143,8 @@ final class BlogController extends AbstractController{
     #[Route('/admin/deleteFormBlog/{id}', name: 'deleteFormBlog')]
     public function deleteFormBlog( $id,ManagerRegistry $m, BlogRepository $BlogRep): Response
     {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $m->getManager();
         //var_dump($id).die();
         $Blog = $BlogRep->find($id);
@@ -110,75 +156,61 @@ final class BlogController extends AbstractController{
         } else {
             $this->addFlash('warning', 'Le blog que vous essayez de supprimer n\'existe pas.');
         }
-        return $this->redirectToRoute('showBlog'); // redige vers la liste des auteurs aprés l'ajout  
+        return $this->redirectToRoute('showBlog'); 
 
     }
 
-    #[Route('/admin/blog_details/{id}', name: 'blog_details')]
+    #[Route('/blog_details/{id}', name: 'blog_details')]
     public function blogDetails(Blog $blog, Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Création d'un nouveau commentaire
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
 
-        // Traitement du formulaire
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setBlog($blog);
-            $comment->setCreatedAt(new \DateTimeImmutable()); // Assurez-vous que c'est DateTimeImmutable
+            $comment->setCreatedAt(new \DateTimeImmutable()); 
             $entityManager->persist($comment);
             $entityManager->flush();
 
             return $this->redirectToRoute('blog_details', ['id' => $blog->getId()]);
         }
-        // Rendu de la vue avec le formulaire
         return $this->render('blog/BlogDetails.html.twig', [
             'blog' => $blog,
-            'form' => $form->createView() // 🔥 Envoi du formulaire à Twig
+            'form' => $form->createView() 
         ]);
     }
 
 
     
     #[Route("/admin/searchBlog", name:"search_blog")]
- 
     public function searchBlog(Request $request, BlogRepository $blogRepository): Response
     {
         $query = $request->query->get('query', '');
-        
-        // Recherche des blogs par titre
-        $tabBlog = $blogRepository->createQueryBuilder('b')
-            ->where('b.title LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->getQuery()
-            ->getResult();
+
+        $tabBlog = $query ? $blogRepository->searchByTitle($query) : [];
 
         return $this->render('blog/showBlog.html.twig', [
             'tabBlog' => $tabBlog,
         ]);
     }
 
-    #[Route("/searchBlog", name:"search_blog")]
- 
-    public function searchBlogPatient(Request $request, BlogRepository $blogRepository): Response
+    #[Route('/search/blogs', name: 'search_blog_ajax', methods: ['GET'])]
+    public function searchBlogAjax(Request $request, BlogRepository $blogRepository): JsonResponse
     {
         $query = $request->query->get('query', '');
-        
-        // Recherche des blogs par titre
-        $tabBlog = $blogRepository->createQueryBuilder('b')
-            ->where('b.title LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->getQuery()
-            ->getResult();
-
-        return $this->render('blog/showBlogPatient.html.twig', [
-            'blogs' => $tabBlog,
-        ]);
+        dump($query); // ⚠️ Vérifie la requête dans le log de Symfony
+        $blogs = $query ? $blogRepository->searchByTitleAjax($query) : [];
+    
+        return $this->json($blogs, 200, [], ['groups' => 'blogs']);
     }
+    
+    
 
     #[Route('/blog/{id}/rate', name: 'rate_blog')]
     public function rateBlog(Request $request, Blog $blog, EntityManagerInterface $entityManager)
     {
+        #$this->denyAccessUnlessGranted('ROLE_USER');
         $rating = new Rating();
         $rating->setBlog($blog);
 
@@ -190,7 +222,7 @@ final class BlogController extends AbstractController{
             $entityManager->flush();
 
             $this->addFlash('success', 'Merci pour votre évaluation !');
-            return $this->redirectToRoute('showBlog', ['id' => $blog->getId()]);
+            return $this->redirectToRoute('showBlogPatient', ['id' => $blog->getId()]);
         }
 
         return $this->render('blog/rate.html.twig', [
@@ -199,4 +231,73 @@ final class BlogController extends AbstractController{
         ]);
     }
 
+    #[Route('/admin/blog_stats/category', name: 'blog_stats_category')]
+    public function blogStatsCategories(BlogRepository $blogRepository): Response
+    {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $blogsWithMostCategories = $blogRepository->findBlogsWithMostCategories();
+
+        return $this->render('blog/blogStatsCategory.html.twig', [
+            'blogsWithMostCategories' => $blogsWithMostCategories,
+        ]);
+    }
+
+    #[Route('/admin/blog_stats/comments', name: 'blog_stats_comments')]
+    public function blogStatsComments(BlogRepository $blogRepository): Response
+    {
+        #$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $blogsWithMostComments = $blogRepository->findBlogsWithMostComments();
+
+        // Convertir en tableau pour JSON
+        $blogsWithMostCommentsArray = array_map(function ($blog) {
+            return [
+                'title' => $blog->getTitle(),
+                'comments_count' => count($blog->getComments()),
+            ];
+        }, $blogsWithMostComments);
+
+        return $this->render('blog/blogStatsComment.html.twig', [
+            'blogsWithMostComments' => $blogsWithMostCommentsArray,
+        ]);
+    }
+
+    
+    #[Route('/blog/{id}/download', name: 'blog_download_pdf')]
+    public function downloadBlogPdf(Blog $blog, Environment $twig, ParameterBagInterface $params, Request $request): Response
+    {
+        #$this->denyAccessUnlessGranted('ROLE_USER');
+
+        $projectDir = $params->get('kernel.project_dir');
+        
+        $serverUrl = $request->getSchemeAndHttpHost();
+
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('isHtml5ParserEnabled', true);
+        $pdfOptions->set('isRemoteEnabled', true); // Permet de charger les images
+
+        $dompdf = new Dompdf($pdfOptions);
+
+        $imagePath = $blog->getImage() 
+            ? $serverUrl . '/uploads/images/' . $blog->getImage() 
+            : null;
+
+        $html = $twig->render('blog/blog_pdf.html.twig', [
+            'blog' => $blog,
+            'imagePath' => $imagePath
+        ]);
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="blog_' . $blog->getId() . '.pdf"'
+        ]);
+    }
+
+
+    
 }
