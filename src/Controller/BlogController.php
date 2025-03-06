@@ -33,7 +33,7 @@ final class BlogController extends AbstractController{
         ]);
     }
 
-    #[Route('/chat', name: 'blog')]
+    #[Route('/patient/chat', name: 'blog')]
     public function chat(): Response
     {
         #$this->denyAccessUnlessGranted('ROLE_USER');
@@ -57,7 +57,7 @@ final class BlogController extends AbstractController{
     }
     
 
-    /*#[Route('/showBlogPatient', name: 'showBlogPatient')]
+    /*#[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
     public function showBlogPatient(BlogRepository $blogRepository): Response
     {
         $blogs = $blogRepository->findAllSortedByRating();
@@ -68,23 +68,46 @@ final class BlogController extends AbstractController{
     }*/
 
 
-    #[Route('/showBlogPatient', name: 'showBlogPatient')]
+    /*#[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
     public function showBlogPatient(BlogRepository $blogRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $blogRepository->createQueryBuilder('b')
-            ->orderBy('b.createdAt', 'DESC') // Trie par rating (ajuste si besoin)
+            ->orderBy('b.createdAt', 'DESC') 
             ->getQuery();
 
         $pagination = $paginator->paginate(
-            $query, // La requête
-            $request->query->getInt('page', 1), // Page actuelle, par défaut 1
-            3 // Nombre d'articles par page
+            $query, 
+            $request->query->getInt('page', 1), 
+            3 
+        );
+
+        return $this->render('blog/showBlogPatient.html.twig', [
+            'pagination' => $pagination,
+        ]);
+    }*/
+
+    #[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
+    public function showBlogPatient(BlogRepository $blogRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $query = $blogRepository->createQueryBuilder('b')
+            ->leftJoin('b.ratings', 'r')
+            ->addSelect('AVG(r.score) as HIDDEN avgRating') // Calcul de la moyenne
+            ->groupBy('b.id')
+            ->orderBy('avgRating', 'DESC') // Trier par la note moyenne la plus élevée
+            ->addOrderBy('b.createdAt', 'DESC') // En cas d'égalité, trier par date
+            ->getQuery();
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            3
         );
 
         return $this->render('blog/showBlogPatient.html.twig', [
             'pagination' => $pagination,
         ]);
     }
+    
 
     #[Route('/admin/addFormBlog', name: 'addFormBlog')]
     public function addFromBlog(ManagerRegistry $m, Request $req): Response
@@ -160,7 +183,7 @@ final class BlogController extends AbstractController{
 
     }
 
-    #[Route('/blog_details/{id}', name: 'blog_details')]
+    #[Route('/patient/blog_details/{id}', name: 'blog_details')]
     public function blogDetails(Blog $blog, Request $request, EntityManagerInterface $entityManager): Response
     {
         $comment = new Comment();

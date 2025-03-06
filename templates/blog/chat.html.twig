@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WSP ChatBot{% endblock %}
+{% block title %}Sanarenovo - ChatBot{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="chat-container mt-5">
-        <h4 class="text-center">🤖 WSP ChatBot</h4>
+        <h4 class="text-center text-primary">🤖 SanareNovo ChatBot</h4>
         <div class="chat-box p-3" id="chatBox">
             <div class="message-container">
                 <div class="bot-message">Bienvenue ! Posez-moi une question.</div>
@@ -15,8 +15,9 @@
         <!-- Champ de saisie -->
         <div class="input-group mt-3">
             <input type="text" id="userInput" class="form-control" placeholder="Entrez votre question..." />
-            <br>
-            <button class="btn btn-success" onclick="sendMessage()">Envoyer</button>
+            <div class="input-group-append ms-2">
+                <button class="btn btn-primary" onclick="sendMessage()">Envoyer</button>
+            </div>
         </div>
     </div>
 </div>
@@ -31,7 +32,7 @@
 
         // Ajouter le message de l'utilisateur à l'affichage
         const userMessageDiv = document.createElement('div');
-        userMessageDiv.classList.add('user-message', 'mt-2', 'p-2', 'rounded', 'text-white', 'bg-success');
+        userMessageDiv.classList.add('user-message', 'mt-2', 'p-2', 'rounded', 'text-white', 'bg-primary');
         userMessageDiv.textContent = userMessage;
         chatBox.appendChild(userMessageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -49,7 +50,7 @@
             const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                 method: 'POST',
                 headers: {
-                    Authorization: 'Bearer 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',
+                    Authorization: 'Bearer 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',
                     'HTTP-Referer': 'https://www.SenareNovo.com',
                     'X-Title': 'SenareNovo',
                     'Content-Type': 'application/json',
@@ -68,7 +69,7 @@
 
             // Ajouter la réponse du bot
             const botMessageDiv = document.createElement('div');
-            botMessageDiv.classList.add('bot-message', 'mt-2', 'p-2', 'rounded', 'bg-light');
+            botMessageDiv.classList.add('bot-message', 'mt-2', 'p-2', 'rounded', 'bg-light', 'text-dark');
             botMessageDiv.innerHTML = botResponse;
             chatBox.appendChild(botMessageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -99,9 +100,21 @@
     .user-message {
         align-self: flex-end;
         text-align: right;
+        background-color: #007bff !important;
     }
     .bot-message {
         align-self: flex-start;
+        background-color: #f1f1f1;
+    }
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+    .input-group-append {
+        display: flex;
+    }
+    .btn-primary {
+        padding: 10px 15px;
     }
 </style>
 {% endblock %}

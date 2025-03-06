@@ -95,123 +95,123 @@ final class SalleController extends AbstractController{
     }
 
     #[Route('/deletesalle/{id}', name: 'deletesalle')]
-public function deleteFormBlog($id, ManagerRegistry $m, SalleRepository $BlogRep): Response
-{
-    $em = $m->getManager();
+    public function deleteFormBlog($id, ManagerRegistry $m, SalleRepository $BlogRep): Response
+    {
+        $em = $m->getManager();
+
+        
+        $Blog = $BlogRep->find($id);
+
+        // Vérifier si l'entité a été trouvée
+        if (!$Blog) {
+            
+            $this->addFlash('error', 'Salle not found');
+            return $this->redirectToRoute('showsalle'); 
+        }
 
     
-    $Blog = $BlogRep->find($id);
-
-    // Vérifier si l'entité a été trouvée
-    if (!$Blog) {
-        
-        $this->addFlash('error', 'Salle not found');
-        return $this->redirectToRoute('showsalle'); 
-    }
-
-   
-    $em->remove($Blog);
-    $em->flush();
-
-    // Rediriger après la suppression
-    return $this->redirectToRoute('showsalle'); // Rediriger vers la liste des salles
-}
-#[Route('/addFormsalle2/{id}', name: 'addFormsalle2')]
-public function addFromservic (int $id, ManagerRegistry $m, Request $req): Response
-{
-    $em = $m->getManager(); 
-
-    // Récupérer le service correspondant
-    $service = $em->getRepository(Service::class)->find($id);
-
-    if (!$service) {
-        throw $this->createNotFoundException('Service non trouvé.');
-    }
-
-    // Créer une nouvelle salle et l'associer au service
-    $salle = new Salle();
-    $salle->setService($service);
-
-    $form = $this->createForm(SalleType::class, $salle);
-    $form->handleRequest($req);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $em->persist($salle);
-
-        // Incrémenter le nombre de salles du service
-        $service->setNbrSalle($service->getNbrSalle() + 1);
-        $em->persist($service);
-
+        $em->remove($Blog);
         $em->flush();
-        return $this->redirectToRoute('showservice'); 
+
+        // Rediriger après la suppression
+        return $this->redirectToRoute('showsalle'); // Rediriger vers la liste des salles
     }
+    #[Route('/addFormsalle2/{id}', name: 'addFormsalle2')]
+    public function addFromservic (int $id, ManagerRegistry $m, Request $req): Response
+    {
+        $em = $m->getManager(); 
 
-    return $this->render('salle/addFormsalle.html.twig', [
-        'form' => $form->createView(),
-        'service' => $service
-    ]);
-}
-#[Route('/service/{id}/salles', name: 'showSalleByService')]
-public function showSalleByService(SalleRepository $salleRep, Service $service): Response
-{
-    // Récupérer les salles du service donné
-    $salles = $salleRep->findBy(['service' => $service]);
+        // Récupérer le service correspondant
+        $service = $em->getRepository(Service::class)->find($id);
 
-    return $this->render('salle/showsalle2.html.twig', [
-        'service' => $service,
-        'salles' => $salles,
-    ]);
-}
-#[Route('/api/salle/{id}/qrcode', name: 'api_salle_qrcode', methods: ['GET'])]
-public function generateQrCode(int $id, ManagerRegistry $entityManager, UrlGeneratorInterface $urlGenerator): Response
-{
-    // Récupérer la salle depuis la base de données
-    $salle = $entityManager->getRepository(Salle::class)->find($id);
+        if (!$service) {
+            throw $this->createNotFoundException('Service non trouvé.');
+        }
 
-    if (!$salle) {
-        return new Response('Salle non trouvée', 404);
+        // Créer une nouvelle salle et l'associer au service
+        $salle = new Salle();
+        $salle->setService($service);
+
+        $form = $this->createForm(SalleType::class, $salle);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($salle);
+
+            // Incrémenter le nombre de salles du service
+            $service->setNbrSalle($service->getNbrSalle() + 1);
+            $em->persist($service);
+
+            $em->flush();
+            return $this->redirectToRoute('showservice'); 
+        }
+
+        return $this->render('salle/addFormsalle.html.twig', [
+            'form' => $form->createView(),
+            'service' => $service
+        ]);
     }
+    #[Route('/service/{id}/salles', name: 'showSalleByService')]
+    public function showSalleByService(SalleRepository $salleRep, Service $service): Response
+    {
+        // Récupérer les salles du service donné
+        $salles = $salleRep->findBy(['service' => $service]);
 
-    $qrContent = sprintf(
-        "=== Salle n°%d ===\n\nType: %s\nService: %s\n",
-        $salle->getId(),
-        $salle->getType() ?? 'Non spécifié',
-        $salle->getService()?->getNom() ?? 'Aucun service',
-        
-    );
+        return $this->render('salle/showsalle2.html.twig', [
+            'service' => $service,
+            'salles' => $salles,
+        ]);
+    }
+    #[Route('/api/salle/{id}/qrcode', name: 'api_salle_qrcode', methods: ['GET'])]
+    public function generateQrCode(int $id, ManagerRegistry $entityManager, UrlGeneratorInterface $urlGenerator): Response
+    {
+        // Récupérer la salle depuis la base de données
+        $salle = $entityManager->getRepository(Salle::class)->find($id);
 
-    // Générer le QR Code
-    $qrCode = Builder::create()
-    ->writer(new PngWriter())
-    ->data($qrContent)
-    ->encoding(new Encoding('UTF-8'))
-    ->errorCorrectionLevel(ErrorCorrectionLevel::High) // Corrected constant
-    ->size(300)
-    ->margin(10)
-    ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-    ->labelText("Salle n°{$salle->getId()}")
-    ->labelAlignment(LabelAlignment::Center)
-    ->build();
+        if (!$salle) {
+            return new Response('Salle non trouvée', 404);
+        }
 
-  
-    return new Response($qrCode->getString(), 200, ['Content-Type' => 'image/png']);
-}
-public function searchSalle(Request $request, SalleRepository $a)
-{
-   
-    $query = $request->get('query');
+        $qrContent = sprintf(
+            "=== Salle n°%d ===\n\nType: %s\nService: %s\n",
+            $salle->getId(),
+            $salle->getType() ?? 'Non spécifié',
+            $salle->getService()?->getNom() ?? 'Aucun service',
+            
+        );
+
+        // Générer le QR Code
+        $qrCode = Builder::create()
+        ->writer(new PngWriter())
+        ->data($qrContent)
+        ->encoding(new Encoding('UTF-8'))
+        ->errorCorrectionLevel(ErrorCorrectionLevel::High) // Corrected constant
+        ->size(300)
+        ->margin(10)
+        ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+        ->labelText("Salle n°{$salle->getId()}")
+        ->labelAlignment(LabelAlignment::Center)
+        ->build();
 
     
-    if ($query) {
-       
-        $salles = $a->searchById($query);
-    } else {
-        $salles = [];
+        return new Response($qrCode->getString(), 200, ['Content-Type' => 'image/png']);
     }
+    public function searchSalle(Request $request, SalleRepository $a)
+    {
+    
+        $query = $request->get('query');
 
-   
-    return new JsonResponse($salles);
-}
+        
+        if ($query) {
+        
+            $salles = $a->searchById($query);
+        } else {
+            $salles = [];
+        }
+
+    
+        return new JsonResponse($salles);
+    }
     
 }
 
