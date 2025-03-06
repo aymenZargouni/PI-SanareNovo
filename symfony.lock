@@ -38,6 +38,9 @@
             "./migrations/.gitignore"
         ]
     },
+    "endroid/qr-code-bundle": {
+        "version": "5.0.2"
+    },
     "karser/karser-recaptcha3-bundle": {
         "version": "0.2",
         "recipe": {

@@ -21,10 +21,6 @@ class Technicien
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
- 
-    #[ORM\Column(type: 'string', length: 15)]
-    private $phoneNumber; // Nouveau champ ajouté
-
     /**
      * @var Collection<int, Claim>
      */
@@ -44,7 +40,6 @@ class Technicien
         return $this->id;
     }
 
- 
     public function getNom(): ?string
     {
         return $this->nom;
@@ -57,19 +52,18 @@ class Technicien
         return $this;
     }
 
-
-
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phoneNumber): self
+    public function setPhoneNumber(string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -103,23 +97,10 @@ class Technicien
     public function removeClaim(Claim $claim): static
     {
         if ($this->claims->removeElement($claim)) {
-            // set the owning side to null (unless already changed)
             if ($claim->getTechnicien() === $this) {
                 $claim->setTechnicien(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getPhoneNumber(): ?string
-    {
-        return $this->phoneNumber;
-    }
-
-    public function setPhoneNumber(string $phoneNumber): static
-    {
-        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
