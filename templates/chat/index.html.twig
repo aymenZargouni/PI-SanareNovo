@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat en direct{% endblock %}
+
+{% block body %}
+<style>
+    .chat-wrapper {
+        margin: 1em auto;
+        max-width: 95%;
+        font: 18px/1.5 'Roboto', sans-serif;
+    }
+    
+    h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+        font-size: 26px;
+    }
+
+    /* Chat container inside the page */
+    #chat-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Chat header */
+    #chat-header {
+        background: #007bff;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 18px;
+    }
+
+    /* Messages area */
+    #chat-box {
+        height: 300px;
+        padding: 10px;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    /* Message input */
+    #chat-input {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+    }
+
+    #message {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+
+    #send-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+</style>
+
+<div class="chat-wrapper">
+    <h2>💬 Chat en Direct</h2>
+    <div id="chat-container">
+        <div id="chat-header">
+            <span>💬 Chat</span>
+        </div>
+        <div id="chat-box"></div>
+        <div id="chat-input">
+            <input type="text" id="message" placeholder="Tapez votre message...">
+            <button id="send-button">Envoyer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Pass user data to JavaScript -->
+<script>
+    document.body.setAttribute('data-user-role', '{{ userRole }}');
+    document.body.setAttribute('data-user-id', '{{ userId }}');
+    document.body.setAttribute('data-consultation-id', '{{ consultationId }}');
+</script>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/7.0.3/pusher.min.js"></script>
+<script src="{{ asset('admin/js/chat.js') }}"></script>
+
+{% endblock %}

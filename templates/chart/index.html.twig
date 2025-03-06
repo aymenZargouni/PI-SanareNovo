@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consultations by Motif{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4 animate__animated animate__fadeInDown">Consultations by Motif</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div id="chart_div" class="chart-container animate__animated animate__fadeInUp"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['bar']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable({{ chartJson|raw }});
+            var options = {{ optionsJson|raw }};
+
+            var chart = new google.charts.Bar(document.getElementById('chart_div'));
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+
+            // Add hover effect to bars
+            google.visualization.events.addListener(chart, 'onmouseover', (e) => {
+                const bars = document.querySelectorAll('#chart_div rect');
+                if (bars[e.row]) {
+                    bars[e.row].style.opacity = '0.8';
+                    bars[e.row].style.transform = 'scale(1.05)';
+                }
+            });
+
+            google.visualization.events.addListener(chart, 'onmouseout', (e) => {
+                const bars = document.querySelectorAll('#chart_div rect');
+                if (bars[e.row]) {
+                    bars[e.row].style.opacity = '1';
+                    bars[e.row].style.transform = 'scale(1)';
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        /* Ensure the chart is fully responsive */
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        /* Improve the overall typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        /* Add a subtle animation to the chart container */
+        .animate__fadeInUp {
+            animation-delay: 0.3s;
+        }
+
+        /* Add a hover effect to the chart */
+        .chart-container:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Style for chart bars */
+        #chart_div rect {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+{% endblock %}

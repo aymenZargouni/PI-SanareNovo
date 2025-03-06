@@ -117,29 +117,56 @@
                         </div>
 
                         <div class="col-xl-6 col-lg-7">
-                            <div class="main-menu d-none d-lg-block">
-                                <nav>
-                                    <ul id="navigation">
-                                        <li><a class="active" href="{{ path('home') }}">Home</a></li>
-                                        <li><a href="{{ path('department') }}">Department</a></li>
-                                        <li><a href="#">Blog <i class="ti-angle-down"></i></a>
-                                            <ul class="submenu">
-                                                <li><a href="{{ path('blog') }}">Blog</a></li>
-                                                <li><a href="{{ path('single_blog') }}">Single Blog</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="#">Pages <i class="ti-angle-down"></i></a>
-                                            <ul class="submenu">
-                                                <li><a href="{{ path('elements') }}">Elements</a></li>
-                                                <li><a href="{{ path('about') }}">About</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="{{ path('doctors') }}">Doctors</a></li>
-                                        <li><a href="{{ path('contact') }}">Contact</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
+    <div class="main-menu d-none d-lg-block">
+        <nav>
+            <ul id="navigation">
+                {% if is_granted('ROLE_PATIENT') %}
+                <li><a class="active" href="{{ path('app_patient') }}">Home</a></li>
+                {% endif %}
+                {% if is_granted('ROLE_MEDECIN') %}
+                <li><a class="active" href="{{ path('consultations_chart') }}">Chart des maladies</a></li>
+                {% endif %}
+                {% if is_granted('ROLE_MEDECIN') %}
+                    <li><a href="#">Consultations<i class="ti-angle-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="{{ path('app_addformcons') }}">Ajouter une Consultation</a></li>
+                            <li><a href="{{ path('app_showcons') }}">Liste des Consultations</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+
+                <li><a href="#">Rendez-vous<i class="ti-angle-down"></i></a>
+                    <ul class="submenu">
+                        <li><a href="{{ path('app_showrv') }}">Liste des Rendez-vous</a></li>
+                        {% if is_granted('ROLE_PATIENT') %}
+                            <li><a href="{{ path('app_addformrv') }}">Prendre un Rendez-vous</a></li>
+                            <li><a href="{{ path('chat_interface2', {'patientId': app.user.id}) }}">Chat avec le médecin</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+                {% if is_granted('ROLE_MEDECIN') %}
+                    <li><a href="#">Dossier Médical<i class="ti-angle-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="{{ path('app_addformdm') }}">Ajouter un Dossier Médical</a></li>
+                            <li><a href="{{ path('app_showdm') }}">Liste des Dossiers Médicaux</a></li>
+                            
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if app.user and app.user.medecin %}
+    <li>
+        <a href="{{ path('medecin_consultation', {'id': app.user.medecin.id}) }}">
+            Consultation En Ligne
+        </a>
+    </li>
+{% endif %}
+                
+            </ul>
+        </nav>
+    </div>
+</div>
 <div class="col-xl-3 col-lg-3 d-none d-lg-block">
     <div class="Appointment d-flex justify-content-end align-items-center" style="gap: 15px;">
         {% if app.user %}

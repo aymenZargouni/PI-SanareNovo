@@ -1,20 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PatientController!{% endblock %}
+{% block title %}Bienvenue sur SanaRenovo{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .welcome-message {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: fadeIn 1.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .content-section {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-section h2 {
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .content-section p {
+        font-size: 18px;
+        line-height: 1.6;
+        text-align: justify;
+        color: #555;
+    }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Cycle3A/Projet d'intégration/SN-main/src/Controller/PatientController.php</code></li>
-        <li>Your template at <code>C:/Cycle3A/Projet d'intégration/SN-main/templates/patient/index.html.twig</code></li>
-    </ul>
+<div class="welcome-message">
+    Bonjour et bienvenue sur <strong>SanaRenovo</strong> ! 😊
 </div>
+
+<div class="content-section">
+    <h2>Notre Objectif</h2>
+    <p>
+        Chez <strong>SanaRenovo</strong>, notre mission est de faciliter l'accès aux soins de santé pour tous. 
+        Nous nous engageons à offrir une plateforme intuitive et efficace qui permet aux patients de gérer 
+        facilement leurs consultations et dossiers médicaux en toute sécurité.
+    </p>
+</div>
+
+<div class="content-section">
+    <h2>Notre Réputation</h2>
+    <p>
+        Depuis notre création, nous avons aidé des milliers de patients à améliorer leur expérience de santé. 
+        Reconnu pour notre innovation et notre engagement envers la qualité des soins, <strong>SanaRenovo</strong> 
+        est un acteur majeur dans le domaine médical digitalisé. Notre solution est adoptée par des cliniques 
+        et hôpitaux à travers le monde, garantissant un service fiable et sécurisé.
+    </p>
+</div>
+
 {% endblock %}
