@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin.html.twig' %}
 
 {% block title %}Commentaires - {{ blog.title }}{% endblock %}
 
@@ -7,7 +7,7 @@
     <br><br><h2 class="mb-4 text-center">Commentaires pour : <span class="text-primary">{{ blog.title }}</span></h2>
 
     <div class="comments-area">
-        <h4 class="mb-3">{{ comments|length }} Commentaires</h4>
+        <h4 class="text-primary">{{ comments|length }} Commentaires</h4>
 
         {% for comment in comments %}
         <div class="card mb-4 shadow-sm">
@@ -29,7 +29,6 @@
         {% endfor %}
     </div>
 
-    <!-- Boutons Ajouter un commentaire et Retour au blog -->
     <div class="mt-4 text-center">
         <a href="{{ path('add_comment', {id: blog.id}) }}" class="btn btn-info"><i class="fa fa-plus"></i> Ajouter un commentaire</a>
         <a href="{{ path('blog_details', {id: blog.id}) }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour au blog</a>

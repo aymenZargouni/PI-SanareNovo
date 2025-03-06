@@ -1,8 +1,16 @@
 parameters:
+    recaptcha_site_key: '%env(RECAPTCHA_SITE_KEY)%'
     photo_dir: "%kernel.project_dir%/public/uploads/images"
     openweather_api_key: '%env(OPENWEATHER_API_KEY)%'
+    cv_directory: '%kernel.project_dir%/public/uploads/cv'
+    documents_directory: '%kernel.project_dir%/public/uploads/documents'
 
 services:
+    App\Controller\SecurityController:
+        arguments:
+            $recaptchaSiteKey: '%recaptcha_site_key%'
+
+    # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.

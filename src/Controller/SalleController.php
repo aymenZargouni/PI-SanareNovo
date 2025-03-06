@@ -6,19 +6,20 @@ use App\Entity\Salle;
 use App\Entity\Service;
 use App\Form\SalleType;
 use App\Repository\SalleRepository;
-use Endroid\QrCode\ErrorCorrectionLevel;
-use Doctrine\Persistence\ManagerRegistry;
 use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\Label\LabelAlignment;
-use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 final class SalleController extends AbstractController{
@@ -205,6 +206,7 @@ public function generateQrCode(int $id, ManagerRegistry $entityManager, UrlGener
     ->labelAlignment(LabelAlignment::Center)
     ->build();
 
+    
   
     return new Response($qrCode->getString(), 200, ['Content-Type' => 'image/png']);
 }
