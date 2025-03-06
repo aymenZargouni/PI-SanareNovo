@@ -72,7 +72,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_TECHNICIEN')) {
-            return new RedirectResponse($this->urlGenerator->generate('technician_equipments'));
+            return new RedirectResponse($this->urlGenerator->generate('tech_dashboard'));
         }
       
     }

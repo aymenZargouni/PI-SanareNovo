@@ -194,7 +194,6 @@ public function generateQrCode(int $id, ManagerRegistry $entityManager, UrlGener
     ->labelAlignment(LabelAlignment::Center)
     ->build();
 
-    
   
     return new Response($qrCode->getString(), 200, ['Content-Type' => 'image/png']);
 }
