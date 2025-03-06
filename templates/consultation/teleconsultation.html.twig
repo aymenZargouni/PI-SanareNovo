@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Téléconsultation{% endblock %}
+
+{% block body %}
+<h1>Bonjour Dr. {{ medecin.fullname }}, commencez votre téléconsultation</h1>
+
+<!-- Bouton de téléconsultation -->
+<a href="#" id="start-video-call" class="btn btn-primary">Démarrer la téléconsultation</a>
+<button id="end-video-call" class="btn btn-danger">Quitter la téléconsultation</button>
+
+<!-- Div pour afficher la vidéoconférence -->
+<div id="jitsi-meet-container" style="height: 70vh; width: 100%; margin-top: 20px; position: relative; background-color: #000;">
+</div>
+
+<script src="https://meet.jit.si/external_api.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const roomName = localStorage.getItem('meetRoomName');
+
+        if (roomName) {
+            const domain = 'meet.jit.si'; // Utilisation de l'instance publique de Jitsi
+            const options = {
+                roomName: roomName,
+                width: '100%',
+                height: 500,
+                parentNode: document.querySelector('#jitsi-meet-container'),
+                configOverwrite: {
+                    startWithAudioMuted: true, // Audio coupé au démarrage
+                    startWithVideoMuted: true, // Vidéo coupée au démarrage
+                }
+            };
+
+            // Rejoindre la réunion
+            const api = new JitsiMeetExternalAPI(domain, options);
+        }
+    });
+
+    document.getElementById('start-video-call').addEventListener('click', function () {
+        const domain = 'meet.jit.si'; // Utilisation de l'instance publique de Jitsi
+        const roomName = 'Consultation-Medicale-{{ medecin.id }}-{{ random() }}'; // Nom unique de la salle
+
+        // Stocker le nom de la salle dans le stockage local
+        localStorage.setItem('meetRoomName', roomName);
+
+        const options = {
+            roomName: roomName,
+            width: '100%',
+            height: 500,
+            parentNode: document.querySelector('#jitsi-meet-container'),
+            configOverwrite: {
+                startWithAudioMuted: true, // Audio coupé au démarrage
+                startWithVideoMuted: true, // Vidéo coupée au démarrage
+            }
+        };
+
+        // Lancer la réunion
+        const api = new JitsiMeetExternalAPI(domain, options);
+    });
+
+    document.getElementById('end-video-call').addEventListener('click', function () {
+        localStorage.removeItem('meetRoomName'); // Supprimer le stockage local
+        window.location.href = "{{ path('app_showcons') }}"; // Rediriger vers la page d'accueil
+    });
+</script>
+{% endblock %}

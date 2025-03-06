@@ -92,16 +92,21 @@
         </div>
 
         <div class="form-group">
-            {{ form_row(formaddrv.medecin) }} {# Patients choose the doctor #}
-        </div>
+    {% if formadd.status is defined %}
+        {{ form_label(formaddrv.status) }}
+        {{ form_widget(formaddrv.status, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formaddrv.status) }}
+    {% endif %}
+    </div>
 
         <div class="form-group">
-            {% if formaddrv.statut is defined %}
-                {{ form_label(formaddrv.statut) }}
-                {{ form_widget(formaddrv.statut, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(formaddrv.statut) }}
-            {% endif %}
+            {{ form_row(formaddrv.patient, {'attr': {'readonly': 'readonly', 'class': 'form-control'}}) }}
         </div>
+        
+        <div class="form-group">
+            {{ form_row(formaddrv.medecin) }}
+        </div>
+
 
         <div style="text-align: center; margin-top: 20px;">
             <button type="submit" class="btn-submit">✅ Soumettre</button>

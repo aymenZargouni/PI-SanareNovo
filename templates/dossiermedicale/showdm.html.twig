@@ -76,6 +76,8 @@
                 <th>Date</th>
                 <th>Observations</th>
                 <th>Ordonnance</th>
+                <th>consultations</th>
+                <th>Patient</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -87,6 +89,25 @@
                 <td>{{ i.date|date('Y-m-d') }}</td>
                 <td>{{ i.observations }}</td>
                 <td>{{ i.ordonnance }}</td>
+                <td>
+                {% if i.consultations is not empty %}
+                    <ul>
+                        {% for consultation in i.consultations %}
+                            <li>
+                                DATE: {{ consultation.date|date('Y-m-d') }} - MOTIF: {{ consultation.motif }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <span style="color: gray;">Aucune consultation</span>
+                {% endif %}
+            </td>
+            <td>
+                    {% if i.patient %}
+                        {{ i.patient.fullname }} 
+                    {% else %}
+                        Aucun patient
+                    {% endif %}
                 <td>
                     <a href="{{ path('app_updatedm', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
                     <a href="{{ path('app_deletedm', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>

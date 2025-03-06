@@ -94,6 +94,14 @@
         {{ form_start(formadd, {'attr': {'novalidate': 'novalidate'}}) }}
 
         <div class="form-group">
+            {{ form_label(formadd.patient) }}
+            <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #f8f9fa;">
+                {{ form_widget(formadd.patient) }} 
+            </div>
+            {{ form_errors(formadd.patient) }}
+        </div>
+
+        <div class="form-group">
             {{ form_label(formadd.date) }}
             {{ form_widget(formadd.date, {'attr': {'class': 'form-control'}}) }}
             {{ form_errors(formadd.date) }}

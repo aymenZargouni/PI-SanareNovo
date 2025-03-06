@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\RendezVous;
+use App\Entity\Patient;
 use App\Form\RendezvousType;
 use App\Repository\RendezVousRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,31 +48,24 @@ final class RendezvousController extends AbstractController
     #[Route('/patient/addformrv', name: 'app_addformrv')]
     public function addformrv(ManagerRegistry $m, Request $req): Response
     {
-        $em = $m->getManager();
-        $user = $this->getUser(); // Get the authenticated user
-    
-        if (!$user instanceof User || !$user->getPatient()) {
-            throw $this->createAccessDeniedException('Vous devez être un patient pour prendre un rendez-vous.');
-        }
-    
-        $patient = $user->getPatient(); // Get the associated Patient entity
-    
-        $rendezvous = new RendezVous();
-        $rendezvous->setStatut('En attente');
-        $rendezvous->setPatient($patient); // Assign the authenticated patient
-    
-        $form = $this->createForm(RendezvousType::class, $rendezvous, [
+        $em=$m->getManager();
+        $user = $this->getUser();
+        $authors=new RendezVous();
+        
+        $authors->setStatut('En attente');
+        $patient = $em->getRepository(Patient::class)->findOneBy(['user' => $user]);
+        $forms=$this->createForm(RendezvousType::class,$authors,[
             'is_update' => false,
-        ]);
-    
-        $form->handleRequest($req);
-    
-        if ($form->isSubmitted() && $form->isValid()) { 
-            $em->persist($rendezvous); 
-            $em->flush();
-    
-            $this->addFlash('success', '✅ Rendez-vous ajouté avec succès.');
-            return $this->redirectToRoute('app_showrv');
+            'patient' => $patient,
+            
+        ]) ; 
+        $forms->handleRequest($req);
+        
+        if($forms->isSubmitted() && $forms->isValid() ){ 
+        
+        $em->persist($authors); 
+        $em->flush();
+        return $this->redirectToRoute('app_showrv');
         }
     
         return $this->render('rendezvous/addformrv.html.twig', [
@@ -79,28 +73,33 @@ final class RendezvousController extends AbstractController
         ]);
     }    
 
-    #[Route('/patient/updaterv/{id}', name: 'app_updaterv')]
-    public function updateformdm($id,ManagerRegistry $m ,Request $req,RendezVousRepository $repo): Response
-    {
-        $em=$m->getManager();
-        $authors= $repo->find($id);
-        $forms=$this->createForm(RendezvousType::class,$authors,[
-            'is_update' => true,
-        ]) ; 
-        $forms->handleRequest($req);
-        if($forms->isSubmitted() && $forms->isValid() ){ 
-        $em->persist(object: $authors); 
-        $em->flush();
-        return $this->redirectToRoute('app_showrv');
-        }
+    #[Route('/updatestatus/{id}/{status}', name: 'app_update_rdv_status')]
+public function updateStatus($id, $status, ManagerRegistry $m, RendezVousRepository $repo): Response
+{
+    $em = $m->getManager();
+    $rdv = $repo->find($id);
 
-        return $this->render('rendezvous/addformrv.html.twig', [
-            'formaddrv' => $forms,
-            'isUpdate' => true,
-        ]);
+    if (!$rdv) {
+        $this->addFlash('danger', 'Rendez-vous non trouvé.');
+        return $this->redirectToRoute('app_showrv');
     }
 
-    #[Route('/patient/deleterv/{id}', name: 'app_deleterv')]
+    $validStatuses = ['En attente', 'Terminé', 'Annulé', 'Confirmé'];
+    if (!in_array($status, $validStatuses)) {
+        $this->addFlash('danger', 'Statut invalide.');
+        return $this->redirectToRoute('app_showrv');
+    }
+
+    $rdv->setStatut($status);
+    $em->persist($rdv);
+    $em->flush();
+
+    $this->addFlash('success', 'Statut mis à jour avec succès.');
+    return $this->redirectToRoute('app_showrv');
+}
+
+
+    #[Route('/deleterv/{id}', name: 'app_deleterv')]
     public function deleteformdm($id,ManagerRegistry $m ,Request $req,RendezVousRepository $repo): Response
     {
         $em=$m->getManager();
@@ -110,25 +109,4 @@ final class RendezvousController extends AbstractController
             return $this->redirectToRoute('app_showrv');
     }
 
-    #[Route('/medecin/rendezvous', name: 'app_medecin_rendezvous')]
-public function medecinRendezVous(RendezVousRepository $rendezVousRepository): Response
-{
-    // Get the authenticated user
-    $user = $this->getUser();
-
-    // Ensure the user is a medecin
-    if (!$user || !$user->getMedecin()) {
-        throw $this->createAccessDeniedException('Vous devez être un médecin pour voir vos rendez-vous.');
-    }
-
-    // Get the medecin entity
-    $medecin = $user->getMedecin();
-
-    // Fetch the medecin's rendezvous
-    $rendezvous = $rendezVousRepository->findByMedecin($medecin);
-
-    return $this->render('rendezvous/showrvMedecin.html.twig', [
-        'rendezvous' => $rendezvous,
-    ]);
-}
 }

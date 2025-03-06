@@ -1,4 +1,7 @@
 {
+    "cmen/google-charts-bundle": {
+        "version": "7.0.0"
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.13",
         "recipe": {
@@ -38,6 +41,15 @@
             "./migrations/.gitignore"
         ]
     },
+    "google/apiclient": {
+        "version": "2.18",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.10",
+            "ref": "07a97ec434d43b7903c78069a04c92adb6442e52"
+        }
+    },
     "karser/karser-recaptcha3-bundle": {
         "version": "0.2",
         "recipe": {
@@ -62,6 +74,18 @@
             "./.env.test",
             "./phpunit.xml.dist",
             "./tests/bootstrap.php"
+        ]
+    },
+    "pusher/pusher-php-server": {
+        "version": "7.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "8dd3ea817217453e14ab596317177465211e01d2"
+        },
+        "files": [
+            "./config/packages/pusher_php_server.yaml"
         ]
     },
     "symfony/asset-mapper": {
