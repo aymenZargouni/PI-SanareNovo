@@ -118,8 +118,12 @@
     <div class="main-menu d-none d-lg-block">
         <nav>
             <ul id="navigation">
+                {% if is_granted('ROLE_PATIENT') %}
                 <li><a class="active" href="{{ path('app_patient') }}">Home</a></li>
-
+                {% endif %}
+                {% if is_granted('ROLE_MEDECIN') %}
+                <li><a class="active" href="{{ path('consultations_chart') }}">Chart des maladies</a></li>
+                {% endif %}
                 {% if is_granted('ROLE_MEDECIN') %}
                     <li><a href="#">Consultations<i class="ti-angle-down"></i></a>
                         <ul class="submenu">

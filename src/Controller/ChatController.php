@@ -14,13 +14,13 @@ class ChatController extends AbstractController
     #[Route('/send-message', name: 'send_message', methods: ['POST'])]
     public function sendMessage(Request $request, PusherService $pusherService): JsonResponse
     {
-        $data = \json_decode($request->getContent(), true);
-    
+        $data = json_decode($request->getContent(), true);
+        
         if ($data === null) {
             return new JsonResponse(['error' => 'Invalid JSON format'], 400);
         }
     
-        // Check for required fields (corrected to check for 'receiver')
+        // Check for required fields
         if (!isset($data['message'], $data['sender'], $data['role'], $data['receiver'])) {
             return new JsonResponse(['error' => 'Missing required fields'], 400);
         }
@@ -28,10 +28,10 @@ class ChatController extends AbstractController
         $sender = (int)$data['sender'];
         $receiver = (int)$data['receiver'];
     
-        // Define the channel based on the consultation ID
-        $channelName = 'chat_consultation_' . $receiver; // Use 'receiver' here
+        // Define the channel based on the receiver's ID (patient's ID in this case)
+        $channelName = 'chat_consultation_' . $receiver; // Use receiver (patient) ID here
     
-        // Trigger the Pusher event
+        // Trigger the Pusher event to send the message to the patient's chat
         $pusherService->trigger($channelName, 'new_message', [
             'sender' => $sender,
             'message' => $data['message'],
@@ -66,4 +66,6 @@ class ChatController extends AbstractController
             'consultationId' => $patientId, // Ici patientId remplace consultationId
         ]);
 }
+
+    
 }

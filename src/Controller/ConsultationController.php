@@ -140,57 +140,57 @@ public function showcons(ConsultationRepository $a, Request $req): Response
             return $this->redirectToRoute('app_showcons');
     }
     
-#[Route('/search-consultations', name: 'app_search_consultations', methods: ['GET'])]
-public function searchConsultations(Request $request, ConsultationRepository $consultationRepo): JsonResponse
-{
-    $date = $request->query->get('date');
-    $motif = $request->query->get('motif');
-    $fullname = $request->query->get('fullname'); // Recherche par nom complet du patient
-    $type = $request->query->get('typeconsultation');
-    $status = $request->query->get('status');
-
-    $queryBuilder = $consultationRepo->createQueryBuilder('c')
-        ->leftJoin('c.patient', 'p'); // Jointure pour récupérer les patients associés aux consultations
-
-    if (!empty($date)) {
-        $queryBuilder->andWhere('c.date = :date')
-                     ->setParameter('date', new \DateTime($date));
-    }
-
-    if (!empty($motif)) {
-        $queryBuilder->andWhere('c.motif LIKE :motif')
-                     ->setParameter('motif', '%' . $motif . '%');
-    }
-
-    if (!empty($fullname)) {
-        $queryBuilder->andWhere('p.fullname LIKE :fullname')
-                     ->setParameter('fullname', '%' . $fullname . '%');
-    }
-
-    if (!empty($status)) {
-        $queryBuilder->andWhere('c.status = :status')
-                     ->setParameter('status', $status);
-    }
-    if (!empty($type)) {
-        $queryBuilder->andWhere('c.typeconsultation = :type')
-                     ->setParameter('type', $type);
-    }
-
-    $consultations = $queryBuilder->getQuery()->getResult();
+    #[Route('/search-consultations', name: 'app_search_consultations', methods: ['GET'])]
+    public function searchConsultations(Request $request, ConsultationRepository $consultationRepo): JsonResponse
+    {
+        $date = $request->query->get('date');
+        $motif = $request->query->get('motif');
+        $fullname = $request->query->get('fullname');
+        $type = $request->query->get('typeconsultation');
+        $status = $request->query->get('status');
     
-    return $this->json([
-        'consultations' => array_map(fn($c) => [
-            'id' => $c->getId(),
-            'date' => $c->getDate()->format('Y-m-d'),
-            'motif' => $c->getMotif(),
-            'type' => $c->getTypeconsultation(),
-            'status' => $c->getStatus(),
-            'service' => $c->getNomService()->getNom(),
-            'patient' => $c->getPatient() ? $c->getPatient()->getFullname() : 'Aucun',
-        ], $consultations)
-    ]);
+        $queryBuilder = $consultationRepo->createQueryBuilder('c')
+            ->leftJoin('c.patient', 'p'); 
     
-}
+        if (!empty($date)) {
+            $queryBuilder->andWhere('c.date = :date')
+                         ->setParameter('date', new \DateTime($date));
+        }
+    
+        if (!empty($motif)) {
+            $queryBuilder->andWhere('c.motif LIKE :motif')
+                         ->setParameter('motif', '%' . $motif . '%');
+        }
+    
+        if (!empty($fullname)) {
+            $queryBuilder->andWhere('p.fullname LIKE :fullname')
+                         ->setParameter('fullname', '%' . $fullname . '%');
+        }
+    
+        if (!empty($status)) {
+            $queryBuilder->andWhere('c.status = :status')
+                         ->setParameter('status', $status);
+        }
+        
+        if (!empty($type)) {
+            $queryBuilder->andWhere('c.typeconsultation = :type')
+                         ->setParameter('type', $type);
+        }
+    
+        $consultations = $queryBuilder->getQuery()->getResult();
+        
+        return $this->json([
+            'consultations' => array_map(fn($c) => [
+                'id' => $c->getId(),
+                'date' => $c->getDate()->format('Y-m-d'),
+                'motif' => $c->getMotif(),
+                'type' => $c->getTypeconsultation(),
+                'status' => $c->getStatus(),
+                'service' => $c->getNomService()->getNom(),
+                'patient' => $c->getPatient() ? $c->getPatient()->getFullname() : 'Aucun',
+            ], $consultations)
+        ]);
+    }
 
 
 

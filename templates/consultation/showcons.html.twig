@@ -9,6 +9,7 @@
         max-width: 95%;
         font: 18px/1.5 'Roboto', sans-serif;
     }
+
     h2 {
         text-align: center;
         color: #007bff;
@@ -23,22 +24,30 @@
         gap: 10px;
         margin-bottom: 20px;
     }
-    .search-container input, .search-container select, .search-container button {
+
+    .search-container input,
+    .search-container select,
+    .search-container button {
         padding: 10px 15px;
         border-radius: 8px;
         font-size: 14px;
         border: 1px solid #ddd;
         transition: all 0.3s ease;
     }
-    .search-container input:focus, .search-container select:focus, .search-container button:focus {
+
+    .search-container input:focus,
+    .search-container select:focus,
+    .search-container button:focus {
         outline: none;
         border-color: #007bff;
     }
+
     .search-container button {
         background-color: #007bff;
         color: white;
         border: none;
     }
+
     .search-container button:hover {
         background-color: #0056b3;
     }
@@ -52,19 +61,24 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         font-size: 16px;
     }
+
     table thead {
         background: #007bff;
         color: #fff;
         text-align: left;
         font-weight: bold;
     }
-    table th, table td {
+
+    table th,
+    table td {
         padding: 12px 15px;
         border: 1px solid #ddd;
     }
+
     table tbody tr:nth-child(even) {
         background: #f8f9fa;
     }
+
     table tbody tr:hover {
         background: #e2f0ff;
         transition: 0.3s;
@@ -79,14 +93,17 @@
         text-align: center;
         display: inline-block;
     }
+
     .badge-success {
         background: #28a745;
         color: #fff;
     }
+
     .badge-warning {
         background: #ffc107;
         color: #fff;
     }
+
     .badge-danger {
         background: #dc3545;
         color: #fff;
@@ -99,28 +116,37 @@
         font-size: 14px;
         font-weight: bold;
         text-decoration: none;
-        transition: 0.3s ease;
+        transition: background 0.3s ease, transform 0.2s;
     }
+
     .btn-update {
         background: #ffc107;
         color: #fff;
     }
+
     .btn-update:hover {
         background: #e0a800;
+        transform: scale(1.05);
     }
+
     .btn-delete {
         background: #dc3545;
         color: #fff;
     }
+
     .btn-delete:hover {
         background: #c82333;
+        transform: scale(1.05);
     }
+
     .btn-chat {
         background: #17a2b8;
         color: #fff;
     }
+
     .btn-chat:hover {
         background: #138496;
+        transform: scale(1.05);
     }
 
     /* Add Consultation Button */
@@ -135,13 +161,59 @@
         text-decoration: none;
         transition: all 0.3s ease;
     }
+
     .add-consultation-btn:hover {
         background-color: #0056b3;
     }
+
+    /* Effet de disparition */
+    .fade-out {
+        animation: fadeOut 0.5s forwards;
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+    }
+
+    /* Effet de mise en surbrillance */
+    .highlight {
+        animation: highlightRow 1.5s ease-in-out;
+    }
+
+    @keyframes highlightRow {
+        0% {
+            background-color: #fffcb2;
+        }
+        100% {
+            background-color: transparent;
+        }
+    }
 </style>
+
 
 <div class="example-wrapper">
     <h2>📋 Tableau des Consultations</h2>
+
+    <div class="search-container">
+        <input type="text" id="searchMotif" placeholder="Rechercher par motif...">
+        <input type="text" id="searchFullname" placeholder="Rechercher par patient...">
+        <input type="date" id="searchDate">
+        <select id="searchStatus">
+            <option value="">Tous les statuts</option>
+            <option value="Terminée">Terminée</option>
+            <option value="En attente">En attente</option>
+            <option value="Annulée">Annulée</option>
+        </select>
+        <button onclick="searchConsultations()">🔍 Rechercher</button>
+        <button onclick="resetSearch()">🔄 Réinitialiser</button>
+    </div>
 
     <!-- Add Consultation Button -->
     <div style="text-align: right; margin-bottom: 15px;">
@@ -163,44 +235,131 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-            {% for i in showcons %}
-            <tr>
-                <td>{{ i.id }}</td>
-                <td>{{ i.date|date('Y-m-d') }}</td>
-                <td>{{ i.motif }}</td>
-                <td>{{ i.typeconsultation }}</td>
-                <td>
-                    {% if i.status == 'Validée' %}
-                        <span class="badge badge-success">{{ i.status }}</span>
-                    {% elseif i.status == 'En attente' %}
-                        <span class="badge badge-warning">{{ i.status }}</span>
-                    {% else %}
-                        <span class="badge badge-danger">{{ i.status }}</span>
-                    {% endif %}
-                </td>
-                <td>{{ i.nomService.nom }}</td>
-                <td>{% if i.patient %} {{ i.patient.fullname }} {% else %} Aucun {% endif %}</td>
-                <td>
-                    {% if i.dossiermedicale %}
-                        <strong>ID:</strong> {{ i.dossiermedicale.id }} <br>
-                        <strong>IMC:</strong> {{ i.dossiermedicale.imc }} <br>
-                        <strong>Date:</strong> {{ i.dossiermedicale.date|date('Y-m-d') }} <br>
-                        <strong>Observations:</strong> {{ i.dossiermedicale.observations }} <br>
-                        <strong>Ordonnance:</strong> {{ i.dossiermedicale.ordonnance }}
-                    {% else %}
-                        Aucun dossier médical
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('app_updatecons', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
-                    <a href="{{ path('app_deletecons', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>
-                    <a href="{{ path('chat_interface', {'consultationId': i.patient.id}) }}">Ouvrir le chat</a>
-
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tbody id="consultationTableBody">
+    {% for i in showcons %}
+    <tr>
+        <td>{{ i.id }}</td>
+        <td>{{ i.date|date('Y-m-d') }}</td>
+        <td>{{ i.motif }}</td>
+        <td>{{ i.typeconsultation }}</td>
+        <td>
+            <span class="badge {{ i.status == 'Terminée' ? 'badge-success' : (i.status == 'En attente' ? 'badge-warning' : 'badge-danger') }}">
+                {{ i.status }}
+            </span>
+        </td>
+        <td>{{ i.nomService.nom }}</td>
+        <td>{% if i.patient %} {{ i.patient.fullname }} {% else %} Aucun {% endif %}</td>
+        <td>
+            {% if i.dossiermedicale %}
+                <strong>ID:</strong> {{ i.dossiermedicale.id }} <br>
+                <strong>IMC:</strong> {{ i.dossiermedicale.imc }} <br>
+                <strong>Date:</strong> {{ i.dossiermedicale.date|date('Y-m-d') }} <br>
+                <strong>Observations:</strong> {{ i.dossiermedicale.observations }} <br>
+                <strong>Ordonnance:</strong> {{ i.dossiermedicale.ordonnance }}
+            {% else %}
+                Aucun dossier médical
+            {% endif %}
+        </td>
+        <td>
+            <a href="{{ path('app_updatecons', { 'id': i.id }) }}" class="btn-action btn-update">✏️ Modifier</a>
+            <a href="{{ path('app_deletecons', { 'id': i.id }) }}" class="btn-action btn-delete">🗑️ Supprimer</a>
+            <a href="{{ path('chat_interface', {'consultationId': i.patient.id}) }}" class="btn-action btn-chat">💬 Ouvrir le chat</a>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
     </table>
+    <script>
+        function searchConsultations() {
+            let motif = document.getElementById("searchMotif").value;
+            let fullname = document.getElementById("searchFullname").value;
+            let date = document.getElementById("searchDate").value;
+            let status = document.getElementById("searchStatus").value;
+    
+            fetch(`/search-consultations?motif=${motif}&fullname=${fullname}&date=${date}&status=${status}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById("consultationTableBody");
+                    tableBody.innerHTML = ""; // Vider le tableau avant d'ajouter les nouveaux résultats
+                    
+                    data.consultations.forEach(consultation => {
+                        let row = `<tr>
+                            <td>${consultation.id}</td>
+                            <td>${consultation.date}</td>
+                            <td>${consultation.motif}</td>
+                            <td>${consultation.type}</td>
+                            <td><span class="badge ${getStatusBadge(consultation.status)}">${consultation.status}</span></td>
+                            <td>${consultation.service}</td>
+                            <td>${consultation.patient ? consultation.patient : 'Aucun'}</td>
+                            <td>
+                                ${consultation.dossiermedicale 
+                                    ? `<strong>ID:</strong> ${consultation.dossiermedicale.id} <br>
+                                       <strong>IMC:</strong> ${consultation.dossiermedicale.imc} <br>
+                                       <strong>Date:</strong> ${consultation.dossiermedicale.date} <br>
+                                       <strong>Observations:</strong> ${consultation.dossiermedicale.observations} <br>
+                                       <strong>Ordonnance:</strong> ${consultation.dossiermedicale.ordonnance}`
+                                    : 'Aucun dossier médical'}
+                            </td>
+                            <td>
+                                <a href="/updatecons/${consultation.id}" class="btn-action btn-update">✏️ Modifier</a>
+                                <a href="/deletecons/${consultation.id}" class="btn-action btn-delete">🗑️ Supprimer</a>
+                                <a href="/chat_interface?consultationId=${consultation.patientId}">Ouvrir le chat</a>
+                            </td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error("Erreur lors de la récupération des consultations :", error));
+        }
+    
+        function resetSearch() {
+            document.getElementById("searchMotif").value = "";
+            document.getElementById("searchFullname").value = "";
+            document.getElementById("searchDate").value = "";
+            document.getElementById("searchStatus").value = "";
+            searchConsultations();
+        }
+    
+        function getStatusBadge(status) {
+            if (status === "Validée") return "badge-success";
+            if (status === "En attente") return "badge-warning";
+            return "badge-danger";
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-delete").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            let row = this.closest("tr");
+            row.classList.add("fade-out");
+
+            setTimeout(() => {
+                fetch(this.href, { method: "DELETE" })
+                    .then(response => {
+                        if (response.ok) {
+                            row.remove();
+                        } else {
+                            row.classList.remove("fade-out");
+                            alert("Erreur lors de la suppression !");
+                        }
+                    })
+                    .catch(error => {
+                        row.classList.remove("fade-out");
+                        console.error("Erreur:", error);
+                    });
+            }, 500);
+        });
+    });
+
+    document.querySelectorAll(".btn-update").forEach(button => {
+        button.addEventListener("click", function () {
+            let row = this.closest("tr");
+            row.classList.add("highlight");
+            setTimeout(() => row.classList.remove("highlight"), 1500);
+        });
+    });
+});
+    </script>
 </div>
 {% endblock %}

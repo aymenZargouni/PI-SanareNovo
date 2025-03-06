@@ -20,31 +20,41 @@ const chatBox = document.getElementById("chat-box");
 const messageInput = document.getElementById("message");
 const sendButton = document.getElementById("send-button");
 
-// Fonction pour ajouter un message dans l'interface
-function appendMessage(sender, message, isMe) {
-    const messageElement = document.createElement("p");
 
-    // Vérifier si le message existe déjà pour éviter les doublons
-    if (document.querySelector(`[data-message="${message}"]`)) {
-        return; // Ne pas afficher le même message deux fois
+
+// Modifier appendMessage pour prendre en compte les liens
+function appendMessage(sender, message, isMe) {
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message");
+
+    if (isMe) {
+        messageElement.classList.add("sent"); // Right-aligned messages
+    } else {
+        messageElement.classList.add("received"); // Left-aligned messages
+        const senderName = userRole === 'ROLE_MEDECIN' ? `User.${sender}` : `User.${sender}`;
+        messageElement.innerHTML = `<strong>${senderName}:</strong> ${linkify(message)}`;
     }
 
-    const senderName = isMe 
-        ? "Moi" 
-        : (userRole === 'ROLE_MEDECIN' ? `Médecin ${sender}` : `Patient ${sender}`);
-
-    messageElement.innerHTML = `<strong>${senderName}:</strong> ${message}`;
-    messageElement.setAttribute("data-message", message); // Ajouter un attribut unique
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // Écoute des nouveaux messages via Pusher
+// Écoute des nouveaux messages via Pusher
 channel.bind("new_message", function (data) {
+    // Si le message provient de l'utilisateur actuel, ne pas l'afficher (déjà affiché lors de l'envoi)
+    if (data.sender === userId) return;
     console.log("Message reçu via Pusher :", data);
     appendMessage(data.sender, data.message, false);
 });
 
+// Fonction pour détecter les liens dans un message et les rendre cliquables
+function linkify(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function (url) {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+    });
+}
 // Fonction pour envoyer un message
 async function sendMessage() {
     const message = messageInput.value.trim();
