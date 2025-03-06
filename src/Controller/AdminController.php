@@ -12,11 +12,14 @@ use App\Form\EditUserType;
 use App\Form\MedecinAddType;
 use App\Form\MedecinEditType;
 use App\Form\TechnicienAddType;
+use Symfony\Component\Mime\Email;
 use App\Repository\UserRepository;
 use App\Repository\MedecinRepository;
 use App\Repository\TechnicienRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -117,40 +120,60 @@ final class AdminController extends AbstractController{
      } 
 
      #[Route('/admin/showUsers', name: 'app_showUsers')]
-     public function showUsers(UserRepository $repo): Response
+     public function showUsers(UserRepository $repo, PaginatorInterface $paginator, Request $request): Response
      {
+         $query = $repo->createQueryBuilder('u')->getQuery();
  
-         $users = $repo->findAll();
+         $pagination = $paginator->paginate(
+             $query, // Query object
+             $request->query->getInt('page', 1), // Get the current page number from the URL (default: 1)
+             5 // Number of users per page
+         );
+ 
          return $this->render('admin/showUsers.html.twig', [
-             'users' => $users,
+             'pagination' => $pagination,
          ]);
      }
 
      #[Route('/admin/ajouterUser', name: 'app_ajouterUser')]
-     public function ajouterUser(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
-     {
+     public function ajouterUser(
+         Request $request,
+         EntityManagerInterface $entityManager,
+         UserPasswordHasherInterface $passwordHasher,
+         MailerInterface $mailer // Inject MailerInterface
+     ): Response {
          $user = new User();
          $form = $this->createForm(UserType::class, $user);
- 
          $form->handleRequest($request);
- 
+     
          if ($form->isSubmitted() && $form->isValid()) {
-             $user->setPassword(
-                 $passwordHasher->hashPassword($user, $form->get('password')->getData())
-             );
+             $plainPassword = $form->get('password')->getData();
+             $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+             $user->setPassword($hashedPassword);
              $user->setRoles($form->get('roles')->getData());
-
+     
              $entityManager->persist($user);
              $entityManager->flush();
- 
-             $this->addFlash('success', 'Utilisateur ajouté avec succès!');
+     
+             // ✅ Send Email with Credentials
+             $email = (new Email())
+                 ->from('aymen.zargouni1996@gmail.com') // Your Gmail
+                 ->to($user->getEmail()) // User's email from form
+                 ->subject('Votre compte a été créé')
+                 ->text("Bonjour,\n\nVotre compte a été créé avec succès.\n\nEmail: {$user->getEmail()}\nMot de passe: {$plainPassword}\n\nMerci!")
+                 ->html("<p>Bonjour,</p><p>Votre compte a été créé avec succès.</p><p><strong>Email:</strong> {$user->getEmail()}</p><p><strong>Mot de passe:</strong> {$plainPassword}</p><p>Merci!</p>");
+     
+             $mailer->send($email); // Send the email
+     
+             $this->addFlash('success', 'Utilisateur ajouté avec succès! Un email avec les identifiants a été envoyé.');
              return $this->redirectToRoute('app_showUsers');
          }
- 
+     
          return $this->render('admin/ajouterUser.html.twig', [
              'form' => $form->createView(),
          ]);
-    }
+     }
+     
 
     #[Route('/admin/editUser/{id}', name: 'app_editUser')]
     public function modifierUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response

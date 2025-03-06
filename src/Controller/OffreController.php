@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OffreController extends AbstractController
 {
@@ -83,4 +84,24 @@ public function listOffreCondidat(OffreRepository $offreRepository): Response
         $this->addFlash('danger', 'Offre supprimée avec succès !');
         return $this->redirectToRoute('listOffre');
     }
+    #[Route('/offres/supprimer-expirees', name: 'offres_supprimer_expirees', methods: ['POST'])]
+    public function supprimerOffresExpirees(ManagerRegistry $doctrine): JsonResponse
+    {
+        $entityManager = $doctrine->getManager();
+        $now = new \DateTime(); // Date actuelle
+    
+        $offresExpirees = $entityManager->getRepository(Offre::class)->findExpiredOffers($now);
+    
+        if (count($offresExpirees) > 0) {
+            foreach ($offresExpirees as $offre) {
+                $entityManager->remove($offre);
+            }
+            $entityManager->flush();
+    
+            return new JsonResponse(['success' => true, 'message' => count($offresExpirees) . ' offres expirées supprimées.']);
+        }
+    
+        return new JsonResponse(['success' => false, 'message' => 'Aucune offre expirée trouvée.']);
+    }
+    
 }

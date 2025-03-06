@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Claim;
 use App\Entity\Equipment;
 use App\Entity\Historique;
+use App\Entity\Technicien;
+use App\Entity\User;
 use App\Form\ClaimFormType;
 use App\Form\EquipmentEditType;
 use App\Form\EquipmentType;
@@ -13,7 +15,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Twilio\Rest\Client;
 class EquipementController extends AbstractController
 {
     #[Route('/equipment/new', name: 'app_equipment_new')] // Route pour Créer un nouveau équipement
@@ -92,26 +99,36 @@ class EquipementController extends AbstractController
         return $this->redirectToRoute('showequipment'); // Redirection vers la liste des équipements
     }
     
-    #[Route('/equipment/{id}/claim', name: 'equipment_claim_submit')]
+    #[Route('/{id}/claim', name: 'equipment_claim_submit')]
     public function claim(Equipment $equipment, Request $request, ManagerRegistry $managerRegistry): Response
     {
         $claim = new Claim();
         $claim->setEquipment($equipment); // Associe l'équipement à la réclamation
     
         $form = $this->createForm(ClaimFormType::class, $claim);
-    
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer le technicien depuis le formulaire
+            $technicien = $claim->getTechnicien();
+    
+            if ($technicien) {
+                $claim->setTechnicien($technicien); // Associe le technicien à la réclamation
+            }
+    
             // Mettre à jour le statut de l'équipement en panne
             $equipment->setStatus('panne');
             
             // Enregistrer la réclamation
-            $managerRegistry->getManager()->persist($claim);
-            $managerRegistry->getManager()->flush();
+            $entityManager = $managerRegistry->getManager();
+            $entityManager->persist($claim);
+            $entityManager->flush();
     
+            // Envoi du SMS au technicien
+            $this->sendSmsToTechnician($technicien);
+
             // Afficher un message de succès
-            $this->addFlash('success', 'La réclamation a bien été enregistrée.');
+            $this->addFlash('success', 'La réclamation a bien été enregistrée et un SMS a été envoyé au technicien.');
     
             return $this->redirectToRoute('showequipment'); // Redirige vers la page des équipements
         }
@@ -121,31 +138,74 @@ class EquipementController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    
 
-//partie Technician 
-#[Route('/technician/equipments', name: 'technician_equipments')] // Route pour afficher les equipements en panne ou maintenance 
-public function technicianEquipments(ManagerRegistry $managerRegistry): Response
+    // Fonction pour envoyer un SMS au technicien
+private function sendSmsToTechnician($technicien): void
 {
-    
-    $equipmentRepository = $managerRegistry->getRepository(Equipment::class);
+    $sid = $_ENV['TWILIO_SID'];
+    $token = $_ENV['TWILIO_AUTH_TOKEN'];
+    $twilioNumber = $_ENV['TWILIO_PHONE_NUMBER'];
 
-    $claimRepository = $managerRegistry->getRepository(Claim::class);
+    $client = new Client($sid, $token);
 
-    $equipments = $equipmentRepository->findBy(['status' => ['panne', 'maintenance']]);
+    // Le numéro du technicien est supposé être dans l'objet $technicien
+    $technicienPhone = $technicien->getPhoneNumber(); 
+    if ($technicienPhone) {
+        // Récupérer la première réclamation associée au technicien
+        $claim = $technicien->getClaims()->first();
 
-    foreach ($equipments as $equipment) {
-        $claims = $claimRepository->findBy(['equipment' => $equipment]);
-
-        foreach ($claims as $claim) {
-            $equipment->addClaim($claim); 
+        if ($claim && $claim->getEquipment()) {
+            // Récupérer l'équipement à partir de la réclamation
+            $equipement = $claim->getEquipment();
+            
+            $client->messages->create(
+                $technicienPhone, // Numéro du technicien
+                [
+                    'from' => $twilioNumber,
+                    'body' => 'Une réclamation a été enregistrée pour l\'équipement "' . $equipement->getName() . '" et vous avez été affecté à cette tâche.',
+                ]
+            );
         }
     }
-
-    return $this->render('equipement/equipmentsTech.html.twig', [
-        'equipments' => $equipments,
-    ]);
 }
+
+//partie Technician 
+#[Route('/technician/equipments', name: 'technician_equipments')]
+public function technicianEquipments(Security $security, ManagerRegistry $managerRegistry): Response
+{
+    $user = $security->getUser();
+    
+    // Vérifier si l'utilisateur est un technicien
+    if ($user instanceof User) {
+        $technicianRepository = $managerRegistry->getRepository(Technicien::class);
+        $technician = $technicianRepository->findOneBy(['user' => $user]);
+        
+        if ($technician) {
+            // Si l'utilisateur est un technicien, récupérer les réclamations associées à ce technicien
+            $claimRepository = $managerRegistry->getRepository(Claim::class);
+            
+            // Récupérer les réclamations de ce technicien
+            $claims = $claimRepository->findBy(['technicien' => $technician]);
+            
+            $equipments = [];
+            foreach ($claims as $claim) {
+                // Pour chaque réclamation, on vérifie l'équipement associé
+                $equipment = $claim->getEquipment();
+                if ($equipment && in_array($equipment->getStatus(), ['panne', 'maintenance'])) {
+                    $equipments[] = $equipment;
+                }
+            }
+            
+            return $this->render('equipement/equipmentsTech.html.twig', [
+                'equipments' => $equipments,
+            ]);
+        }
+    }
+    
+    // Si l'utilisateur n'est pas un technicien ou n'a pas de réclamations, rediriger ou afficher un message d'erreur
+    return $this->redirectToRoute('showequipment');
+}
+
 
 
     #[Route('/technician/equipment/{id}', name: 'technician_equipment_details')]  // Route pour afficher tout les détails des equipement 
@@ -242,28 +302,75 @@ public function technicianEquipments(ManagerRegistry $managerRegistry): Response
             
         }
      
-
+        //calendar 
         #[Route('/technician/calendar', name: 'technician_calendar')]
-        public function technicianCalendar(ManagerRegistry $managerRegistry): Response
+        public function technicianCalendar(ManagerRegistry $managerRegistry, Security $security): Response
         {
-            $claimRepository = $managerRegistry->getRepository(Claim::class);
-            $claims = $claimRepository->findAll();
+            // Récupérer l'utilisateur connecté
+            $user = $security->getUser();
+            
+            // Vérifier que l'utilisateur est bien connecté
+            if (!$user) {
+                throw $this->createAccessDeniedException('Accès non autorisé');
+            }
         
+            // Récupérer le technicien associé à cet utilisateur
+            $technicianRepository = $managerRegistry->getRepository(Technicien::class);
+            $technician = $technicianRepository->findOneBy(['user' => $user]);
+        
+            // Vérifier si le technicien existe
+            if (!$technician) {
+                throw $this->createNotFoundException('Technicien non trouvé');
+            }
+        
+            // Récupérer les réclamations associées au technicien
+            $claimRepository = $managerRegistry->getRepository(Claim::class);
+            $claims = $claimRepository->findBy(['technicien' => $technician]);
+        
+            // Préparer les événements pour FullCalendar
             $events = [];
             foreach ($claims as $claim) {
                 $events[] = [
                     'title' => 'Réclamation: ' . $claim->getEquipment()->getName(),
-                    'start' => $claim->getCreatedAt()->format('Y-m-d H:i:s'), 
+                    'start' => $claim->getCreatedAt()->format('Y-m-d H:i:s'),  // Date au format requis par FullCalendar
                     'url' => $this->generateUrl('technician_equipment_details', ['id' => $claim->getEquipment()->getId()]),
                 ];
             }
         
+            // Passer les événements au template
             return $this->render('equipement/calendar.html.twig', [
                 'events' => json_encode($events),
             ]);
         }
         
+        #[Route('/coordinator/download-report/{id}', name: 'download_report')]
+public function downloadReport(Historique $historique): Response
+{
+    // Configuration de DomPDF
+    $options = new Options();
+    $options->set('defaultFont', 'Arial');
+    $dompdf = new Dompdf($options);
 
-        
+    // Récupération des informations de l'historique
+    $html = $this->renderView('rapport/rapport.html.twig', [
+        'historique' => $historique,
+    ]);
 
+    // Charger le HTML dans DomPDF
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Réponse pour télécharger le fichier PDF
+    return new Response(
+        $dompdf->output(),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="rapport_'.$historique->getId().'.pdf"',
+        ]
+    );
 }
+
+
+    }

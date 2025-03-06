@@ -1,0 +1,16 @@
+{
+    "questions": [
+        {
+            "question": "Quels sont les services disponibles ?",
+            "response": "Nous avons les services : Urgences, Gynécologie, Pédiatrie, Radiologie, etc."
+        },
+        {
+            "question": "Quels sont les horaires d'ouverture ?",
+            "response": "Nous sommes ouverts 24h/24 pour les urgences et de 08h à 18h pour les autres services."
+        },
+        {
+            "question": "Comment prendre rendez-vous ?",
+            "response": "Vous pouvez prendre rendez-vous en appelant notre secrétariat ou en ligne sur notre site web."
+        }
+    ]
+}

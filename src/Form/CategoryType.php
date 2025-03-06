@@ -14,7 +14,6 @@ class CategoryType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Slug cannot be empty.']),
                     new Assert\Length([
                         'min' => 3,
                         'max' => 255,

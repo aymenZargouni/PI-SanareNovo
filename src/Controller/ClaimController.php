@@ -9,7 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 final class ClaimController extends AbstractController
 {
     // Route pour afficher toutes les réclamations
@@ -18,11 +20,25 @@ final class ClaimController extends AbstractController
     {
         $claimRepository = $managerRegistry->getRepository(Claim::class);
         $claims = $claimRepository->findAll(); // Récupérer toutes les réclamations
-
+    
+        // Ajouter le nom du technicien pour chaque réclamation
+        $claimsData = [];
+        foreach ($claims as $claim) {
+            // Récupérer le technicien associé à la réclamation
+            $technician = $claim->getTechnicien();
+            $technicianName = $technician ? $technician->getNom() : 'Aucun technicien'; // Vérifier si le technicien existe
+    
+            $claimsData[] = [
+                'claim' => $claim,
+                'technicianName' => $technicianName,
+            ];
+        }
+    
         return $this->render('claim/list.html.twig', [
-            'claims' => $claims, // Passez la liste des réclamations au template
+            'claimsData' => $claimsData, // Passez les réclamations et les noms des techniciens au template
         ]);
     }
+    
 
     // Route pour afficher les détails d'une réclamation spécifique
     #[Route('/claim/{id}', name: 'claim_details')]
@@ -97,5 +113,8 @@ public function delete(int $id, ManagerRegistry $managerRegistry): Response
     $this->addFlash('success', 'Réclamation supprimée avec succès');
     return $this->redirectToRoute('claim_list'); // Rediriger vers la liste des réclamations
 }
+
+
+
 
 }

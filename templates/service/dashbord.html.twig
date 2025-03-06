@@ -1,0 +1,63 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block body %}
+    <h1 style="text-align: center; color: #2c3e50;">Tableau de Bord - Occupation des Salles</h1>
+
+    <div style="width: 80%; margin: auto;">
+        <canvas id="occupationChart"></canvas>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #3498db; color: white;">
+                <th style="padding: 10px;">Service</th>
+                <th style="padding: 10px;">Nombre Total de Salles</th>
+                <th style="padding: 10px;">Salles Occupées</th>
+                <th style="padding: 10px;">Occupation (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in stats %}
+                <tr style="background-color: {% if loop.index is even %}#ecf0f1{% else %}#ffffff{% endif %};">
+                    <td style="padding: 10px; text-align: center;">{{ stat.service }}</td>
+                    <td style="padding: 10px; text-align: center;">{{ stat.total_salles }}</td>
+                    <td style="padding: 10px; text-align: center; color: {% if stat.salles_occupees > 0 %}red{% else %}green{% endif %};">
+                        {{ stat.salles_occupees }}
+                    </td>
+                    <td style="padding: 10px; text-align: center;">{{ stat.pourcentage_occupees }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx = document.getElementById("occupationChart").getContext("2d");
+            var occupationChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: [{% for stat in stats %}"{{ stat.service }}",{% endfor %}],
+                    datasets: [{
+                        label: "Occupation des Salles (%)",
+                        data: [{% for stat in stats %}{{ stat.pourcentage_occupees }},{% endfor %}],
+                        backgroundColor: "rgba(52, 152, 219, 0.7)",
+                        borderColor: "rgba(41, 128, 185, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

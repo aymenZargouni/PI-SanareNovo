@@ -21,11 +21,18 @@ class Technicien
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
+ 
+    #[ORM\Column(type: 'string', length: 15)]
+    private $phoneNumber; // Nouveau champ ajouté
+
     /**
      * @var Collection<int, Claim>
      */
     #[ORM\OneToMany(targetEntity: Claim::class, mappedBy: 'technicien')]
     private Collection $claims;
+
+    #[ORM\Column(length: 15)]
+    private ?string $phoneNumber = null;
 
     public function __construct()
     {
@@ -37,6 +44,7 @@ class Technicien
         return $this->id;
     }
 
+ 
     public function getNom(): ?string
     {
         return $this->nom;
@@ -49,6 +57,19 @@ class Technicien
         return $this;
     }
 
+
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
     public function getUser(): ?User
     {
         return $this->user;
@@ -87,6 +108,18 @@ class Technicien
                 $claim->setTechnicien(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }

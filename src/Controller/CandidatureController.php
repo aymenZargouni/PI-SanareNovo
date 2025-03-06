@@ -102,7 +102,7 @@ class CandidatureController extends AbstractController
     public function changerStatut(Candidature $candidature, string $statut, ManagerRegistry $doctrine, MailerInterface $mailer): Response
     {
         $statutsValides = ['en_attente', 'accepte', 'rejete'];
-    
+
         if (in_array($statut, $statutsValides)) {
             $candidature->setStatut($statut);
     
@@ -111,25 +111,50 @@ class CandidatureController extends AbstractController
     
             $this->addFlash('success', 'Le statut de la candidature a été mis à jour.');
     
-            // *Envoyer un e-mail si la candidature est acceptée*
+            // Préparer le contenu de l'email en fonction du statut
+            $emailSubject = '';
+            $emailContent = '';
+    
             if ($statut === 'accepte') {
+                $emailSubject = '🎉 Félicitations ! Votre candidature a été acceptée !';
+                $emailContent = "
+                    <h2 style='color: #2d89ef;'>Bonjour {$candidature->getPrenom()} {$candidature->getNom()},</h2>
+                    <p>🎉 Félicitations ! Nous avons le plaisir de vous informer que votre candidature pour le poste <strong>{$candidature->getOffre()->getTitre()}</strong> a été acceptée.</p>
+                    <p>Notre équipe vous contactera bientôt pour les prochaines étapes.</p>
+                    <p>📞 Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+                    <br>
+                    <p style='font-size: 14px; color: #777;'>Cordialement,</p>
+                    <p style='font-size: 16px; color: #333; font-weight: bold;'>L'équipe RH</p>
+                    <p style='font-size: 12px; color: #999;'>[SanarNovo] | [SanarNovo@esprit.tnt]</p>
+                ";
+            } elseif ($statut === 'rejete') {
+                $emailSubject = '❌ Votre candidature a été refusée';
+                $emailContent = "
+                    <h2 style='color: #d9534f;'>Bonjour {$candidature->getPrenom()} {$candidature->getNom()},</h2>
+                    <p>Nous vous remercions d'avoir postulé pour le poste <strong>{$candidature->getOffre()->getTitre()}</strong>.</p>
+                    <p>Après examen de votre candidature, nous avons décidé de ne pas donner suite à votre demande. Toutefois, nous garderons votre profil dans notre base pour d’éventuelles opportunités futures.</p>
+                    <p>Nous vous souhaitons bonne continuation dans votre recherche d'emploi.</p>
+                    <br>
+                    <p style='font-size: 14px; color: #777;'>Cordialement,</p>
+                    <p style='font-size: 16px; color: #333; font-weight: bold;'>L'équipe RH</p>
+                    <p style='font-size: 12px; color: #999;'>[SanarNovo] | [SanarNovo@esprit.tnt]</p>
+                ";
+            }
+    
+            // Envoi de l'e-mail uniquement si le statut est "accepté" ou "rejeté"
+            if ($statut === 'accepte' || $statut === 'rejete') {
                 $email = (new Email())
-                    ->from('noreply@votre-site.com')
+                    ->from('SanarNovo@esprit.tn')
                     ->to($candidature->getEmail())
-                    ->subject('Votre candidature a été acceptée !')
-                    ->html("
-                        <h2>Bonjour {$candidature->getPrenom()} {$candidature->getNom()},</h2>
-                        <p>Félicitations ! Votre candidature a été acceptée.</p>
-                        <p>Nous vous contacterons sous peu pour la suite.</p>
-                        <p>Cordialement,</p>
-                        <p>L'équipe RH</p>
-                    ");
+                    ->subject($emailSubject)
+                    ->html($emailContent);
     
                 $mailer->send($email);
             }
         } else {
             $this->addFlash('error', 'Statut invalide.');
         }
+    
         return $this->redirectToRoute('candidature_liste');
     }
     // Supprimer une candidature

@@ -16,6 +16,15 @@ class SalleRepository extends ServiceEntityRepository
         parent::__construct($registry, Salle::class);
     }
 
+    public function searchById($query)
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.id LIKE :query')  
+            ->setParameter('query', '%' . $query . '%')  // Recherche partielle
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Salle[] Returns an array of Salle objects
 //     */

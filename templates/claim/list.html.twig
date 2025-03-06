@@ -12,26 +12,27 @@
                     <tr>
                         <th>🔑 ID</th>
                         <th>📄 Réclamation</th>
+                        <th>🧑‍🔧 Technicien</th>
                         <th>📅 Date de création</th>
                         <th>✏️ Modifier</th>
                         <th>🗑️ Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for claim in claims %}
+                    {% for item in claimsData %}
                         <tr>
-                            <td>{{ claim.id }}</td>
-                            <td>{{ claim.reclamation }}</td>
-                            <td>{{ claim.createdAt|date('d/m/Y H:i') }}</td>
+                            <td>{{ item.claim.id }}</td>
+                            <td>{{ item.claim.reclamation }}</td>
+                            <td>{{ item.technicianName }}</td>
+                            <td>{{ item.claim.createdAt|date('d/m/Y H:i') }}</td>
                             <td class="text-center">
-                                <a href="{{ path('claim_edit', {'id': claim.id}) }}" class="btn btn-primary btn-sm">✏️ Modifier</a>
+                                <a href="{{ path('claim_edit', {'id': item.claim.id}) }}" class="btn btn-primary btn-sm">✏️ Modifier</a>
                             </td>
                             <td class="text-center">
-                                <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ path('claim_delete', {'id': claim.id}) }}')">
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ path('claim_delete', {'id': item.claim.id}) }}')">
                                     🗑️ Supprimer
                                 </button>
                             </td>
-                           
                         </tr>
                     {% else %}
                         <tr>

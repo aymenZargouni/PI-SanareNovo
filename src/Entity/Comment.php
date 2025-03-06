@@ -26,8 +26,19 @@ class Comment
     private ?string $content = null;
 
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\ManyToOne(targetEntity: Blog::class, inversedBy: "comments")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Blog $blog = null;
+    
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -44,6 +55,7 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
+        $this->updatedAt = new \DateTime(); // Met à jour la date de modification
 
         return $this;
     }
@@ -70,7 +82,23 @@ class Comment
         $this->createdAt = $createdAt;
         return $this;
     }
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTime $updatedAt = null;
+    public function getUpdatedAt(): ?\DateTime 
+    { 
+        return $this->updatedAt; 
+    }
+    public function setUpdatedAt(?\DateTime $updatedAt): static 
+    {
+         $this->updatedAt = $updatedAt; return $this; 
+    }
 
-    
-
+    public function getUser(): ?User 
+    { 
+        return $this->user; 
+    }
+    public function setUser(?User $user): static 
+    {
+         $this->user = $user; return $this; 
+    }
 }
