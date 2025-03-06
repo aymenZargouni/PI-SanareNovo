@@ -40,6 +40,26 @@ final class ServiceController extends AbstractController{
         'searchTerm' => $searchTerm,  // Pass the search term to the template
     ]);}
 
+
+    #[Route('showservice2', name: 'showservice2')]
+    public function showservice2 (ServiceRepository $serRep,Request $req): Response
+    {
+         // Get the search term from the request (if any)
+    $searchTerm = $req->query->get('search', '');
+
+    // If a search term is provided, filter the services by name
+    if ($searchTerm) {
+        $services = $serRep->findByName($searchTerm);
+    } else {
+        // Otherwise, fetch all services
+        $services = $serRep->findAll();
+    }
+
+    return $this->render('service/showservice2.html.twig', [
+        'tabservice' => $services,
+        'searchTerm' => $searchTerm,  // Pass the search term to the template
+    ]);}
+
     #[Route('/addFormservice', name: 'addFormservice')]
     public function addFromservice( ManagerRegistry $m, Request $req): Response
     {

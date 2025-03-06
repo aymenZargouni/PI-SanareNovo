@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salles du Service {{ service.nom }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Liste des Salles - Service: {{ service.nom }}</h2>
+    
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Numero</th>
+                <th>Type</th>
+                <th>État</th>
+                <th>QR Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for salle in salles %}
+            <tr>
+                <td>{{ salle.id }}</td>
+                <td>{{ salle.type }}</td>
+                <td>
+                    {% if salle.etat == 0 %} Libre
+                    {% elseif salle.etat == 1 %} Réservé
+                    {% else %} Non défini {% endif %}
+                </td>
+                 <td>
+                    <!-- Bouton pour afficher le QR Code -->
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrModal{{ salle.id }}">
+                        Afficher QR Code
+                    </button>
+
+                    <!-- Modale QR Code -->
+<div class="modal fade" id="qrModal{{ salle.id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ salle.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrModalLabel{{ salle.id }}">QR Code de la salle {{ salle.id }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{{ path('api_salle_qrcode', { id: salle.id }) }}" alt="QR Code Salle {{ salle.id }}" class="img-fluid">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center">Aucune salle trouvée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('showservice2') }}" class="btn btn-primary">retour </a>
+</div>
+{% endblock %}

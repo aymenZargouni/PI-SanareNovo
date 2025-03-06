@@ -162,6 +162,18 @@ public function showSalleByService(SalleRepository $salleRep, Service $service):
         'salles' => $salles,
     ]);
 }
+
+#[Route('/service/{id}/salles2', name: 'showSalleByService2')]
+public function showSalleByService2(SalleRepository $salleRep, Service $service): Response
+{
+    // Récupérer les salles du service donné
+    $salles = $salleRep->findBy(['service' => $service]);
+
+    return $this->render('salle/showsall3.html.twig', [
+        'service' => $service,
+        'salles' => $salles,
+    ]);
+}
 #[Route('/api/salle/{id}/qrcode', name: 'api_salle_qrcode', methods: ['GET'])]
 public function generateQrCode(int $id, ManagerRegistry $entityManager, UrlGeneratorInterface $urlGenerator): Response
 {
