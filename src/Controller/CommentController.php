@@ -23,7 +23,7 @@ final class CommentController extends AbstractController
         ]);
     }
 
-    /*#[Route('/add_comment/{id}', name: 'add_comment')]
+    /*#[Route('/patient/add_comment/{id}', name: 'add_comment')]
     public function addComment(Blog $blog, Request $request, EntityManagerInterface $entityManager, \Symfony\Component\Mailer\MailerInterface $mailer, SessionInterface $session): Response
     {
         $user = $this->getUser();
@@ -104,7 +104,7 @@ final class CommentController extends AbstractController
     }*/
 
 
-    #[Route('/add_comment/{id}', name: 'add_comment')]
+    #[Route('/patient/add_comment/{id}', name: 'add_comment')]
     public function addComment(Blog $blog, Request $request, EntityManagerInterface $entityManager, \Symfony\Component\Mailer\MailerInterface $mailer, SessionInterface $session): Response
     {
         #$this->denyAccessUnlessGranted('ROLE_USER');
@@ -146,19 +146,6 @@ final class CommentController extends AbstractController
                         $entityManager->flush();
                         $this->addFlash('danger', 'Votre compte a été bloqué après 3 tentatives de commentaires interdits.');
                         return $this->redirectToRoute('home'); 
-                    }
-
-                    try {
-                        $email = (new \Symfony\Component\Mime\Email())
-                            ->from('mhadhhich@gmail.com')
-                            ->to('hiichem.mhadhbi@gmail.com')
-                            ->subject('Alerte : Commentaire inapproprié')
-                            ->text("L'utilisateur " . $user->getEmail() . " a essayé de poster un commentaire contenant des mots interdits :\n\n{$comment->getContent()}");
-
-                        $mailer->send($email);
-                        $this->addFlash('success', 'Email envoyé avec succès.');
-                    } catch (\Exception $e) {
-                        $this->addFlash('danger', 'Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
                     }
 
                     try {
@@ -213,7 +200,7 @@ final class CommentController extends AbstractController
         ]);
     }
 
-    #[Route('/showCommentPatient/{id}', name: 'showCommentPatient')]
+    #[Route('/patient/showCommentPatient/{id}', name: 'showCommentPatient')]
     public function showCommentPatient(Blog $blog): Response
     {
         #$this->denyAccessUnlessGranted('ROLE_USER');
