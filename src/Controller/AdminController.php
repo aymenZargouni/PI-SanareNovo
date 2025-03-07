@@ -284,4 +284,11 @@ final class AdminController extends AbstractController{
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/map', name: 'app_map')]
+    public function maps(): Response
+    {
+        return $this->render('admin/visitUs.html.twig');
+    }
+
     }

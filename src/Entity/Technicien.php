@@ -21,10 +21,6 @@ class Technicien
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
- 
-    #[ORM\Column(type: 'string', length: 15)]
-    private $phoneNumber; // Nouveau champ ajouté
-
     /**
      * @var Collection<int, Claim>
      */
@@ -58,18 +54,6 @@ class Technicien
     }
 
 
-
-    public function getPhoneNumber(): ?string
-    {
-        return $this->phoneNumber;
-    }
-
-    public function setPhoneNumber(string $phoneNumber): self
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
     public function getUser(): ?User
     {
         return $this->user;
