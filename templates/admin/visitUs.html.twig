@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitez Notre Clinique</title>
+    <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensures full viewport height */
+    }
+
+        h2 {
+            text-align: center;
+        }
+        .map-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: auto;
+        }
+        #map {
+            height: 300px;
+            width: 80%;
+            max-width: 600px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 50px; /* Add space below */
+        }
+    </style>
+</head>
+<body>
+    <h2>My Leaflet Map</h2>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([36.860202, 10.1905046], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([36.860202, 10.1905046]).addTo(map)
+            .bindPopup('SanareNovo')
+            .openPopup();
+    </script>
+</body>
+</html>
+{% endblock %}

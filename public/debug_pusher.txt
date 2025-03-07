@@ -1,0 +1,35 @@
+Array
+(
+    [message] => slt
+    [sender] => 3
+    [receiver] => 3
+    [role] => ROLE_PATIENT
+)
+Array
+(
+    [message] => bonjour
+    [sender] => 4
+    [receiver] => 3
+    [role] => ROLE_MEDECIN
+)
+Array
+(
+    [message] => slt MR
+    [sender] => 3
+    [receiver] => 3
+    [role] => ROLE_PATIENT
+)
+Array
+(
+    [message] => Bonjour patron
+    [sender] => 4
+    [receiver] => 3
+    [role] => ROLE_MEDECIN
+)
+Array
+(
+    [message] => YA MR LE MESSAGE
+    [sender] => 3
+    [receiver] => 3
+    [role] => ROLE_PATIENT
+)

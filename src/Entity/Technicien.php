@@ -40,6 +40,7 @@ class Technicien
         return $this->id;
     }
 
+ 
     public function getNom(): ?string
     {
         return $this->nom;
@@ -51,6 +52,7 @@ class Technicien
 
         return $this;
     }
+
 
     public function getUser(): ?User
     {

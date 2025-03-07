@@ -42,6 +42,9 @@ class Dossiermedicale
     #[ORM\OneToMany(targetEntity: Consultation::class, mappedBy: 'dossiermedicale')]
     private Collection $consultations;
 
+    #[ORM\OneToOne(mappedBy: 'dossiermedical', cascade: ['persist', 'remove'])]
+    private ?Patient $patient = null;
+
     public function __construct()
     {
         $this->consultations = new ArrayCollection();
@@ -144,5 +147,27 @@ class Dossiermedicale
                 ->atPath('date')
                 ->addViolation();
         }
+    }
+
+    public function getPatient(): ?Patient
+    {
+        return $this->patient;
+    }
+
+    public function setPatient(?Patient $patient): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($patient === null && $this->patient !== null) {
+            $this->patient->setDossiermedical(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($patient !== null && $patient->getDossiermedical() !== $this) {
+            $patient->setDossiermedical($this);
+        }
+
+        $this->patient = $patient;
+
+        return $this;
     }
 }

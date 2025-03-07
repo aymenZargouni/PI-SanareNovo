@@ -40,4 +40,13 @@ class OffreRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findExpiredOffers(\DateTime $date): array
+{
+    return $this->createQueryBuilder('o')
+        ->where('o.dateExpiration < :date')
+        ->setParameter('date', $date)
+        ->getQuery()
+        ->getResult();
+}
+
 }

@@ -3,6 +3,8 @@ parameters:
     photo_dir: "%kernel.project_dir%/public/uploads/images"
     openweather_api_key: '%env(OPENWEATHER_API_KEY)%'
     cv_directory: '%kernel.project_dir%/public/uploads/cv'
+    documents_directory: '%kernel.project_dir%/public/uploads/documents'
+
 services:
     App\Controller\SecurityController:
         arguments:

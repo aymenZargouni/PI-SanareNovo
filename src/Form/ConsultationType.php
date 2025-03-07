@@ -5,11 +5,13 @@ namespace App\Form;
 use App\Entity\Consultation;
 use App\Entity\Dossiermedicale;
 use App\Entity\Service;
+use App\Entity\Patient;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType as TypeEntityType;
 
 class ConsultationType extends AbstractType
 {
@@ -18,6 +20,12 @@ class ConsultationType extends AbstractType
         $isUpdate = $options['updatee'] ?? false;
 
         $builder
+        ->add('patient', TypeEntityType::class, [
+            'class' => Patient::class,
+            'choice_label' => 'fullname',
+            'placeholder' => 'Sélectionner Le Nom&Prenom de Patient',
+            'required' => true,
+        ])
             ->add('date', null, [
                 'widget' => 'single_text',
                 'required' => !$isUpdate,
