@@ -25,7 +25,7 @@ class RendezvousType extends AbstractType
             ])
             ->add('motif', TextType::class, [
                 'label' => '📝 Motif du rendez-vous'
-            ])
+            ]);
             if ($options['is_update']) {
                 $builder->add('statut', ChoiceType::class, [
                 'choices' => [
