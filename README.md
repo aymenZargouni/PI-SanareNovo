@@ -47,11 +47,13 @@ Ce backend est interconnecté avec une application JavaFX via une **base de donn
 - **Framework :** Symfony 6.x
 - **ORM :** Doctrine
 - **Base de données :** MySQL (partagée avec l'application JavaFX)
-- **Authentification :** Symfony Security + JWT / LoginForm
-- **Emailing :** Mailer de Symfony
+- **Authentification :** Symfony Security + reCAPTCHA v3
+- **Emailing :** Symfony Mailer (Gmail ou Mailtrap)
+- **Notifications temps réel :** Pusher
+- **API météo :** OpenWeatherMap
+- **SMS & Téléphonie :** Twilio
 - **Frontend :** Twig + Bootstrap 5
-- **API :** API Platform (optionnel)
-- **IDE :** PhpStorm / VS Code
+- **IDE :** VS Code
 
 ---
 
