@@ -82,28 +82,28 @@ Ce backend est interconnecté avec une application JavaFX via une **base de donn
   composer install
   npm install
   npm run build
+  ```
+3.Configurer la base de données :
 
-Configurer la base de données :
+4.Copier le fichier .env en .env.local
 
-Copier le fichier .env en .env.local
-
-Modifier les informations de connexion :
-
+4.Modifier les informations de connexion :
+```bash
 DATABASE_URL="mysql://user:password@127.0.0.1:3306/sanarenovo"
+```
 Créer la base de données et les tables :
-
-bash
-Copier
-Modifier
+```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
+```
 Lancer le serveur :
 
-bash
-Copier
-Modifier
+```bash
 symfony server:start
-⚙️ Utilisation
+```
+
+## ⚙️ Utilisation
+
 Accès à l’espace admin pour la gestion des entités (utilisateurs, services, salles…)
 
 Accès patient pour consulter son dossier médical ou prendre un rendez-vous
@@ -116,11 +116,11 @@ Blog public et commentaires
 
 Emails automatiques lors des actions clés (inscription, consultation…)
 
-🔗 Connexion à la Base de Données
+## 🔗 Connexion à la Base de Données
 Le projet Symfony est connecté à une base de données MySQL partagée avec l’application JavaFX.
 Il est important que les deux projets soient synchronisés au niveau du schéma de base de données et des identifiants.
 
-👥 Contribution
+## 👥 Contribution
 Membres de l’équipe :
 Aymen Zargouni – Gestion des utilisateurs
 
@@ -136,14 +136,14 @@ Takoua Hichri – Gestion des recrutements
 
 N’hésitez pas à ouvrir une issue ou une pull request pour contribuer.
 
-🛡️ Licence
+## 🛡️ Licence
 Ce projet est distribué sous la licence MIT.
 Consultez le fichier LICENSE pour plus d’informations.
 
-🙏 Remerciements
+## 🙏 Remerciements
 Ce projet a été réalisé sous la supervision de Karray Gargouri
 à Esprit School of Engineering, dans le cadre du module PIDEV 3A.
 Merci à toute l’équipe pédagogique pour leur accompagnement.
 
-🏷️ Topics GitHub
+## 🏷️ Topics GitHub
 symfony gestion-clinique api-platform doctrine twig pidev esprit-school-of-engineering backend-app php mysql
