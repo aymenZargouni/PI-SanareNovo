@@ -44,15 +44,9 @@
             </div>
 
             <div class="mb-3">
-                {{ form_label(formUpdateBlog.imageFile, 'Upload Image', {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(formUpdateBlog.imageFile, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(formUpdateBlog.imageFile) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(formUpdateBlog.Category, 'Category', {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(formUpdateBlog.Category, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(formUpdateBlog.Category) }}
+                {{ form_label(formUpdateBlog.categories, 'Category', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(formUpdateBlog.categories, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(formUpdateBlog.categories) }}
             </div>
 
             <div class="text-center">

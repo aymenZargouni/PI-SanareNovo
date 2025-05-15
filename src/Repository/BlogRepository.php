@@ -59,12 +59,8 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
     
-    
 
-
-
-
-    public function add(Blog $blog, bool $flush = true): void
+    /*public function add(Blog $blog, bool $flush = true): void
     {
         if (!$blog->getCreatedAt()) {
             $blog->setCreatedAt(new \DateTime());
@@ -74,21 +70,18 @@ class BlogRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
-    }
+    }*/
 
     // src/Repository/BlogRepository.php
 
-    public function findAllSortedByRating(): array
-    {
-        return $this->createQueryBuilder('b')
-            ->leftJoin('b.ratings', 'r')
-            ->addSelect('AVG(r.score) as avgRating') // Sélectionner la moyenne des notes
-            ->groupBy('b.id')
-            ->orderBy('avgRating', 'DESC')
-            ->indexBy('b', 'b.id') // ✅ Indexation par ID pour simplifier l'accès aux objets Blog
-            ->getQuery()
-            ->getResult();
-    }
+    public function findAllSorted(): array
+{
+    return $this->createQueryBuilder('b')
+        ->orderBy('b.createdAt', 'DESC') // Ou tout autre champ valide
+        ->getQuery()
+        ->getResult();
+}
+
     
     
     

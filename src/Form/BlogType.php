@@ -37,7 +37,7 @@ class BlogType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('Category', EntityType::class, [
+            ->add('categories', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
                 'multiple' => true,
@@ -51,22 +51,6 @@ class BlogType extends AbstractType
                         'minMessage' => 'Veuillez sélectionner au moins une catégorie.',
                     ]),
                 ],
-            ])
-            ->add('imageFile', VichImageType::class, [
-                'required' => $options['is_new'], // Image obligatoire uniquement à la création
-                'label' => 'Upload Image',
-                'allow_delete' => true,
-                'download_uri' => true,
-                'constraints' => $options['is_new'] ? [
-                    new Assert\NotNull([
-                        'message' => 'L\'image est obligatoire pour un nouveau blog.',
-                    ]),
-                    new Assert\File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => ['image/jpeg', 'image/png'],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG ou PNG).',
-                    ]),
-                ] : [],
             ]);
     }
 

@@ -5,76 +5,67 @@ namespace App\Entity;
 use App\Repository\BlogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
-
+use Symfony\Component\HttpFoundation\File\File;
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
+
+
 #[Vich\Uploadable]
 class Blog
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['blogs'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['blogs'])]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['blogs'])]
+    #[ORM\Column(type: 'text')]
     private ?string $content = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\File(
-        maxSize: "2M",
-        mimeTypes: ["image/jpeg", "image/png"],
-        mimeTypesMessage: "Please upload a valid image (JPEG or PNG)." 
-    )]
-
-    #[Groups(['blogs'])]
     private ?string $image = null;
 
-    #[Vich\UploadableField(mapping: "blog_images", fileNameProperty: "image")]
-    #[Groups(['blogs'])]
+    #[Vich\UploadableField(mapping: 'blog_images', fileNameProperty: 'image')]
     private ?File $imageFile = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['blogs'])]
-    private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'blogs')]
-    private Collection $Category;
+    private Collection $categories;
 
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'blog')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'blog', cascade: ['persist', 'remove'])]
     private Collection $comments;
-
-    /**
-     * @var Collection<int, Rating>
-     */
-    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'blog')]
-    private Collection $ratings;
 
     public function __construct()
     {
-        $this->Category = new ArrayCollection(); // ✅ Initialisation correcte
+        $this->categories = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->ratings = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable(); // équivalent à LocalDateTime.now() en Java
     }
 
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 
     public function getId(): ?int
     {
@@ -86,7 +77,7 @@ class Blog
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
         return $this;
@@ -97,7 +88,7 @@ class Blog
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(string $content): self
     {
         $this->content = $content;
         return $this;
@@ -108,9 +99,21 @@ class Blog
         return $this->image;
     }
 
-    public function setImage(?string $image): static
+    public function setImage(?string $image): self
     {
         $this->image = $image;
+        return $this;
+    }
+
+    public function setImageFile(?File $imageFile = null): self
+    {
+        $this->imageFile = $imageFile;
+
+        if ($imageFile !== null) {
+            // Pour déclencher la mise à jour Doctrine, utile si tu utilises VichUploader
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
         return $this;
     }
 
@@ -119,49 +122,38 @@ class Blog
         return $this->imageFile;
     }
 
-    public function setImageFile(?File $imageFile = null): void
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        $this->imageFile = $imageFile;
-
-        if ($imageFile) {
-            $this->updatedAt = new \DateTimeImmutable();
-        }
+        return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
     /**
      * @return Collection<int, Category>
      */
-    public function getCategory(): Collection
-    {
-        return $this->Category;
+    public function getCategories(): Collection
+{
+    return $this->categories;
+}
+
+public function addCategory(Category $category): self
+{
+    if (!$this->categories->contains($category)) {
+        $this->categories->add($category);
     }
+    return $this;
+}
 
-    public function addCategory(Category $category): static
-    {
-        if (!$this->Category->contains($category)) {
-            $this->Category->add($category);
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): static
-    {
-        $this->Category->removeElement($category);
-
-        return $this;
-    }
+public function removeCategory(Category $category): self
+{
+    $this->categories->removeElement($category);
+    return $this;
+}
 
     /**
      * @return Collection<int, Comment>
@@ -171,81 +163,22 @@ class Blog
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): static
+    public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments->add($comment);
             $comment->setBlog($this);
         }
-
         return $this;
     }
 
-    public function removeComment(Comment $comment): static
+    public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getBlog() === $this) {
                 $comment->setBlog(null);
             }
         }
-
         return $this;
     }
-
-    /**
-     * @return Collection<int, Rating>
-     */
-    public function getRatings(): Collection
-    {
-        return $this->ratings;
-    }
-
-    public function addRating(Rating $rating): static
-    {
-        if (!$this->ratings->contains($rating)) {
-            $this->ratings->add($rating);
-            $rating->setBlog($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRating(Rating $rating): static
-    {
-        if ($this->ratings->removeElement($rating)) {
-            // set the owning side to null (unless already changed)
-            if ($rating->getBlog() === $this) {
-                $rating->setBlog(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getAverageRating(): ?float
-    {
-        if ($this->ratings->isEmpty()) {
-            return null; // Pas encore de notes
-        }
-
-        $total = array_reduce($this->ratings->toArray(), function ($sum, Rating $rating) {
-            return $sum + $rating->getScore();
-        }, 0);
-
-        return round($total / count($this->ratings), 1); // Note moyenne arrondie à 1 décimale
-    }
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]    
-    private ?\DateTimeInterface $createdAt = null;
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
 }

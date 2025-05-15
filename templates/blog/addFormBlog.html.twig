@@ -7,7 +7,8 @@
   <div class="card">
     <div class="card-body">
       <h5 class="card-title fw-semibold mb-4">Create a New Blog Post</h5>
-      <form method="post" enctype="multipart/form-data" class="form-contact contact_form" novalidate>
+<form method="post" enctype="multipart/form-data" class="form-contact contact_form" novalidate>
+    {{ form_start(formAddBlog) }}
         <div class="mb-3">
           {{ form_label(formAddBlog.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
           {{ form_widget(formAddBlog.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter Blog Title'}}) }}
@@ -20,28 +21,25 @@
           {{ form_errors(formAddBlog.content) }}
         </div>
 
-        <div class="mb-3">
-          {{ form_label(formAddBlog.imageFile, 'Upload Image', {'label_attr': {'class': 'form-label'}}) }}
-          {{ form_widget(formAddBlog.imageFile, {'attr': {'class': 'form-control'}}) }}
-        </div>
 
         <div class="mb-3">
-          {{ form_label(formAddBlog.Category, 'Category', {'label_attr': {'class': 'form-label'}}) }}
+          {{ form_label(formAddBlog.categories, 'categories', {'label_attr': {'class': 'form-label'}}) }}
           <div class="form-check">
-            {% for child in formAddBlog.Category %}
+            {% for child in formAddBlog.categories %}
               <div class="form-check">
                 {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
                 {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
               </div>
             {% endfor %}
           </div>
-          {{ form_errors(formAddBlog.Category) }}
+          {{ form_errors(formAddBlog.categories) }}
         </div>
 
         <button type="submit" class="btn btn-primary">Save Blog</button>
       {{ form_end(formAddBlog) }}
       </form>
     </div>
+    
   </div>
 </div>
 {% endblock %}

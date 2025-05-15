@@ -25,7 +25,7 @@ class Category
     /**
      * @var Collection<int, Blog>
      */
-    #[ORM\ManyToMany(targetEntity: Blog::class, mappedBy: 'Category')]
+    #[ORM\ManyToMany(targetEntity: Blog::class, mappedBy: 'categories')]
     private Collection $blogs;
 
     public function __construct()

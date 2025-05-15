@@ -26,12 +26,6 @@
                     <article class="blog_item mb-4 shadow-sm rounded overflow-hidden">
                         <div class="card border-0">
                             <div class="position-relative">
-                                {% if b.image %}
-                                    <img class="card-img-top" src="{{ asset('uploads/images/' ~ b.image) }}" alt="Blog image">
-                                {% else %}
-                                    <img class="card-img-top" src="{{ asset('images/default-image.jpg') }}" alt="Default image">
-                                {% endif %}
-                                
                                 <div class="position-absolute top-0 end-0 p-2 bg-dark text-white rounded">
                                     <p class="mb-0">{{ b.createdAt|date('d/m/Y') }}</p>
                                 </div>
@@ -68,7 +62,7 @@
                                         <i class="fa fa-star"></i> Noter ce blog
                                     </a>
                                     <span class="ms-2 text-warning">
-                                        ⭐ {{ b.getAverageRating() ?: 'Pas encore noté' }} / 5
+                                        ⭐ {{ 'Pas encore noté' }} / 5
                                     </span>
                                 </div>
 

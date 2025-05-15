@@ -49,7 +49,7 @@ final class BlogController extends AbstractController{
     {
         #$this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $blogs = $blogRepository->findByTitleSorted();
+        $blogs = $blogRepository->findAll();
         
         return $this->render('blog/showBlog.html.twig', [
             'tabBlog' => $blogs
@@ -68,7 +68,7 @@ final class BlogController extends AbstractController{
     }*/
 
 
-    /*#[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
+    #[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
     public function showBlogPatient(BlogRepository $blogRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $blogRepository->createQueryBuilder('b')
@@ -84,9 +84,9 @@ final class BlogController extends AbstractController{
         return $this->render('blog/showBlogPatient.html.twig', [
             'pagination' => $pagination,
         ]);
-    }*/
+    }
 
-    #[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
+    /*#[Route('/patient/showBlogPatient', name: 'showBlogPatient')]
     public function showBlogPatient(BlogRepository $blogRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $blogRepository->createQueryBuilder('b')
@@ -106,7 +106,7 @@ final class BlogController extends AbstractController{
         return $this->render('blog/showBlogPatient.html.twig', [
             'pagination' => $pagination,
         ]);
-    }
+    }*/
     
 
     #[Route('/admin/addFormBlog', name: 'addFormBlog')]
