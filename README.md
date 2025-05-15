@@ -77,17 +77,17 @@ Ce backend est interconnecté avec une application JavaFX via une **base de donn
    git clone https://github.com/aymenZargouni/PI-SanareNovo-Symfony.git
    cd PI-SanareNovo-Symfony
 
-2.Installer les dépendances :
+2. Installer les dépendances :
   ```bash
   composer install
   npm install
   npm run build
   ```
-3.Configurer la base de données :
+3. Configurer la base de données :
 
-4.Copier le fichier .env en .env.local
+4. Copier le fichier .env en .env.local
 
-4.Modifier les informations de connexion :
+5. Modifier les informations de connexion :
 ```bash
 DATABASE_URL="mysql://user:password@127.0.0.1:3306/sanarenovo"
 ```
