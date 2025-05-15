@@ -84,19 +84,16 @@ Ce backend est interconnecté avec une application JavaFX via une **base de donn
   npm run build
   ```
 3. Configurer la base de données :
-
-4. Copier le fichier .env en .env.local
-
-5. Modifier les informations de connexion :
+   Modifier les informations de connexion
 ```bash
 DATABASE_URL="mysql://user:password@127.0.0.1:3306/sanarenovo"
 ```
-Créer la base de données et les tables :
+4. Créer la base de données et les tables :
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
-Lancer le serveur :
+5. Lancer le serveur :
 
 ```bash
 symfony server:start
